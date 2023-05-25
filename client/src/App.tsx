@@ -1,3 +1,4 @@
+import './styles/_main.scss'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 
 import { Home, MyGigs, AddGig, Orders, Messages, Message, MyImages, AddImage, Register, Login } from './pages'
