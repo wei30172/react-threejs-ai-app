@@ -22,63 +22,63 @@ const GigSchema: Schema = new Schema(
   {
     userId: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     desc: {
       type: String,
-      required: true,
+      required: true
     },
     totalStars: {
       type: Number,
-      default: 0,
+      default: 0
     },
     starNumber: {
       type: Number,
-      default: 0,
+      default: 0
     },
     price: {
       type: Number,
-      required: true,
+      required: true
     },
     cover: {
       type: String,
-      required: true,
+      required: true
     },
     images: {
       type: [String],
-      required: false,
+      required: false
     },
     shortTitle: {
       type: String,
-      required: true,
+      required: true
     },
     shortDesc: {
       type: String,
-      required: true,
+      required: true
     },
     deliveryTime: {
       type: Number,
-      required: true,
+      required: true
     },
     revisionNumber: {
       type: Number,
-      required: true,
+      required: true
     },
     features: {
       type: [String],
-      required: false,
+      required: false
     },
     sales: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

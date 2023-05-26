@@ -11,11 +11,11 @@ const ReviewSchema: Schema = new Schema(
   {
     gigId: {
       type: String,
-      required: true,
+      required: true
     },
     userId: {
       type: String,
-      required: true,
+      required: true
     },
     star: {
       type: Number,
@@ -24,11 +24,11 @@ const ReviewSchema: Schema = new Schema(
     },
     desc: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

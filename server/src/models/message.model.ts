@@ -10,19 +10,19 @@ const MessageSchema: Schema = new Schema(
   {
     conversationId: {
       type: String,
-      required: true,
+      required: true
     },
     userId: {
       type: String,
-      required: true,
+      required: true
     },
     desc: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

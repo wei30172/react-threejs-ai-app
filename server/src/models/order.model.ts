@@ -15,39 +15,39 @@ const OrderSchema: Schema = new Schema(
   {
     gigId: {
       type: String,
-      required: true,
+      required: true
     },
     img: {
       type: String,
-      required: false,
+      required: false
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     price: {
       type: Number,
-      required: true,
+      required: true
     },
     sellerId: {
       type: String,
-      required: true,
+      required: true
     },
     buyerId: {
       type: String,
-      required: true,
+      required: true
     },
     isPaid: {
       type: Boolean,
-      default: false,
+      default: false
     },
     payment_intent: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

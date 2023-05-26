@@ -15,7 +15,7 @@ const ConversationSchema: Schema = new Schema(
       type: String,
       required: true,
       unique: true,
-      default: mongoose.Types.ObjectId,
+      default: mongoose.Types.ObjectId
     },
     sellerId: {
       type: String,

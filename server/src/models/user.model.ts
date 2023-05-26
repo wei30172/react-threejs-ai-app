@@ -14,33 +14,33 @@ const userSchema: Schema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
   img: {
     type: String,
-    required: false,
+    required: false
   },
   address: {
     type: String,
-    required: true,
+    required: true
   },
   phone: {
     type: String,
-    required: true,
+    required: true
   },
   isSeller: {
     type: Boolean,
     default: false
-  },
+  }
 },{
   timestamps: true
 })
