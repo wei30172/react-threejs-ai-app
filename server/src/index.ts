@@ -1,39 +1,41 @@
 import express, { ErrorRequestHandler } from 'express'
+import connectDB from './connect'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 
-import connectDB from './mongodb/connect'
-// Import routes
+// Routes
+import userRoute from './routes/user.route'
+import gigRoute from './routes/gig.route'
+import orderRoute from './routes/order.route'
+import conversationRoute from './routes/conversation.route'
+import messageRoute from './routes/message.route'
+import reviewRoute from './routes/review.route'
+import authRoute from './routes/auth.route'
 import postRoutes from './routes/post.routes'
 import dalleRoutes from './routes/dalle.routes'
 
-// Load environment variables from .env file
-const env = dotenv.config()
-
-if (env.error) {
-  throw new Error("Couldn't find .env file!")
-}
-
-// Initialize an express application
 const app = express()
+dotenv.config()
 
-// Use CORS middleware to handle Cross-Origin Resource Sharing
-app.use(cors())
+app.use(cors({ origin: 'http://localhost:5173', credentials: true })) // todo
+app.use(express.json({ limit: '50mb' }))
 
-// Middleware to parse JSON bodies. This line must be placed before the routes
-app.use(express.json({ limit: "50mb" }))
+app.use('/api/auth', authRoute)
+app.use('/api/users', userRoute)
+app.use('/api/gigs', gigRoute)
+app.use('/api/orders', orderRoute)
+app.use('/api/conversations', conversationRoute)
+app.use('/api/messages', messageRoute)
+app.use('/api/reviews', reviewRoute)
+app.use('/api/post', postRoutes)
+app.use('/api/dalle', dalleRoutes)
 
-app.use('/api/v1/post', postRoutes)
-app.use("/api/v1/dalle", dalleRoutes)
-
-// Define the base route
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: "Hello from SERVER"
+    message: 'Hello from SERVER'
   })
 })
 
-// Start the server
 const startServer = async () => {
   try {
     connectDB(process.env.MONGODB_URL!)
@@ -45,8 +47,7 @@ const startServer = async () => {
 
 startServer()
 
-// Use the error handling middleware
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, req, res) => {
   console.error(err.stack)
   res.status(500).send('Something went wrong!')
 }

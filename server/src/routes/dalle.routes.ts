@@ -8,13 +8,13 @@ const router = express.Router()
 
 // Create a new instance of OpenAI API
 const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 })
 
 const openai = new OpenAIApi(config)
 
 router.route('/').get((req, res) => {
-  res.status(200).json({ message: "Hello from DALL-E!" })
+  res.status(200).json({ message: 'Hello from DALL-E!' })
 })
 
 // Generates the image
@@ -22,7 +22,7 @@ router.route('/').post(async (req, res) => {
   try {
     const { prompt } = req.body
     if (!prompt) {
-      return res.status(400).json({ message: "Invalid prompt" })
+      return res.status(400).json({ message: 'Invalid prompt' })
     }
 
     // Use OpenAI API to create an image based on the 'prompt'
@@ -30,7 +30,7 @@ router.route('/').post(async (req, res) => {
       prompt,
       n: 1,
       size: '1024x1024',
-      response_format: 'b64_json',
+      response_format: 'b64_json'
     })
 
     // Get the base64-encoded image from the response
@@ -40,7 +40,7 @@ router.route('/').post(async (req, res) => {
     res.status(200).json({ photo: image })
   } catch (error) {
     console.error(`Error: ${error}`)
-    res.status(500).json({ message: "Something went wrong" })
+    res.status(500).json({ message: 'Something went wrong' })
   }
 })
 
