@@ -1,53 +1,73 @@
-$white: #fefefe;
+$white: #fdf6f2;
 
-$red-400: #ff8787;
-$red-500: #ff6b6b;
-$red-600: #fa5252;
-$red-700: #f03e3e;
-$red-800: #e03131;
+/* Red */
+$red-000: #fde7e9;
+$red-100: #fbc7cc;
+$red-200: #f9a7af;
+$red-300: #f68792;
+$red-400: #f46775;
+$red-500: #f24758;
+$red-600: #d03143;
+$red-700: #ae1b2e;
+$red-800: #8c0519;
+$red-900: #6a0004;
 
-$green-400: #69db7c;
-$green-500: #51cf66;
-$green-600: #40c057;
-$green-700: #37b24d;
-$green-800: #2f9e44;
+/* Green */
+$green-000: #f4faf0;
+$green-100: #d5f6c6;
+$green-200: #b4e69a;
+$green-300: #91d368;
+$green-400: #78bb48;
+$green-500: #69a138;
+$green-600: #5a852f;
+$green-700: #496749;
+$green-800: #3d5442;
+$green-900: #324532;
 
-$blue-400: #4dabf7;
-$blue-500: #339af0;
-$blue-600: #228be6;
-$blue-700: #1c7ed6;
-$blue-800: #1971c2;
+/* Blue */
+$blue-000: #f5f9fa;
+$blue-100: #d7e6ed;
+$blue-200: #b2d3e0;
+$blue-300: #81c0d3;
+$blue-400: #65a8c6;
+$blue-500: #3e8fb9;
+$blue-600: #3070a0;
+$blue-700: #2c5880;
+$blue-800: #284460;
+$blue-900: #172f40;
 
-$orange-400: #ffa94d;
-$orange-500: #ff922b;
-$orange-600: #fd7e14;
-$orange-700: #f76707;
-$orange-800: #e8590c;
+/* Yellow */
+$yellow-000: #fef9f0;
+$yellow-100: #fdebc2;
+$yellow-200: #fbd898;
+$yellow-300: #f9c56e;
+$yellow-400: #f7b244;
+$yellow-500: #f59e1a;
+$yellow-600: #d38516;
+$yellow-700: #b16c12;
+$yellow-800: #8f530e;
+$yellow-900: #6d3a0a;
 
-$yellow-400: #facc15;
-$yellow-500: #eab308;
-$yellow-600: #ca8a04;
-$yellow-700: #a16207;
-$yellow-800: #854d0e;
-
+/* Dark */
 $dark-000: #f8fafc;
 $dark-100: #f1f5f9;
 $dark-200: #e2e8f0;
 $dark-300: #cbd5e1;
-$dark-400: #94a3b8;
-$dark-500: #64748b;
-$dark-600: #475569;
-$dark-700: #334155;
-$dark-800: #1e293b;
-$dark-900: #0f172a;
+$dark-400: #b4bdc8;
+$dark-500: #8d96af;
+$dark-600: #677096;
+$dark-700: #415a7d;
+$dark-800: #1c4464;
+$dark-900: #062e4b;
 
-$primary: #7cb474;
-$secondary: #f0c040;
+$primary: #db8091;
+$secondary: #dbab80;
 $text-primary: $dark-800;
-$success-background: $green-400;
+$success-background: $green-100;
 $success-primary: $green-700;
-$danger-background: $red-400;
-$danger-primary: $red-700;
-$background: $dark-100;
-$background-light: $dark-600;
+$warning-background: $yellow-100;
+$warning-primary: $yellow-700;
+$error-background: $red-100;
+$error-primary: $red-700;
+$background-light: $dark-100;
 $background-dark: $dark-900;
