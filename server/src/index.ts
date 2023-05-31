@@ -1,6 +1,7 @@
 import express, { ErrorRequestHandler } from 'express'
 import connectDB from './connect'
-import * as dotenv from 'dotenv'
+import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 // Routes
@@ -19,6 +20,7 @@ dotenv.config()
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true })) // todo
 app.use(express.json({ limit: '50mb' }))
+app.use(cookieParser())
 
 app.use('/api/auth', authRoute)
 app.use('/api/users', userRoute)
@@ -36,9 +38,22 @@ app.get('/', (req, res) => {
   })
 })
 
+const errorHandler: ErrorRequestHandler = (err, req, res) => {
+  console.error(err.stack)
+  res.status(500).send('Something went wrong!')
+}
+
+app.use(errorHandler)
+
 const startServer = async () => {
+  const mongoDbUrl = process.env.MONGODB_URL
+
+  if (!mongoDbUrl) {
+    return console.error('MONGODB_URL is not defined in environment variables.')
+  }
+
   try {
-    connectDB(process.env.MONGODB_URL!)
+    connectDB(mongoDbUrl)
     app.listen(8080, () => console.log('Server started on port 8080'))
   } catch (err) {
     console.error(err)
@@ -46,10 +61,3 @@ const startServer = async () => {
 }
 
 startServer()
-
-const errorHandler: ErrorRequestHandler = (err, req, res) => {
-  console.error(err.stack)
-  res.status(500).send('Something went wrong!')
-}
-
-app.use(errorHandler)
