@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import createError from '../utils/createError'
 import User, { IUser } from '../models/user.model'
 
 interface IRequest extends Request {
@@ -20,12 +21,12 @@ export const deleteUser = async (req: IRequest, res: Response, next: NextFunctio
     const user = await User.findById(req.params.id) as IUser
     
     if (req.userId !== user._id.toString()) {
-      return next(res.status(403).json({ message: 'You can delete only your account!' }))
+      return next(createError(403, 'You can delete only your account!' ))
     }
 
     await User.findByIdAndDelete(req.params.id)
-    res.status(200).json({ message: 'The user is deleted.' })
+    res.status(200).json({ message: 'The user is deleted' })
   } catch (err) {
-    res.status(500).json({ message: 'The user does not exist.' })
+    res.status(500).json({ message: 'The user does not exist' })
   }
 }

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import createError from '../utils/createError'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 
 interface IRequest extends Request {
@@ -13,15 +14,15 @@ interface IPayload {
 
 export const verifyToken = (req: IRequest, res: Response, next: NextFunction): void => {
   const token = req.cookies['accessToken']
-  if (!token) return next(res.status(401).json({ message: 'You are not authenticated!' }))
+  if (!token) return next(createError(401, 'You are not authenticated!' ))
   
   const jwtKey = process.env.JWT_KEY
   if (!jwtKey) {
-    return next(res.status(500).json({ message: 'Server error' })) 
+    return next(createError(500, 'Server error' ))
   }
 
   jwt.verify(token, jwtKey, (err: JsonWebTokenError | null, payload: unknown) => {
-    if (err) return next(res.status(403).json({ message: 'Token is not valid!' }))
+    if (err) return next(createError(403, 'Token is not valid!' ))
     
     const typedPayload = payload as IPayload
 

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
-import User, { IUser } from '../models/user.model'
+import createError from '../utils/createError'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import User, { IUser } from '../models/user.model'
 
 interface IUserRegisterRequest extends Request {
   body: IUser
@@ -10,7 +11,7 @@ interface IUserRegisterRequest extends Request {
 export const register = async (req: IUserRegisterRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findOne({ email: req.body.email })
-    if (user) return next(res.status(404).json({ message: 'The email has been registered.' }))
+    if (user) return next(createError(404, 'The email has been registered'))
 
     const hash = bcrypt.hashSync(req.body.password, 5)
     const newUser = new User({
@@ -35,15 +36,15 @@ interface IUserLoginRequest extends Request {
 export const login = async (req: IUserLoginRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findOne({ email: req.body.email })
-    if (!user) return next(res.status(404).json({ message: 'User not found' }))
+    if (!user) return next(createError(404, 'User not found' ))
 
     const isCorrect = bcrypt.compareSync(req.body.password, user.password)
     if (!isCorrect)
-      return next(res.status(400).json({ message: 'Wrong password or username' }))  
+      return next(createError(400, 'Wrong password or username' ))  
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {
-      return next(res.status(500).json({ message: 'Server error' })) 
+      return next(createError(500, 'Server error' )) 
     }
 
     const token = jwt.sign(
@@ -72,7 +73,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
 export const logout = async (req: Request, res: Response): Promise<void> => {
   res
     .clearCookie('accessToken', {
-      sameSite: 'none',
+      sameSite: 'none', // todo
       secure: true
     })
     .status(200)

@@ -38,13 +38,6 @@ app.get('/', (req, res) => {
   })
 })
 
-const errorHandler: ErrorRequestHandler = (err, req, res) => {
-  console.error(err.stack)
-  res.status(500).send('Something went wrong!')
-}
-
-app.use(errorHandler)
-
 const startServer = async () => {
   const mongoDbUrl = process.env.MONGODB_URL
 
@@ -61,3 +54,12 @@ const startServer = async () => {
 }
 
 startServer()
+
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  const errorStatus = err.status || 500
+  const errorMessage = err.message || 'Something went wrong!'
+  res.status(errorStatus).json({ message: errorMessage })
+  next()
+}
+
+app.use(errorHandler)
