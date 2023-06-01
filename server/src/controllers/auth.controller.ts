@@ -64,7 +64,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
         httpOnly: true
       })
       .status(200)
-      .json({ data: info })
+      .json(info)
   } catch (err) {
     next(err)
   }

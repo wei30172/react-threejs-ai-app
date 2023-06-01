@@ -1,0 +1,45 @@
+@use "../../styles/mixin/colors" as colors;
+
+.login {
+  form {
+    width: 960px;
+    padding: 80px 0px;
+    flex-direction: column;
+    gap: 20px;
+
+    h1 {
+      color: colors.$dark-800;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      width: 300px;
+      margin: 5px auto;
+    }
+
+    label {
+      color: colors.$dark-600;
+      font-size: 18px;
+    }
+
+    input {
+      width: 300px;
+      padding: 15px;
+      border: 1px solid colors.$dark-100;
+    }
+
+    .navigation {
+      gap: 10px;
+
+      p {
+        color: colors.$dark-600;
+        font-size: 18px;
+      }
+
+      button {
+        background-color: inherit;
+        text-decoration: underline;
+      }
+    }
+  }
+}
