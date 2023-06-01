@@ -10,6 +10,8 @@ import MenuIcon from './MenuIcon'
 import DoubleLeftIcon from './DoubleLeftIcon'
 import DoubleRightIcon from './DoubleRightIcon'
 import ShoppingCartIcon from './ShoppingCartIcon'
+import HomeIcon from './HomeIcon'
+import UserIcon from './UserIcon'
 import Loader from './Loader'
 
 export {
@@ -25,5 +27,7 @@ export {
   DoubleLeftIcon,
   DoubleRightIcon,
   ShoppingCartIcon,
+  HomeIcon,
+  UserIcon,
   Loader
 }

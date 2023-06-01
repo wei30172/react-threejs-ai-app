@@ -1,0 +1,92 @@
+@use "../../styles/mixin/colors" as colors;
+@use "../../styles/mixin/screens" as screens;
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: colors.$primary;
+  color: colors.$white;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  transition: 0.5s all ease;
+
+  &.active {
+    background-color: colors.$white;
+    color: colors.$text-primary;
+
+    button {
+      background-color: colors.$white !important;
+      color: colors.$primary !important;
+      border: 1px solid colors.$primary !important;
+    }
+
+    .home-icon {
+      color: colors.$primary;
+    }
+  }
+
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 60px;
+
+    .logo {
+      width: 36px;
+      height: 36px;
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+
+      .user {
+        position: relative;
+        gap: 10px;
+
+        img {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .options {
+          position: absolute;
+          top: 50px;
+          right: 0;
+          padding: 20px;
+          background-color: colors.$white;
+          border-radius: 10px;
+          z-index: 999;
+          border: 1px solid colors.$dark-200;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 200px;
+          font-weight: 300;
+          color: colors.$dark-500;
+        }
+      }
+
+      button {
+        color: colors.$primary;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 1px solid colors.$primary;
+        background-color: transparent;
+        cursor: pointer;
+
+        &:hover {
+          color: colors.$white;
+          border-color: colors.$primary;
+          background-color: colors.$primary;
+        }
+      }
+    }
+  }
+}
