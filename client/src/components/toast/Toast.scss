@@ -1,0 +1,35 @@
+@use "../../styles/mixin/colors" as colors;
+
+.toast {
+  position: absolute;
+  min-width: 300px;
+  max-width: 600px;
+  padding: 16px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &.toast--success {
+    background-color: colors.$success-background;
+    color: colors.$success-primary;
+  }
+  
+  &.toast--warning {
+    background-color: colors.$warning-background;
+    color: colors.$warning-primary;
+  }
+  
+  &.toast--error {
+    background-color: colors.$error-background;
+    color: colors.$error-primary;
+  }
+
+  button {
+    background-color: transparent;
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+  }
+}
