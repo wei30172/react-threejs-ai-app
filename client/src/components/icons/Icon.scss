@@ -1,0 +1,67 @@
+@use "../../styles/mixin/colors" as colors;
+
+.file-icon {
+  color: colors.$blue-600;
+}
+
+.download-icon {
+  color: colors.$yellow-600;
+}
+
+
+.preview-icon {
+  color: colors.$dark-600;
+}
+
+.delete-icon {
+  color: colors.$green-600;
+}
+
+.error-icon {
+  color: colors.$red-600;
+}
+
+.arrowleft-icon {
+  color: colors.$primary;
+}
+
+.arrowright-icon {
+  color: colors.$primary;
+}
+
+.close-icon {
+  color: colors.$dark-900;
+}
+
+.menu-icon {
+  color: colors.$dark-900;
+}
+
+.doubleleft-icon {
+  color: colors.$dark-900;
+}
+
+.doubleright-icon {
+  color: colors.$dark-900;
+}
+
+.shoppingcart-icon {
+  color: colors.$green-500;
+}
+
+.loader {
+  color: colors.$primary;
+  display: inline;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.5rem;
+  animation: spin 1s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+
+
