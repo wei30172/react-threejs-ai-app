@@ -1,0 +1,146 @@
+@use "../../styles/mixin/colors" as colors;
+@use "../../styles/mixin/screens" as screens;
+
+.register {
+  form {
+    flex-direction: column;
+    width: 960px;
+    padding: 80px 0px;
+    display: flex;
+    gap: 40px;
+
+    h1 {
+      color: colors.$dark-800;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      width: 300px;
+      margin: 5px auto;
+    }
+  
+    .left {
+      flex: 1;
+      flex-direction: column;
+      gap: 10px;
+
+      label {
+        color: colors.$dark-600;
+        font-size: 18px;
+      }
+
+      input {
+        width: 300px;
+        padding: 15px;
+        border: 1px solid colors.$dark-100;
+      }
+    }
+
+    .right {
+      flex: 1;
+      flex-direction: column;
+      gap: 10px;
+
+      label {
+        color: colors.$dark-600;
+        font-size: 18px;
+      }
+
+      input {
+        width: 300px;
+        padding: 15px;
+        border: 1px solid colors.$dark-100;
+      }
+
+      .picture {
+        flex-direction: column;
+        gap: 10px;
+
+        .preview-icon {
+          width: 300px;
+          height: 300px;
+        }
+      }
+
+      .toggle {
+        gap: 10px;
+
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 24px;
+        }
+
+        /* Hide default */
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: colors.$dark-500;
+          -webkit-transition: 0.4s;
+          transition: 0.4s;
+          border-radius: 24px;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 4px;
+          bottom: 4px;
+          background-color: colors.$white;
+          -webkit-transition: 0.4s;
+          transition: 0.4s;
+          border-radius: 50%;
+        }
+
+        input:checked + .slider {
+          background-color: colors.$blue-500;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px colors.$blue-500;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+      }
+
+      .navigation {
+        gap: 10px;
+
+        p {
+          color: colors.$dark-600;
+          font-size: 18px;
+        }
+
+        button {
+          background-color: inherit;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+@include screens.tablet {
+  .register {
+    form {
+      flex-direction: row;
+    }
+  }
+}
