@@ -40,7 +40,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
 
     const isCorrect = bcrypt.compareSync(req.body.password, user.password)
     if (!isCorrect)
-      return next(createError(400, 'Wrong password or username' ))  
+      return next(createError(400, 'Wrong password' ))
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {

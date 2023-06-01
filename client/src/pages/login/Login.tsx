@@ -1,6 +1,8 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import newRequest from '../../utils/newRequest'
+import newRequest, { IErrorResponse } from '../../utils/newRequest'
+import { AxiosError } from 'axios'
+
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
 import './Login.scss'
@@ -61,8 +63,11 @@ const Login: FC = () => {
       localStorage.setItem('currentUser', JSON.stringify(res.data))
       navigate('/')
     } catch (error) {
+      const axiosError = error as AxiosError<IErrorResponse>
+      const errorMessage = axiosError.response?.data?.message || 'Login failed'
+      
       setToastConfig({
-        message: `Error: ${error}`,
+        message: errorMessage,
         isVisible: true,
         type: 'error'
       })
