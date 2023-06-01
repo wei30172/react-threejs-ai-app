@@ -50,7 +50,8 @@
 }
 
 .loader {
-  color: colors.$primary;
+  fill: colors.$primary;
+  color: colors.$dark-200;
   display: inline;
   width: 2.5rem;
   height: 2.5rem;

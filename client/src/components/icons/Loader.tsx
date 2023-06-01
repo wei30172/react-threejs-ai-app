@@ -16,7 +16,7 @@ const path2 = `M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C9
 
 const Loader: FC<Pick<HTMLAttributes<SVGElement>, 'className'>> = ({ className }) => (
   <svg
-    fill="none" 
+    fill="none"
     viewBox="0 0 100 101"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
