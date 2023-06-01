@@ -1,11 +1,12 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import newRequest, { IErrorResponse } from '../../utils/newRequest'
 import { AxiosError } from 'axios'
+import newRequest, { IErrorResponse } from '../../utils/newRequest'
 
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
 import './Login.scss'
+
 interface User {
   email: string
   password: string
@@ -32,7 +33,7 @@ const Login: FC = () => {
       name: 'email',
       type: 'email',
       placeholder: 'Email',
-      pattern: '^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$',
+      pattern: '^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$',
       required: true,
       value: ''
     },
