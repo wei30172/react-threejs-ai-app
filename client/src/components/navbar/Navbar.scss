@@ -70,21 +70,36 @@
           width: 200px;
           font-weight: 300;
           color: colors.$dark-500;
+
+          button {
+            color: colors.$primary;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid colors.$primary;
+            background-color: transparent;
+            cursor: pointer;
+    
+            &:hover {
+              color: colors.$white;
+              border-color: colors.$primary;
+              background-color: colors.$primary;
+            }
+          }
         }
       }
 
       button {
-        color: colors.$primary;
+        color: colors.$white;
         padding: 10px 20px;
         border-radius: 5px;
-        border: 1px solid colors.$primary;
+        border: 1px solid colors.$white;
         background-color: transparent;
         cursor: pointer;
 
         &:hover {
-          color: colors.$white;
-          border-color: colors.$primary;
-          background-color: colors.$primary;
+          color: colors.$primary;
+          border-color: colors.$white;
+          background-color: colors.$white;
         }
       }
     }
