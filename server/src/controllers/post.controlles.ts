@@ -7,7 +7,7 @@ export const getPosts = async (_req: Request, res: Response) => {
   try {
     const posts = await Post.find({})
     
-    res.status(200).json({ data: posts })
+    res.status(200).json(posts)
   } catch (err) {
     res.status(500).json({ message: 'Fetching images failed, please try again' })
   }
@@ -30,7 +30,7 @@ export const savePost = async (req: Request, res: Response, next: NextFunction) 
       cloudinary_id: photoUrl.public_id
     })
 
-    res.status(200).json({ data: newPost })
+    res.status(200).json(newPost)
   } catch (err) {
     res.status(500).json({ message: 'Unable to save the image, please try again' })
   }
