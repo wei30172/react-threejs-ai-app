@@ -1,8 +1,11 @@
 import { FC } from 'react'
+import './Footer.scss'
 
 const Footer: FC = () => {
   return (
-    <div>Footer</div>
+    <div className='footer flex-between'>
+      <p>Copyright &copy; 2023 Company. All rights reserved.</p>
+    </div>
   )
 }
 
