@@ -81,8 +81,9 @@ table {
   }
   
   &.button--outline {
+    color: colors.$white;
     border: 1px solod colors.$primary;
-    background-color: colors.$white;
+    
   }
 }
 
