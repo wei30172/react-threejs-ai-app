@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { HomeIcon } from '../icons/index'
 import Toast, { ToastProps } from '../toast/Toast'
+import getCurrentUser from '../../utils/getCurrentUser'
 import newRequest from '../../utils/newRequest'
 import './Navbar.scss'
 
@@ -28,11 +29,7 @@ const Navbar: FC = () => {
   }, [])
   const navigate = useNavigate()
 
-  let currentUser
-  const storageUser = localStorage.getItem('currentUser')
-  if (storageUser) {
-    currentUser = JSON.parse(storageUser)
-  }
+  const currentUser = getCurrentUser()
 
   const handleLogout = async () => {
     try {
@@ -70,10 +67,10 @@ const Navbar: FC = () => {
                   <div className='options'>
                     {currentUser.isSeller && (
                       <>
-                        <Link className='link' to='/mygigs'>
-                          Gigs
+                        <Link className='link' to='/my-gigs'>
+                          My Gigs
                         </Link>
-                        <Link className='link' to='/add'>
+                        <Link className='link' to='/add-gig'>
                           Add New Gig
                         </Link>
                       </>
@@ -94,7 +91,7 @@ const Navbar: FC = () => {
               <>
                 <Link to='/login' className='link'>Sign in</Link>
                 <Link className='link' to='/register'>
-                  <button>Join</button>
+                  <button className='button'>Join</button>
                 </Link>
               </>
             )}
