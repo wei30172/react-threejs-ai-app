@@ -7,7 +7,7 @@ import newRequest, { IErrorResponse } from '../../utils/newRequest'
 import upload from '../../utils/upload'
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
-import { PreviewIcon } from '../../components/icons'
+import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
 interface User {
@@ -22,6 +22,7 @@ interface User {
 }
 
 const Register: FC = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<User>({
@@ -112,9 +113,12 @@ const Register: FC = () => {
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0])
       setPreviewURL(URL.createObjectURL(e.target.files[0]))
+    } else {
+      setFile(null)
+      setPreviewURL(null)
     }
   }
 
@@ -127,14 +131,23 @@ const Register: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
+
     if (file !== null) {
       const url = await upload(file)
       try {
-        await newRequest.post('auth/register', {
+        const response = await newRequest.post('auth/register', {
           ...user,
           img: url
         })
-        navigate('/')
+        setToastConfig({
+          message: `${response.data.message} To the homepage in 10 seconds...`,
+          isVisible: true,
+          type: 'success'
+        })
+        setTimeout(() => {
+          navigate('/')
+        }, 10000)
       } catch (error) {
         const axiosError = error as AxiosError<IErrorResponse>
         const errorMessage = axiosError.response?.data?.message || 'Register failed'
@@ -144,6 +157,8 @@ const Register: FC = () => {
           isVisible: true,
           type: 'error'
         })
+      } finally {
+        setIsLoading(false)
       }
     } else {
       setToastConfig({
@@ -197,12 +212,14 @@ const Register: FC = () => {
                 !user.password ||
                 !user.confirmPassword ||
                 !user.address ||
-                !user.phone
+                !user.phone ||
+                isLoading ||
+                toastConfig.type === 'success'
               }
               className='button button--fill'
               type='submit'
             >
-              Register
+              {isLoading ? <Loader /> : 'Register'}
             </button>
             <div className='navigation flex-center'>
               <p>Already have an account?</p>

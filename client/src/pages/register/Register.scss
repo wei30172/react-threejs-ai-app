@@ -60,6 +60,7 @@
           width: 240px;
           height: 240px;
           border-radius: 50%;
+          margin: 30px;
         }
 
         .preview-icon {
@@ -140,6 +141,11 @@
         }
       }
     }
+  }
+
+  .loader {
+    width: 1.2rem;
+    height: 1.2rem;
   }
 }
 
