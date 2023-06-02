@@ -98,7 +98,7 @@ const Login: FC = () => {
           ))}
           <button
             disabled={!user.email || !user.password}
-            className='button button--fill'
+            className='button button--filled'
             type='submit'
           >
             Login

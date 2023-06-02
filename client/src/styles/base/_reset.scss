@@ -68,13 +68,14 @@ table {
   &:hover{
     color: colors.$text-primary;
   }
+  
   &:disabled {
     opacity: 0.5;
     color: colors.$white;
     cursor: not-allowed;
   }
 
-  &.button--fill {
+  &.button--filled {
     background-color: colors.$primary;
     color: colors.$white;
   }

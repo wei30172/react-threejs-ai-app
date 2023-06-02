@@ -216,7 +216,7 @@ const Register: FC = () => {
                 isLoading ||
                 toastConfig.type === 'success'
               }
-              className='button button--fill'
+              className='button button--filled'
               type='submit'
             >
               {isLoading ? <Loader /> : 'Register'}
