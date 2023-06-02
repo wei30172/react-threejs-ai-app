@@ -131,9 +131,9 @@ const Register: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
-
+    
     if (file !== null) {
+      setIsLoading(true)
       const url = await upload(file)
       try {
         const response = await newRequest.post('auth/register', {
