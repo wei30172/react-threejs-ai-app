@@ -55,7 +55,7 @@ const Navbar: FC = () => {
       />
       <div className={active || pathname !== '/' ? 'navbar active' : 'navbar'}>
         <div className='container flex-between'>
-          <div className='logo' onClick={() => navigate('/')}>
+          <div className='logo cursor-pointer' onClick={() => navigate('/')}>
             <HomeIcon />
           </div>
           <div className='links'>

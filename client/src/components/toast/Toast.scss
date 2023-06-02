@@ -1,6 +1,7 @@
 @use "../../styles/mixin/colors" as colors;
 
 .toast {
+  z-index: 999;
   position: absolute;
   min-width: 300px;
   max-width: 600px;

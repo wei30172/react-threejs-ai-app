@@ -25,7 +25,10 @@ const Toast: FC<ToastProps> = ({ message, isVisible, onHide, type= 'success'}) =
   return (
     <div className={`toast flex-between toast--${type}`}>
       {message}
-      <button onClick={onHide}>
+      <button
+        onClick={onHide}
+        className='cursor-pointer'
+      >
         <CloseIcon />
       </button>
     </div>
