@@ -20,7 +20,7 @@ export const register = async (req: IUserRegisterRequest, res: Response, next: N
     })
 
     await newUser.save()
-    res.status(201).json({ message: 'User has been created, please login.' })
+    res.status(201).json({ message: 'User has been created please login.' })
   } catch (err) {
     next(err)
   }
