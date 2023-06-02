@@ -12,6 +12,12 @@ import DoubleRightIcon from './DoubleRightIcon'
 import ShoppingCartIcon from './ShoppingCartIcon'
 import HomeIcon from './HomeIcon'
 import UserIcon from './UserIcon'
+import LikeIcon from './LikeIcon'
+import DisLikeIcon from './DisLikeIcon'
+import StarIconOutline from './StarIconOutline'
+import StarIconFilled from './StarIconFilled'
+import HeartIconOutline from './HeartIconOutline'
+import HeartIconFilled from './HeartIconFilled'
 import Loader from './Loader'
 
 export {
@@ -29,5 +35,11 @@ export {
   ShoppingCartIcon,
   HomeIcon,
   UserIcon,
+  LikeIcon,
+  DisLikeIcon,
+  StarIconOutline,
+  StarIconFilled,
+  HeartIconOutline,
+  HeartIconFilled,
   Loader
 }
