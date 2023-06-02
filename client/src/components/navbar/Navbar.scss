@@ -71,9 +71,9 @@
           color: colors.$dark-500;
 
           button {
-            color: colors.$primary;
             padding: 10px 20px;
             border-radius: 5px;
+            color: colors.$primary;
             border: 1px solid colors.$primary;
             background-color: transparent;
             cursor: pointer;
@@ -88,16 +88,15 @@
       }
 
       button {
-        color: colors.$white;
         padding: 10px 20px;
-        border-radius: 5px;
-        border: 1px solid colors.$white;
+        font-size: 0.875rem;
+        color: colors.$white;
+        border:  1px solid colors.$white;
         background-color: transparent;
         cursor: pointer;
 
         &:hover {
           color: colors.$primary;
-          border-color: colors.$white;
           background-color: colors.$white;
         }
       }
