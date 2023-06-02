@@ -1,5 +1,4 @@
 @use "../../styles/mixin/colors" as colors;
-@use "../../styles/mixin/screens" as screens;
 
 .navbar {
   display: flex;
@@ -17,9 +16,9 @@
     color: colors.$text-primary;
 
     button {
-      background-color: colors.$white !important;
-      color: colors.$primary !important;
-      border: 1px solid colors.$primary !important;
+      background-color: colors.$white;
+      color: colors.$primary;
+      border: 1px solid colors.$primary;
     }
 
     .home-icon {
