@@ -1,7 +1,7 @@
 import './styles/_main.scss'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 
-import { Home, MyGigs, AddGig, Orders, Messages, Message, MyImages, AddImage, Register, Login } from './pages'
+import { Home, Gigs, Gig, MyGigs, AddGig, Orders, Messages, Message, MyImages, AddImage, Register, Login } from './pages'
 import { Navbar, Footer } from './components'
 
 function App() {
@@ -23,6 +23,14 @@ function App() {
         {
           path: '/',
           element: <Home />
+        },
+        {
+          path: '/gigs',
+          element: <Gigs />
+        },
+        {
+          path: '/gig/:id',
+          element: <Gig />
         },
         {
           path: '/my-gigs',
