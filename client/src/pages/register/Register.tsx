@@ -1,4 +1,5 @@
-import { FC, ChangeEvent, useState } from 'react'
+import { FC, useState } from 'react'
+// import { FC, ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AxiosError } from 'axios'
 
@@ -22,6 +23,7 @@ interface User {
 
 const Register: FC = () => {
   const [file, setFile] = useState<File | null>(null)
+  const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<User>({
     username: '',
     email: '',
@@ -109,12 +111,19 @@ const Register: FC = () => {
     setUser({ ...user, [target.name]: target.value })
   }
 
-  const handleSeller = (e: ChangeEvent<HTMLInputElement>) => {
-    const { checked } = e.target
-    setUser((prev) => {
-      return { ...prev, isSeller: checked }
-    })
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0])
+      setPreviewURL(URL.createObjectURL(e.target.files[0]))
+    }
   }
+
+  // const handleSeller = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const { checked } = e.target
+  //   setUser((prev) => {
+  //     return { ...prev, isSeller: checked }
+  //   })
+  // }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -171,20 +180,16 @@ const Register: FC = () => {
           <div className='right flex-center'>
             <div className='picture flex-center'>
               <label htmlFor=''>Profile Picture</label>
-              <input type='file' onChange={(e) => {
-                if (e.target.files) {
-                  setFile(e.target.files[0])
-                }
-              }} />
-              <PreviewIcon />
+              <input type='file' onChange={handleFileChange} />
+              {previewURL ? <img src={previewURL} alt="Preview" /> : <PreviewIcon />}
             </div>
-            <div className='toggle flex-center'>
+            {/* <div className='toggle flex-center'>
               <label htmlFor=''>Activate the seller account for FREE</label>
               <label className='switch'>
                 <input type='checkbox' onChange={handleSeller} />
                 <span className='slider round'></span>
               </label>
-            </div>
+            </div> */}
             <button
               disabled={
                 !user.username ||

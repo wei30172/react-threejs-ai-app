@@ -64,7 +64,7 @@ const Navbar: FC = () => {
           <div className='links'>
             {currentUser ? (
               <div className='user flex-center cursor-pointer' onClick={() => setOpen(!open)}>
-                <img src={currentUser.img || '/img/noavatar.jpg'} alt='' />
+                <img src={currentUser.img || '/img/noavatar.jpg'} alt='avatar' />
                 <span>{currentUser?.username}</span>
                 {open && (
                   <div className='options'>

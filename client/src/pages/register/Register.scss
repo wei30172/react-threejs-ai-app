@@ -39,7 +39,7 @@
     .right {
       flex: 1;
       flex-direction: column;
-      gap: 10px;
+      gap: 30px;
 
       label {
         color: colors.$dark-600;
@@ -55,6 +55,12 @@
       .picture {
         flex-direction: column;
         gap: 10px;
+
+        img {
+          width: 240px;
+          height: 240px;
+          border-radius: 50%;
+        }
 
         .preview-icon {
           width: 300px;
