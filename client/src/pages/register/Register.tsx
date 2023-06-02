@@ -16,8 +16,8 @@ interface User {
   password: string
   confirmPassword: string
   img: string
-  address: string,
-  phone: string,
+  address: string
+  phone: string
   isSeller: boolean
 }
 
