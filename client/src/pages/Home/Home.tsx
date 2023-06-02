@@ -14,7 +14,7 @@ const Home: FC = () => {
         <p>Craft your personalized backdrop and photos with our advanced 3d customization features.
           Set your creativity free and establish your distinct aesthetic...
         </p>
-        <Link to='/add-gig'>
+        <Link to='/gigs'>
           <CustomButton
             type='filled'
             title='Design Your Own'
