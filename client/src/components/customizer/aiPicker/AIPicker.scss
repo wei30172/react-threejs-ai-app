@@ -1,0 +1,21 @@
+@use "../../../styles/mixin/colors" as colors;
+
+.ai-picker {
+  gap: 16px;
+
+  .top {
+    width: 100%;
+    flex: 1;
+    background-color: transparent;
+    font-size: 12px;
+    border-width: 1px;
+    border-color: colors.$dark-200;
+    padding: 8px;
+    outline: none;
+  }
+
+  .bottom {
+    display: flex;
+    gap: 4px;
+  }
+}
