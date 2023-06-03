@@ -1,0 +1,15 @@
+@use "../../../styles/mixin/colors" as colors;
+
+.file-picker {
+  .top {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .bottom {
+    margin-top: 16px;
+    display: flex;
+    gap: 4px;
+  }
+}
