@@ -6,15 +6,12 @@ interface IGig extends Document {
   desc: string
   totalStars: number
   starNumber: number
-  cat: string
   price: number
   cover: string
-  images?: string[]
-  shortTitle: string
+  images: string[]
   shortDesc: string
   deliveryTime: number
-  revisionNumber: number
-  features?: string[]
+  features: string[]
   sales: number
 }
 
@@ -50,10 +47,6 @@ const GigSchema: Schema = new Schema(
     },
     images: {
       type: [String],
-      required: false
-    },
-    shortTitle: {
-      type: String,
       required: true
     },
     shortDesc: {
@@ -64,13 +57,9 @@ const GigSchema: Schema = new Schema(
       type: Number,
       required: true
     },
-    revisionNumber: {
-      type: Number,
-      required: true
-    },
     features: {
       type: [String],
-      required: false
+      required: true
     },
     sales: {
       type: Number,
