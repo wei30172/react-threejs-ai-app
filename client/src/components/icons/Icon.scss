@@ -1,9 +1,5 @@
 @use "../../styles/mixin/colors" as colors;
 
-.file-icon {
-  color: colors.$blue-600;
-}
-
 .download-icon {
   color: colors.$yellow-600;
 }
@@ -18,6 +14,8 @@
 
 .error-icon {
   color: colors.$red-600;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .arrowleft-icon {
@@ -61,14 +59,24 @@
   color: colors.$yellow-500;
 }
 
-.staroutline-icon,
-.starfilled-icon {
+.star-icon {
   color: colors.$yellow-500;
 }
 
-.heartoutline-icon,
-.heartfilled-icon {
+.heart-icon {
   color: colors.$red-500
+}
+
+.barsarrowdown-icon {
+  color: colors.$dark-900;
+}
+
+.check-icon {
+  color: colors.$green-500;
+}
+
+.design-icon {
+  color: colors.$primary;
 }
 
 .loader {

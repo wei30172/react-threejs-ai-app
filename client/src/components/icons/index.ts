@@ -18,6 +18,12 @@ import StarIconOutline from './StarIconOutline'
 import StarIconFilled from './StarIconFilled'
 import HeartIconOutline from './HeartIconOutline'
 import HeartIconFilled from './HeartIconFilled'
+import BarsArrowDownIcon from './BarsArrowDownIcon'
+import CheckIcon from './CheckIcon'
+import AiIcon from './AiIcon'
+import SwatchIcon from './SwatchIcon'
+import LogoShirtIcon from './LogoShirtIcon'
+import StylishShirtIcon from './StylishShirtIcon'
 import Loader from './Loader'
 
 export {
@@ -41,5 +47,11 @@ export {
   StarIconFilled,
   HeartIconOutline,
   HeartIconFilled,
+  BarsArrowDownIcon,
+  CheckIcon,
+  AiIcon,
+  SwatchIcon,
+  LogoShirtIcon,
+  StylishShirtIcon,
   Loader
 }
