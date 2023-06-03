@@ -1,0 +1,12 @@
+.tab {
+  width: 48px;
+  height: 48px;
+
+  &.filter-tab {
+    border-radius: 50%;
+  }
+
+  &.editor-tab {
+    border-radius: 16px;
+  }
+}
