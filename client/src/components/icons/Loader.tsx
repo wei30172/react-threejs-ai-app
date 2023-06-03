@@ -20,7 +20,7 @@ const Loader: FC<Pick<HTMLAttributes<SVGElement>, 'className'>> = ({ className }
     viewBox="0 0 100 101"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
-    className={'loader`}
+    className={'loader'}
   >
     <path d={path1} fill="currentColor" />
     <path d={path2} fill="currentFill" />
