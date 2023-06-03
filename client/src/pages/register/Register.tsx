@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { AxiosError } from 'axios'
 
 import newRequest, { IErrorResponse } from '../../utils/newRequest'
-import upload from '../../utils/upload'
+import upload from '../../utils/uploadImage'
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
-interface User {
+export interface IUser {
   username: string
   email: string
   password: string
@@ -25,7 +25,7 @@ const Register: FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
-  const [user, setUser] = useState<User>({
+  const [user, setUser] = useState<IUser>({
     username: '',
     email: '',
     password: '',
@@ -186,7 +186,7 @@ const Register: FC = () => {
                 <FormInput
                   key={input.id}
                   {...input}
-                  value={user[input.name as keyof User]?.toString()}
+                  value={user[input.name as keyof IUser]?.toString()}
                   handleChange={handleChange}
                 />
               </div>
