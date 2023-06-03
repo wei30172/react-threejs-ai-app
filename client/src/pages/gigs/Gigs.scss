@@ -1,0 +1,123 @@
+@use "../../styles/mixin/colors" as colors;
+@use "../../styles/mixin/screens" as screens;
+
+.gigs {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .container {
+    width: 960px;
+    padding: 20px 10px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    p {
+      color: colors.$dark-600;
+      font-weight: 300;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      gap: 20px;
+      .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: colors.$dark-600;
+        font-weight: 300;
+
+        input{
+          width: 100px;
+          padding: 8px;
+          border: 1px solid colors.$dark-400;
+          border-radius: 2px;
+          outline: none;
+
+          &::placeholder{
+            color: colors.$dark-400;
+          }
+        }
+
+        button{
+          margin: 0;
+          width: fit-content;
+          padding: 3px 10px;
+          font-size: 16px;
+        }
+
+      }
+
+      .right {
+        position: relative;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+
+        .sortBy {
+          color: colors.$dark-600;
+          font-weight: 300;
+        }
+
+        .sortType {
+          font-weight: 600;
+        }
+
+        button {
+          width: 30px;
+        }
+
+        .rightMenu {
+          padding: 10px 20px;
+          background-color: colors.$white;
+          border: 0.5px solid colors.$dark-200;
+          border-radius: 5px;
+          position: absolute;
+          top: 36px;
+          right: 0;
+          z-index: 9;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          color: colors.$dark-600;
+
+          span {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+}
+
+@include screens.tablet {
+  .gigs {
+    .container {
+      .menu {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .left {
+          input {
+            width: fit-content;
+          }
+        }
+      }
+      .cards {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}
