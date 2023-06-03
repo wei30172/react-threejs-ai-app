@@ -1,0 +1,34 @@
+@use "../../styles/mixin/colors" as colors;
+
+.seller {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      button {
+        background-color: colors.$dark-100;
+        border-radius: 5px;
+        border: 1px solid colors.$dark-600;
+        padding: 10px;
+      }
+    }
+  }
+}

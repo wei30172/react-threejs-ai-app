@@ -5,7 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { IGig } from '../../reducers/gigReducer'
 import { IUser } from '../register/Register'
 import newRequest from '../../utils/newRequest'
-// import Reviews from '../../components/reviews/Reviews'
+import { Demo, Seller } from '../../components'
+// import Reviews from '../../components'
 import { Loader, ErrorIcon, StarIconFilled, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
@@ -44,59 +45,15 @@ const Gig: FC = () => {
         <div className='container'>
           <div className='left'>
             <h1>{data.title}</h1>
-            {isLoadingUser ? (
-              <Loader />
-            ) : errorUser ? (
-              <ErrorIcon />
-            ) : (
-              <div className='user'>
-                <img
-                  className='user-avatar'
-                  src={dataUser.img || '/img/noavatar.jpg'}
-                  alt=''
-                />
-                <span>{dataUser.username}</span>
-                {!isNaN(data.totalStars / data.starNumber) && (
-                  <div className='stars'>
-                    {Array(Math.round(data.totalStars / data.starNumber))
-                      .fill(null)
-                      .map((_item, i) => (
-                        <StarIconFilled key={i}/>
-                      ))}
-                    <span>{Math.round(data.totalStars / data.starNumber)}</span>
-                  </div>
-                )}
-              </div>
-            )}
-            <h2>About This Gig</h2>
+            <h2>About</h2>
             <p>{data.desc}</p>
+            <Demo />
             {isLoadingUser ? (
               'loading'
             ) : errorUser ? (
               'Something went wrong!'
             ) : (
-              <div className='seller'>
-                <h2>About The Seller</h2>
-                <div className='user'>
-                  <img src={dataUser.img || '/img/noavatar.jpg'} alt='' />
-                  <div className='info'>
-                    <span>{dataUser.username}</span>
-                    {!isNaN(data.totalStars / data.starNumber) && (
-                      <div className='stars'>
-                        {Array(Math.round(data.totalStars / data.starNumber))
-                          .fill(null)
-                          .map((_item, i) => (
-                            <StarIconFilled key={i}/>
-                          ))}
-                        <span>
-                          {Math.round(data.totalStars / data.starNumber)}
-                        </span>
-                      </div>
-                    )}
-                    <button className='cursor-pointer'>Contact Me</button>
-                  </div>
-                </div>
-              </div>
+              <Seller dataUser={dataUser} data={data} />
             )}
             {/* <Reviews gigId={id} /> */}
           </div>

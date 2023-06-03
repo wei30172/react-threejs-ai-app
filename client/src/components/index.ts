@@ -4,10 +4,12 @@ import FormInput from './form/FormInput'
 import CustomButton from './button/CustomButton'
 import Toast from './toast/Toast'
 import GigCard from './gigCard/GigCard'
-import AIPicker from './aiPicker/AIPicker'
-import ColorPicker from './colorPicker/ColorPicker'
-import FilePicker from './filePicker/FilePicker'
-import Tab from './tab/Tab'
+import AIPicker from './customizer/aiPicker/AIPicker'
+import ColorPicker from './customizer/colorPicker/ColorPicker'
+import FilePicker from './customizer/filePicker/FilePicker'
+import Tab from './customizer/tab/Tab'
+import Demo from './demo/Demo'
+import Seller from './seller/Seller'
 
 export {
   Navbar,
@@ -19,5 +21,7 @@ export {
   ColorPicker,
   FilePicker,
   Tab,
+  Demo,
+  Seller,
   GigCard
 }
