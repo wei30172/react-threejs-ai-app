@@ -50,9 +50,10 @@
         .images {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 10px;
 
           .imagesInputs{
+            width: 250px;
             display: flex;
             flex-direction: column;
             gap: 20px;
