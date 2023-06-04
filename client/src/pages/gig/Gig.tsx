@@ -7,7 +7,7 @@ import { IUser } from '../register/Register'
 import newRequest from '../../utils/newRequest'
 import { Demo, Seller } from '../../components'
 // import Reviews from '../../components'
-import { Loader, ErrorIcon, StarIconFilled, CheckIcon } from '../../components/icons'
+import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
 interface RouteParams extends Record<string, string> {
