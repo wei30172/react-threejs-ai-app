@@ -11,7 +11,6 @@ const downloadCanvasToImage = (): void => {
   link.href = dataURL
   link.download = 'my-creation.png'
 
-
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
