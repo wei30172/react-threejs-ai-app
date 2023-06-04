@@ -15,8 +15,8 @@ const Tab: FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
   const snap = useSnapshot(designState)
 
   const activeStyles = isFilterTab && isActiveTab
-    ? { backgroundColor: snap.color, opacity: 0.5 }
-    : { backgroundColor: 'transparent', opacity: 1 }
+    ? { borderColor: snap.color, borderWidth: 2 }
+    : { borderColor: 'transparent'}
 
 
   return (

@@ -18,25 +18,25 @@ const FilePicker: FC<FilePickerProps>  = ({ setFile, readFile }) => {
   }
 
   return (
-    <div className="file-picker glassmorphism glassmorphism-container">
-      <div className="top">
+    <div className='file-picker glassmorphism glassmorphism-container'>
+      <div className='top'>
         <input 
-          id="file-upload"
-          type="file"
-          accept="image/*"
+          id='file-upload'
+          type='file'
+          accept='image/*'
           onChange={handleFileChange}
         />
       </div>
 
-      <div className="bottom">
+      <div className='bottom'>
         <CustomButton 
-          type="filled"
-          title="Logo"
+          type='outline'
+          title='Logo'
           handleClick={() => readFile('logo')}
         />
         <CustomButton 
-          type="filled"
-          title="Full"
+          type='filled'
+          title='Full'
           handleClick={() => readFile('full')}
         />
       </div>

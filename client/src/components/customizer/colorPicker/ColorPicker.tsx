@@ -13,7 +13,7 @@ const ColorPicker: FC = () => {
   }
 
   return (
-    <div className="color-picker">
+    <div className='color-picker'>
       <SketchPicker 
         color={snap.color}
         disableAlpha

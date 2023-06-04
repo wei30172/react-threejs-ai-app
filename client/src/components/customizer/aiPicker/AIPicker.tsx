@@ -14,31 +14,31 @@ const AIPicker: FC<AIPickerProps> = ({ prompt, setPrompt, generatingImg, handleS
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => setPrompt(event.target.value)
 
   return (
-    <div className="ai-picker glassmorphism glassmorphism-container">
+    <div className='ai-picker glassmorphism glassmorphism-container'>
       <textarea 
-        placeholder="Ask AI..."
+        placeholder='Ask AI...'
         rows={5}
         value={prompt}
         onChange={handleChange}
-        className="top"
+        className='top'
       />
-      <div className="bottom">
+      <div className='bottom'>
         {generatingImg ? (
           <CustomButton 
-            type="outline"
-            title="Asking AI..."
+            type='outline'
+            title='Asking AI...'
           />
         ) : (
           <>
             <CustomButton 
-              type="filled"
-              title="AI Logo"
+              type='outline'
+              title='AI Logo'
               handleClick={() => handleSubmit('logo')}
             />
 
             <CustomButton 
-              type="filled"
-              title="AI Full"
+              type='filled'
+              title='AI Full'
               handleClick={() => handleSubmit('full')}
             />
           </>
