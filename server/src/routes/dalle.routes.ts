@@ -1,10 +1,12 @@
-import express from 'express'
-import * as dotenv from 'dotenv'
+import { Router, NextFunction, Request, Response } from 'express'
 import { Configuration, OpenAIApi } from 'openai'
+
+import createError from '../utils/createError'
+import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-const router = express.Router()
+const router = Router()
 
 // Create a new instance of OpenAI API
 const config = new Configuration({
@@ -18,11 +20,11 @@ router.route('/').get((req, res) => {
 })
 
 // Generates the image
-router.route('/').post(async (req, res) => {
+router.route('/').post(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { prompt } = req.body
     if (!prompt) {
-      return res.status(400).json({ message: 'Invalid prompt' })
+      return next(createError(400, 'Invalid prompt'))
     }
 
     // Use OpenAI API to create an image based on the 'prompt'
@@ -37,10 +39,10 @@ router.route('/').post(async (req, res) => {
     const image = response.data.data[0].b64_json
 
     // Respond with the image
-    res.status(200).json({ photo: image })
-  } catch (error) {
-    console.error(`Error: ${error}`)
-    res.status(500).json({ message: 'Something went wrong' })
+    res.status(200).json(image)
+  } catch (err) {
+    console.error(`Error: ${err}`)
+    next(err)
   }
 })
 
