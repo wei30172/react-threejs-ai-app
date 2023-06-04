@@ -1,0 +1,31 @@
+@use "../../styles/mixin/colors" as colors;
+
+.tabs-container {
+  height: 100%;
+  background-color: colors.$white;
+
+  .editor-tabs {
+    flex-direction: column;
+    width: 56px;
+    border: 1px solid colors.$dark-200;
+    border-radius: 6px;
+    margin-left: 4px;
+    padding: 12px 0;
+    gap: 16px;
+  }
+}
+
+.filter-tabs  {
+  width: 100%;
+  gap: 16px;
+
+  .download-button {
+    width: 48px;
+    width: 48px;
+    border-radius: 50%;
+  }
+
+  .download-icon {
+    color: colors.$dark-900;
+  }
+}

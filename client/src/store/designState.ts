@@ -17,11 +17,11 @@ export const EditorTabs: TabType[] = [
   {
     name: 'filepicker',
     icon: FileIcon
-  },
-  {
-    name: 'aipicker',
-    icon: AiIcon
   }
+  // {
+  //   name: 'aipicker',
+  //   icon: AiIcon
+  // }
 ]
 
 // Filter tabs configuration
@@ -75,8 +75,8 @@ const state: State = proxy({
   color: '#DB8091',
   isLogoTexture: true,
   isFullTexture: false,
-  logoDecal: './design.jpg',
-  fullDecal: './design.jpg'
+  logoDecal: '/img/design.jpg',
+  fullDecal: '/img/design.jpg'
 })
 
 export default state
