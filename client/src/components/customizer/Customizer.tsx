@@ -35,10 +35,8 @@ const Customizer: FC = () => {
 
     try {
       setGeneratingImg(true)
-
       const response = await newRequest.post('/dalle', { prompt })
-      console.log(response)
-      handleDecals(type, `data:image/jpeg;base64,${response.data.image}`)
+      handleDecals(type, `data:image/jpeg;base64,${response.data}`)
     } catch (error) {
       setToastConfig({
         message: `Error: ${error}`,
