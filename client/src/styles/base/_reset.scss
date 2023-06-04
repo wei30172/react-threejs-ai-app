@@ -81,9 +81,9 @@ table {
   }
   
   &.button--outline {
-    color: colors.$white;
-    border: 1px solod colors.$primary;
-    
+    background-color: colors.$white;
+    color: colors.$primary;
+    border: 1px solid colors.$primary;
   }
 }
 
@@ -109,6 +109,7 @@ table {
   display: flex;
   flex-direction: column;
   position: absolute;
+  top: 0;
   left: 100%;
   margin-left: 3px;
   padding: 3px;
