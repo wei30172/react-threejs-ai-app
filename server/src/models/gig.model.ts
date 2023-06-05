@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
-interface IGig extends Document {
+export interface IGig extends Document {
   userId: string
   title: string
   desc: string
