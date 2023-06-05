@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes } from 'react'
+import { FC } from 'react'
 import './Icon.scss'
 
 const path1 = `M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 
@@ -14,13 +14,13 @@ const path2 = `M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C9
 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 
 91.5421 39.6781 93.9676 39.0409Z`
 
-const Loader: FC<Pick<HTMLAttributes<SVGElement>, 'className'>> = ({ className }) => (
+const Loader: FC = () => (
   <svg
     fill="none"
     viewBox="0 0 100 101"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
-    className={'loader'}
+    className='loader'
   >
     <path d={path1} fill="currentColor" />
     <path d={path2} fill="currentFill" />

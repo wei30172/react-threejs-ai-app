@@ -24,6 +24,7 @@ import AiIcon from './AiIcon'
 import SwatchIcon from './SwatchIcon'
 import LogoShirtIcon from './LogoShirtIcon'
 import StylishShirtIcon from './StylishShirtIcon'
+import ChatIcon from './ChatIcon'
 import Loader from './Loader'
 
 export {
@@ -53,5 +54,6 @@ export {
   SwatchIcon,
   LogoShirtIcon,
   StylishShirtIcon,
+  ChatIcon,
   Loader
 }
