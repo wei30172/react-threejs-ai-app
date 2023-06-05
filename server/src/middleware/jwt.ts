@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import createError from '../utils/createError'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 
-interface IRequest extends Request {
+export interface IRequest extends Request {
   userId?: string
   isSeller?: boolean
 }
@@ -18,7 +18,7 @@ export const verifyToken = (req: IRequest, res: Response, next: NextFunction): v
   
   const jwtKey = process.env.JWT_KEY
   if (!jwtKey) {
-    return next(createError(500, 'Server error' ))
+    return next(createError(500, 'jwt key not set' )) 
   }
 
   jwt.verify(token, jwtKey, (err: JsonWebTokenError | null, payload: unknown) => {
