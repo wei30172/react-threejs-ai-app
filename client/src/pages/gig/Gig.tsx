@@ -2,11 +2,10 @@ import { FC } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
+import newRequest from '../../utils/newRequest'
 import { IGig } from '../../reducers/gigReducer'
 import { IUser } from '../register/Register'
-import newRequest from '../../utils/newRequest'
-import { Demo, Seller } from '../../components'
-// import Reviews from '../../components'
+import { Carousel, Demo, Seller, Reviews } from '../../components'
 import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
@@ -16,7 +15,7 @@ interface RouteParams extends Record<string, string> {
 
 const Gig: FC = () => {
   const { id } = useParams<RouteParams>()
-
+ 
   const { isLoading, error, data } = useQuery<IGig, Error>({
     queryKey: ['gig'],
     queryFn: () => newRequest.get(`/gigs/single/${id}`).then((res) => res.data)
@@ -47,6 +46,7 @@ const Gig: FC = () => {
             <h1>{data.title}</h1>
             <h2>About</h2>
             <p>{data.desc}</p>
+            <Carousel carouselImages={data.images} />
             <Demo />
             {isLoadingUser ? (
               'loading'
@@ -55,7 +55,7 @@ const Gig: FC = () => {
             ) : (
               <Seller dataUser={dataUser} data={data} />
             )}
-            {/* <Reviews gigId={id} /> */}
+            {/* {id && <Reviews gigId={id} />} */}
           </div>
           <div className='right'>
             <div className='price'>

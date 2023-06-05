@@ -1,0 +1,62 @@
+@use "../../styles/mixin/colors" as colors;
+
+.carousel {
+  margin: 0 auto;
+
+  .carousel_container {
+    overflow: hidden;
+    position: relative; 
+
+    .carousel_buttons {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between; 
+      position: absolute;
+
+      .carousel_buttons_arrow {
+        width: 2.5rem;
+        height: 100%;
+        background: colors.$primary;
+        z-index: 10;
+        padding: 0;
+        margin: 0;
+        transition-property: all;
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        color: colors.$white;
+        text-align: center;
+        opacity: 0.75;
+
+        &.hidden {
+          display: none;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .doubleleft-icon,
+      .doubleright-icon {
+        color: colors.$dark-900;
+      }
+    }
+    
+    .carousel_cards {
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      z-index: 0; 
+      gap: 0.25rem;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      touch-action: pan-x pan-y pinch-zoom;
+    }
+  }
+}
