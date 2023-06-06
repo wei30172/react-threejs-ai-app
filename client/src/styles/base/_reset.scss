@@ -32,7 +32,6 @@ table {
   cursor: pointer;
 }
 
-
 .flex-center {
   display: flex;
   justify-content: center;
@@ -85,6 +84,12 @@ table {
     color: colors.$primary;
     border: 1px solid colors.$primary;
   }
+}
+
+.error-message {
+  font-size: 12px;
+  font-weight: bold;
+  color: colors.$red-500;
 }
 
 .light {

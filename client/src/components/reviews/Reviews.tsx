@@ -34,6 +34,8 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
     }
   )
 
+  const { isLoading: isReviewLoading,  error: reviewError} = mutation
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (currentUser && descRef.current && starRef.current) {
@@ -41,6 +43,8 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
       const star = Number(starRef.current.value)
       const userId = currentUser._id
       mutation.mutate({ userId , gigId, desc, star })
+      descRef.current.value=''
+      starRef.current.value='5'
     }
   }
 
@@ -68,7 +72,12 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
             <option value={2}>2</option>
             <option value={1}>1</option>
           </select>
-          <button className='button button--filled'>Send</button>
+          <button className='button button--filled'>
+            {isReviewLoading ? 'Sending Review' : 'Send'}
+          </button>
+          <span className='error-message'>
+            {!reviewError ? 'Create Review failed ' : ''}
+          </span>
         </form>
       </div>
     </div>
