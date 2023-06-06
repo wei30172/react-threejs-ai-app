@@ -34,7 +34,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
     }
   )
 
-  const { isLoading: isReviewLoading,  error: reviewError} = mutation
+  const { isLoading: isLoadingReview,  error: errorRview} = mutation
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -64,7 +64,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
       <div className='add'>
         <h3>Add a review</h3>
         <form action='' className='addForm' onSubmit={handleSubmit}>
-          <input type='text' placeholder='write your opinion' ref={descRef}/>
+          <input required type='text' placeholder='write your opinion' ref={descRef}/>
           <select name='' id='' ref={starRef}>
             <option value={5}>5</option>
             <option value={4}>4</option>
@@ -73,10 +73,10 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
             <option value={1}>1</option>
           </select>
           <button className='button button--filled'>
-            {isReviewLoading ? 'Sending Review' : 'Send'}
+            {isLoadingReview ? 'Sending Review' : 'Send'}
           </button>
           <span className='error-message'>
-            {reviewError ? 'Create Review failed ' : ''}
+            {errorRview ? 'Create Review failed ' : ''}
           </span>
         </form>
       </div>
