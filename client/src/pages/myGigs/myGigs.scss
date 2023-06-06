@@ -1,0 +1,52 @@
+@use "../../styles/mixin/colors" as colors;
+
+.my-gigs {
+  display: flex;
+  justify-content: center;
+  color: colors.$dark-800;
+
+  .container {
+    width: 960px;
+    padding: 20px 10px 40px;
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+
+      .button {
+        padding: 10px;
+      }
+    }
+
+    table {
+      width: 100%;
+
+      tr {
+        height: 50px;
+        
+        th {
+          text-align: left;
+        }
+        
+        td {
+          .image {
+            width: 50px;
+            height: 25px;
+            object-fit: cover;
+          }
+
+          button {
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            border-radius: 50%;
+          }
+
+        }
+        &:nth-child(even) {
+          background-color: colors.$white;
+        }
+      }
+    }
+  }
+}
