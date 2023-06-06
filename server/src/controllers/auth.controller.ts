@@ -44,7 +44,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {
-      return next(createError(500, 'Server error' )) 
+      return next(createError(500, 'jwt key not set' )) 
     }
 
     const token = jwt.sign(
