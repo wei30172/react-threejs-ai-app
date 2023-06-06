@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
-interface IOrder extends Document {
+export interface IOrder extends Document {
   gigId: string
   img: string
   title: string
