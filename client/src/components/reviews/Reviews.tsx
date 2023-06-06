@@ -76,7 +76,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
             {isReviewLoading ? 'Sending Review' : 'Send'}
           </button>
           <span className='error-message'>
-            {!reviewError ? 'Create Review failed ' : ''}
+            {reviewError ? 'Create Review failed ' : ''}
           </span>
         </form>
       </div>
