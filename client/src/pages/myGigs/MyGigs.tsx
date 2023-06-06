@@ -8,7 +8,7 @@ import newRequest, { IErrorResponse } from '../../utils/newRequest'
 import getCurrentUser from '../../utils/getCurrentUser'
 import Toast, { ToastProps } from '../../components/toast/Toast'
 import { Loader, ErrorIcon, DeleteIcon } from '../../components/icons'
-import './myGig.scss'
+import './myGigs.scss'
 
 const MyGigs: FC = () => {
   const [isDeleteing, setIsDeleteing] = useState(false)
