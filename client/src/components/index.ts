@@ -10,7 +10,7 @@ import FilePicker from './customizer/filePicker/FilePicker'
 import Tab from './customizer/tab/Tab'
 import Carousel from './carousel/Carousel'
 import Demo from './demo/Demo'
-// import Reviews from './reviews/Reviews'
+import Reviews from './reviews/Reviews'
 import Seller from './seller/Seller'
 
 export {
@@ -18,6 +18,7 @@ export {
   Footer,
   FormInput,
   CustomButton,
+  GigCard,
   Toast,
   AIPicker,
   ColorPicker,
@@ -25,7 +26,6 @@ export {
   Tab,
   Carousel,
   Demo,
-  // Reviews,
-  Seller,
-  GigCard
+  Reviews,
+  Seller
 }

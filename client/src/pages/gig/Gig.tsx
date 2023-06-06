@@ -55,7 +55,7 @@ const Gig: FC = () => {
             ) : (
               <Seller dataUser={dataUser} data={data} />
             )}
-            {/* {id && <Reviews gigId={id} />} */}
+            {id && <Reviews gigId={id} />}
           </div>
           <div className='right'>
             <div className='price'>

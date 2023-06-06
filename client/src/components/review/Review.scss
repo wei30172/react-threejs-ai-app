@@ -1,0 +1,19 @@
+@use "../../styles/mixin/colors" as colors;
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0px;
+  
+  .user {
+    display: flex;
+    align-items: center;
+    
+    img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+    }
+  }
+}
