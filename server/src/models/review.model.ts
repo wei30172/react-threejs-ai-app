@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
-interface IReview extends Document {
+export interface IReview extends Document {
   gigId: string
   userId: string
   star: 1 | 2 | 3 | 4 | 5
