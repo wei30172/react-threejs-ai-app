@@ -25,14 +25,14 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
       newRequest.get(`/reviews/${gigId}`).then((res) => res.data)
   })
 
-  const mutation = useMutation(
-    (review: IReview) => newRequest.post('/reviews', review),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['reviews'])
-      }
+  const mutation = useMutation({
+    mutationFn: (review: IReview) => {
+      return newRequest.post('/reviews', review)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['reviews'])
     }
-  )
+  })
 
   const { isLoading: isLoadingReview,  error: errorRview} = mutation
 
