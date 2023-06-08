@@ -72,11 +72,14 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
             <option value={2}>2</option>
             <option value={1}>1</option>
           </select>
-          <button className='button button--filled'>
+          <button
+            className='button button--filled'
+            disabled={isLoadingReview}
+          >
             {isLoadingReview ? 'Sending Review' : 'Send'}
           </button>
           <span className='error-message'>
-            {errorRview ? 'Create Review failed ' : ''}
+            {errorRview ? 'Create review failed ' : ''}
           </span>
         </form>
       </div>

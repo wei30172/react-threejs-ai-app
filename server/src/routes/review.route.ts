@@ -3,7 +3,7 @@ import { verifyToken } from '../middleware/jwt'
 import {
   createReview,
   getReviews,
-  deleteReview,
+  deleteReview
 } from '../controllers/review.controller'
 
 
