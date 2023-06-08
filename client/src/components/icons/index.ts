@@ -25,6 +25,8 @@ import SwatchIcon from './SwatchIcon'
 import LogoShirtIcon from './LogoShirtIcon'
 import StylishShirtIcon from './StylishShirtIcon'
 import ChatIcon from './ChatIcon'
+import EllipsisIconOutline from './EllipsisIconOutline'
+import EllipsisIconFilled from './EllipsisIconFilled'
 import Loader from './Loader'
 
 export {
@@ -55,5 +57,7 @@ export {
   LogoShirtIcon,
   StylishShirtIcon,
   ChatIcon,
+  EllipsisIconOutline,
+  EllipsisIconFilled,
   Loader
 }

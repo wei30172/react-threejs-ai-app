@@ -1,0 +1,93 @@
+@use "../../styles/mixin/colors" as colors;
+
+.message {
+  display: flex;
+  justify-content: center;
+  color: colors.$dark-800;
+
+  .container {
+    width: 960px;
+    padding: 20px 10px 40px;
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+
+      .button {
+        padding: 10px;
+      }
+    }
+
+    .messages {
+      margin: 20px 0px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      gap: 20px;
+      height: 500px;
+      overflow: scroll;
+
+      .item {
+        display: flex;
+        gap: 10px;
+        max-width: 600px;
+        font-size: 16px;
+
+        &.owner {
+          flex-direction: row-reverse;
+          align-self: flex-end;
+
+          p {
+            max-width: 500px;
+            border-radius: 20px 0px 20px 20px;
+            background-color: colors.$blue-600;
+            color: colors.$white;
+          }
+        }
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        p {
+          max-width: 500px;
+          padding: 20px;
+          background-color: colors.$white;
+          border-radius: 0px 20px 20px 20px;
+          color: colors.$text-primary;
+          font-weight: 300;
+        }
+      }
+    }
+
+    hr {
+      height: 0;
+      border: 1px solid colors.$dark-100;
+      margin-bottom: 20px;
+    }
+
+    .write {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+
+      textarea {
+        width: 80%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid colors.$dark-200;
+        border-radius: 10px;
+      }
+
+      .button {
+        max-width: 300px;
+        margin: 5px auto;
+      }
+    }
+  }
+}
