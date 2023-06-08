@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
-interface IConversation extends Document {
+export interface IConversation extends Document {
   id: string
   sellerId: string
   buyerId: string
