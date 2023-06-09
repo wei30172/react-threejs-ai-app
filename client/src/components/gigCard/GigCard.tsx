@@ -33,11 +33,7 @@ const GigCard = ({ item }: GigCardProps) => {
       <div className='gig-card'>
         <img src={item.cover} alt='Gig Cover' />
         <div className='info'>
-          {isLoading ? (
-            <Loader />
-          ) : error ? (
-            <ErrorIcon />
-          ) : (
+          {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
             <div className='user'>
               <img src={data?.img || '/img/noavatar.jpg'} alt='User' />
               <span>{data?.username}</span>

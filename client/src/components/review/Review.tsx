@@ -35,11 +35,7 @@ const Review: FC<ReviewProps> = ({ review }) => {
 
   return (
     <div className='review'>
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <ErrorIcon />
-      ) : (
+      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='user'>
           <img src={data?.img || '/img/noavatar.jpg'} alt='User' />
           <span>{data?.username}</span>
