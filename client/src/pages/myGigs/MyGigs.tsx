@@ -1,10 +1,9 @@
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 
 import { IGig } from '../../reducers/gigReducer'
-import newRequest, { IErrorResponse } from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 import getCurrentUser from '../../utils/getCurrentUser'
 import Toast, { ToastProps } from '../../components/toast/Toast'
 import { Loader, ErrorIcon, DeleteIcon } from '../../components/icons'
@@ -42,7 +41,7 @@ const MyGigs: FC = () => {
       })
 
     } catch (error) {
-      const axiosError = error as AxiosError<IErrorResponse>
+      const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Delete gig failed'
       
       setToastConfig({

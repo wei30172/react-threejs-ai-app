@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query'
 
 import newRequest from '../../utils/newRequest'
 import { IGig } from '../../reducers/gigReducer'
-import { IUser } from '../register/Register'
-import { Carousel, Demo, Seller, Reviews } from '../../components'
+// import { IUser } from '../register/Register'
+import { Carousel, Demo } from '../../components'
+// import { Carousel, Demo, Seller, Reviews } from '../../components'
 import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
@@ -21,26 +22,22 @@ const Gig: FC = () => {
     queryFn: () => newRequest.get(`/gigs/single/${id}`).then((res) => res.data)
   })
 
-  const userId = data?.userId
+  // const userId = data?.userId
 
-  const {
-    isLoading: isLoadingUser,
-    error: errorUser,
-    data: dataUser
-  } = useQuery<IUser, Error>({
-    queryKey: ['user'],
-    queryFn: () =>
-      newRequest.get(`/users/${userId}`).then((res) => res.data),
-    enabled: !!userId
-  })
+  // const {
+  //   isLoading: isLoadingUser,
+  //   error: errorUser,
+  //   data: dataUser
+  // } = useQuery<IUser, Error>({
+  //   queryKey: ['user'],
+  //   queryFn: () =>
+  //     newRequest.get(`/users/${userId}`).then((res) => res.data),
+  //   enabled: !!userId
+  // })
 
   return (
     <div className='gig'>
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <ErrorIcon />
-      ) : (
+      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='container'>
           <div className='left'>
             <h1>{data.title}</h1>
@@ -48,14 +45,14 @@ const Gig: FC = () => {
             <p>{data.desc}</p>
             <Carousel carouselImages={data.images} />
             <Demo />
-            {isLoadingUser ? (
+            {/* {isLoadingUser ? (
               'loading'
             ) : errorUser ? (
               'Something went wrong!'
             ) : (
               <Seller dataUser={dataUser} data={data} />
-            )}
-            {id && <Reviews gigId={id} />}
+            )} */}
+            {/* {id && <Reviews gigId={id} />} */}
           </div>
           <div className='right'>
             <div className='price'>

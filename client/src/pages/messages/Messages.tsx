@@ -46,11 +46,7 @@ const Messages: FC = () => {
 
   return (
     <div className='messages'>
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <ErrorIcon />
-      ) : (
+      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='container'>
           <div className='title'>
             <h1>Messages</h1>

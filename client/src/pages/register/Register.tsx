@@ -1,9 +1,8 @@
 import { FC, useState } from 'react'
 // import { FC, ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AxiosError } from 'axios'
 
-import newRequest, { IErrorResponse } from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 import upload from '../../utils/uploadImage'
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
@@ -149,7 +148,7 @@ const Register: FC = () => {
           navigate('/')
         }, 10000)
       } catch (error) {
-        const axiosError = error as AxiosError<IErrorResponse>
+        const axiosError = error as AxiosError
         const errorMessage = axiosError.response?.data?.message || 'Register failed'
         
         setToastConfig({

@@ -1,7 +1,7 @@
 import { FC, useRef, FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import newRequest from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 import getCurrentUser from '../../utils/getCurrentUser'
 import Review, { IReview } from '../review/Review'
 import { Loader, ErrorIcon } from '../../components/icons'
@@ -79,7 +79,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
             {isLoadingReview ? 'Sending Review' : 'Send'}
           </button>
           <span className='error-message'>
-            {errorRview ? 'Create review failed ' : ''}
+            {errorRview ? (errorRview as AxiosError)?.response?.data?.message || 'Create review failed ' : ''}
           </span>
         </form>
       </div>
