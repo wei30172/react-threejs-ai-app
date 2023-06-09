@@ -1,0 +1,12 @@
+@use "../../styles/mixin/colors" as colors;
+
+.success {
+  display: flex;
+  justify-content: center;
+
+  .container {
+    width: 960px;
+    padding: 80px 10px 40px;
+    text-align: center;
+  }
+}

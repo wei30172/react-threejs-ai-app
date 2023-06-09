@@ -1,8 +1,23 @@
 import './styles/_main.scss'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { Home, Gigs, Gig, MyGigs, AddGig, Orders, Messages, Message, MyImages, AddImage, Register, Login } from './pages'
+import {
+  Home,
+  Gigs,
+  Gig,
+  MyGigs,
+  AddGig,
+  Orders,
+  Messages,
+  Message,
+  MyImages,
+  AddImage,
+  Register,
+  Login,
+  Pay,
+  Success
+} from './pages'
 import { Navbar, Footer } from './components'
 
 function App() {
@@ -74,7 +89,15 @@ function App() {
     {
       path: '/login',
       element: <Login />
-    }
+    },
+    {
+      path: '/pay/:id',
+      element: <Pay />
+    },
+    {
+      path: '/success',
+      element: <Success />
+    },
   ])
 
   return <RouterProvider router={router} />
