@@ -81,7 +81,7 @@ export const confirm = async (req: IRequest, res: Response, next: NextFunction):
       },
       {
         $set: {
-          isCompleted: true
+          isPaid: true
         }
       }
     )
