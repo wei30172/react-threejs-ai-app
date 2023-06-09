@@ -36,7 +36,7 @@ const Pay: FC = () => {
     <div className='pay'>
       <div className='container'>
         {clientSecret && (
-          <Elements stripe={stripePromise} options={options} >
+          <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
         )}
