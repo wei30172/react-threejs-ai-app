@@ -32,7 +32,21 @@ const Orders: FC = () => {
   const handleContact = async (order: Order) => {
     const { sellerId, buyerId } = order
 
-    console.log( sellerId, buyerId )
+    const id = sellerId + buyerId
+
+    try {
+      const res = await newRequest.get(`/conversations/single/${id}`)
+      navigate(`/message/${res.data.id}`)
+    } catch (error) {
+      const axiosError = error as AxiosError<IErrorResponse>
+
+      if (axiosError?.response?.status === 404) {
+        const res = await newRequest.post('/conversations/', {
+          to: currentUser.seller ? buyerId : sellerId
+        })
+        navigate(`/message/${res.data.id}`)
+      }
+    }
   }
 
   return (
