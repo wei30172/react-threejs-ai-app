@@ -1,9 +1,9 @@
 import { FC, useState, useReducer, ChangeEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gigReducer, INITIAL_STATE, GigState, GigAction } from '../../reducers/gigReducer'
-import { AxiosError } from 'axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import newRequest, { IErrorResponse } from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 import upload from '../../utils/uploadImage'
 import Toast, { ToastProps } from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'
@@ -13,7 +13,6 @@ const AddGig: FC = () => {
   const [singleFile, setSingleFile] = useState<File | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
   const [uploading, setUploading] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const [state, dispatch] = useReducer<(state: GigState, action: GigAction) => GigState>(gigReducer, INITIAL_STATE)
 
@@ -97,7 +96,7 @@ const AddGig: FC = () => {
       if (cover && images.length > 0)
         dispatch({ type: 'ADD_IMAGES', payload: { cover, images } })
     } catch (error) {
-      const axiosError = error as AxiosError<IErrorResponse>
+      const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
       
       setToastConfig({
@@ -110,33 +109,44 @@ const AddGig: FC = () => {
     }
   }
 
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: (gig: GigState) => {
+      return newRequest.post('/gigs', gig)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['myGigs'])
+    }
+  })
+
+  const { isLoading: isLoadingGigs } = mutation
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (state.cover !== '' && state.images.length !== 0) {
-      try {
-        setIsLoading(true)
-        await newRequest.post('/gigs', state)
-        setToastConfig({
-          message: 'Create gig successfully, To the My Gigs page in 10 seconds...',
-          isVisible: true,
-          type: 'success'
-        })
-        setTimeout(() => {
-          navigate('/my-gigs')
-        }, 10000)
-      } catch (error) {
-        const axiosError = error as AxiosError<IErrorResponse>
-        const errorMessage = axiosError.response?.data?.message || 'Create gig failed'
-        
-        setToastConfig({
-          message: errorMessage,
-          isVisible: true,
-          type: 'error'
-        })
-      } finally {
-        setIsLoading(false)
-      }
+      mutation.mutate(state, {
+        onSuccess: () => {
+          setToastConfig({
+            message: 'Create gig successfully, To the My Gigs page in 10 seconds...',
+            isVisible: true,
+            type: 'success'
+          })
+          setTimeout(() => {
+            navigate('/my-gigs')
+          }, 10000)
+        },
+        onError: (error: unknown) => {
+          const axiosError = error as AxiosError
+          const errorMessage = axiosError.response?.data?.message || 'Create gig failed'
+          setToastConfig({
+            message: errorMessage,
+            isVisible: true,
+            type: 'error'
+          })
+        }
+      })
     } else {
       setToastConfig({
         message: 'Please upload files first',
@@ -245,12 +255,12 @@ const AddGig: FC = () => {
               !state.deliveryTime ||
               !state.features ||
               uploading ||
-              isLoading
+              isLoadingGigs
             }
             onClick={handleSubmit} 
             className='button button--filled'
           >
-            {isLoading ? <Loader /> : 'Create'}
+            {isLoadingGigs ? <Loader /> : 'Create'}
           </button>
         </div>
       </div>
