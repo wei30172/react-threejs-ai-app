@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -29,14 +30,13 @@ const Orders: FC = () => {
       })
   })
 
-  const handleContact = async (order: Order) => {
+  const fetchConversation = async (order: Order) => {
     const { sellerId, buyerId } = order
-
     const id = sellerId + buyerId
 
     try {
       const res = await newRequest.get(`/conversations/single/${id}`)
-      navigate(`/message/${res.data.id}`)
+      return res.data.id
     } catch (error) {
       const axiosError = error as AxiosError<IErrorResponse>
 
@@ -44,52 +44,64 @@ const Orders: FC = () => {
         const res = await newRequest.post('/conversations/', {
           to: currentUser.seller ? buyerId : sellerId
         })
-        navigate(`/message/${res.data.id}`)
+        return res.data.id
       }
+
+      throw error
+    }
+  }
+
+  const handleContact = async (order: Order) => {
+    try {
+      const conversationId = await fetchConversation(order)
+      navigate(`/message/${conversationId}`)
+    } catch (error) {
+      // Handle error
+      console.error(error)
     }
   }
 
   return (
     <div className='orders'>
-      {isLoading
-        ? <Loader /> 
-        : error
-          ? <ErrorIcon />
-          : 
-          <div className='container'>
-            <div className='title'>
-              <h1>Orders</h1>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Title</th>
-                  <th>Price</th>
-                  <th>Contact</th>
+      <div className='container'>
+        <div className='title'>
+          <h1>Orders</h1>
+          <Link to='/gigs'>
+            <button className='button button--filled'>Design Your Own</button>
+          </Link>
+        </div>
+        {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((order) => (
+                <tr key={order._id}>
+                  <td>
+                    <img className='image' src={order.img} alt='' />
+                  </td>
+                  <td>{order.title}</td>
+                  <td>{order.price}</td>
+                  <td>
+                    <button
+                      onClick={() => handleContact(order)}
+                      className='cursor-pointer'
+                    >
+                      <ChatIcon />
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {data?.map((order) => (
-                  <tr key={order._id}>
-                    <td>
-                      <img className='image' src={order.img} alt='' />
-                    </td>
-                    <td>{order.title}</td>
-                    <td>{order.price}</td>
-                    <td>
-                      <button
-                        onClick={() => handleContact(order)}
-                        className='cursor-pointer'
-                      >
-                        <ChatIcon />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>}
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   )
 }

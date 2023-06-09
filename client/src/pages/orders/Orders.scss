@@ -12,6 +12,10 @@
     .title {
       display: flex;
       justify-content: space-between;
+
+      .button {
+        padding: 10px;
+      }
     }
 
     table {
