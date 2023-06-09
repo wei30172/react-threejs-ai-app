@@ -6,6 +6,8 @@ import {
   useElements
 } from '@stripe/react-stripe-js'
 
+import { Loader } from '../../components/icons'
+
 const CheckoutForm: FC = () => {
   const stripe = useStripe()
   const elements = useElements()
@@ -81,9 +83,7 @@ const CheckoutForm: FC = () => {
         }} />
       <PaymentElement id='payment-element' />
       <button disabled={isLoading || !stripe || !elements} id='submit'>
-        <span id='button-text'>
-          {isLoading ? <div className='spinner' id='spinner'></div> : 'Pay now'}
-        </span>
+        {isLoading ? <Loader /> : <span id='button-text'>Pay now</span>}
       </button>
       {message && <div id='payment-message'>{message}</div>}
     </form>
