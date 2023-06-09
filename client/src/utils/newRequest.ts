@@ -1,7 +1,15 @@
 import axios, { AxiosInstance } from 'axios'
 
 export interface IErrorResponse {
-  message: string;
+  message: string
+}
+
+export interface AxiosError {
+  response?: {
+    data? :{
+      message: string
+    }
+  }
 }
 
 const newRequest: AxiosInstance = axios.create({
