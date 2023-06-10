@@ -1,10 +1,11 @@
 import { FC, useState, useReducer, ChangeEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gigReducer, INITIAL_STATE, GigState, GigAction } from '../../reducers/gigReducer'
+import { gigReducer, INITIAL_STATE, GigState, GigActionType } from '../../reducers/gigReducer'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import getCurrentUser from '../../utils/getCurrentUser'
 import newRequest, { AxiosError } from '../../utils/newRequest'
-import upload from '../../utils/uploadImage'
+import uploadImage from '../../utils/uploadImage'
 import Toast, { ToastProps } from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'
 import './AddGig.scss'
@@ -14,7 +15,8 @@ const AddGig: FC = () => {
   const [files, setFiles] = useState<FileList | null>(null)
   const [uploading, setUploading] = useState(false)
 
-  const [state, dispatch] = useReducer<(state: GigState, action: GigAction) => GigState>(gigReducer, INITIAL_STATE)
+  const currentUser = getCurrentUser()
+  const [state, dispatch] = useReducer(gigReducer, {...INITIAL_STATE, userId: currentUser?._id || null})
 
   const [toastConfig, setToastConfig] = useState<ToastProps>({
     message: '',
@@ -25,7 +27,7 @@ const AddGig: FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     dispatch({
-      type: 'CHANGE_INPUT',
+      type: GigActionType.CHANGE_INPUT,
       payload: { name: e.target.name, value: e.target.value }
     })
   }
@@ -63,7 +65,7 @@ const AddGig: FC = () => {
     if (input) {
 
       dispatch({
-        type: 'ADD_FEATURE',
+        type: GigActionType.ADD_FEATURE,
         payload: input.value
       })
       input.value = ''
@@ -71,7 +73,7 @@ const AddGig: FC = () => {
   }
 
   const handleRemoveFeature = (feature: string) => {
-    dispatch({ type: 'REMOVE_FEATURE', payload: feature })
+    dispatch({ type: GigActionType.REMOVE_FEATURE, payload: feature })
   }
 
   const handleUpload = async () => {
@@ -81,11 +83,11 @@ const AddGig: FC = () => {
 
     setUploading(true)
     try {
-      const cover = await upload(singleFile)
+      const cover = await uploadImage(singleFile)
 
       const images = await Promise.all(
         Array.from(files).map(async (file) => {
-          const url = await upload(file)
+          const url = await uploadImage(file)
           if (url === undefined) {
             throw new Error(`Failed to upload file: ${file.name}`)
           }
@@ -94,7 +96,7 @@ const AddGig: FC = () => {
       )
 
       if (cover && images.length > 0)
-        dispatch({ type: 'ADD_IMAGES', payload: { cover, images } })
+        dispatch({ type: GigActionType.ADD_IMAGES, payload: { cover, images } })
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
@@ -116,7 +118,7 @@ const AddGig: FC = () => {
       return newRequest.post('/gigs', gig)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['myGigs'])
+      queryClient.invalidateQueries(['gigs'])
     }
   })
 
@@ -188,7 +190,7 @@ const AddGig: FC = () => {
               
               {/* Images */}
               <div className='images'>
-                <div className='imagesInputs'>
+                <div className='images_inputs'>
                   <label htmlFor=''>Cover Image</label>
                   <input
                     type='file'
@@ -211,17 +213,17 @@ const AddGig: FC = () => {
               <label htmlFor=''>Short Description</label>
               <textarea
                 name='shortDesc'
-                onChange={handleChange}
+                rows={5}
                 id=''
                 placeholder='Short description of your service'
-                rows={5}
+                onChange={handleChange}
               ></textarea>
               <label htmlFor=''>Description</label>
               <textarea
                 name='desc'
+                rows={8}
                 id=''
                 placeholder='Brief descriptions to introduce your service to customers'
-                rows={8}
                 onChange={handleChange}
               ></textarea>
               

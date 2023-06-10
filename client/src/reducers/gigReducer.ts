@@ -1,6 +1,3 @@
-import getCurrentUser from '../utils/getCurrentUser'
-const currentUser = getCurrentUser()
-
 export interface IGig {
   _id: string
   userId: string
@@ -29,36 +26,23 @@ export interface GigState {
   features: string[]
 }
 
-interface ChangeInputAction {
-  type: 'CHANGE_INPUT';
-  payload: {
-    name: string;
-    value: string;
-  };
+export enum GigActionType {
+  INITIALIZE_STATE = 'INITIALIZE_STATE',
+  CHANGE_INPUT = 'CHANGE_INPUT',
+  ADD_IMAGES = 'ADD_IMAGES',
+  ADD_FEATURE = 'ADD_FEATURE',
+  REMOVE_FEATURE = 'REMOVE_FEATURE'
 }
 
-interface AddImagesAction {
-  type: 'ADD_IMAGES';
-  payload: {
-    cover: string;
-    images: string[];
-  };
-}
-
-interface AddFeatureAction {
-  type: 'ADD_FEATURE';
-  payload: string;
-}
-
-interface RemoveFeatureAction {
-  type: 'REMOVE_FEATURE';
-  payload: string;
-}
-
-export type GigAction = ChangeInputAction | AddImagesAction | AddFeatureAction | RemoveFeatureAction;
+export type GigAction =
+  | { type: GigActionType.INITIALIZE_STATE; payload: IGig }
+  | { type: GigActionType.CHANGE_INPUT; payload: { name: string; value: string } }
+  | { type: GigActionType.ADD_IMAGES; payload: { cover: string; images: string[] } }
+  | { type: GigActionType.ADD_FEATURE; payload: string }
+  | { type: GigActionType.REMOVE_FEATURE; payload: string }
 
 export const INITIAL_STATE: GigState = {
-  userId: currentUser?._id || null,
+  userId: null,
   title: '',
   cover: '',
   images: [],
@@ -71,6 +55,11 @@ export const INITIAL_STATE: GigState = {
 
 export const gigReducer = (state: GigState, action: GigAction): GigState => {
   switch (action.type) {
+  case 'INITIALIZE_STATE':
+    return {
+      ...state,
+      ...action.payload
+    }
   case 'CHANGE_INPUT':
     return {
       ...state,
