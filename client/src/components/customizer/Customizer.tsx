@@ -2,7 +2,7 @@ import { FC, useState } from 'react'
 
 import designState, { EditorTabs, FilterTabs, DecalTypes, DecalTypeKey, ActiveFilterTabKey } from '../../store/designState'
 import newRequest from '../../utils/newRequest'
-import downloadCanvasToImage from '../../utils/downloadCanvasToImage'
+import { downloadCanvasToImage } from '../../utils/handleCanvasImage'
 import fileReader from '../../utils/fileReader'
 import { AIPicker, ColorPicker, FilePicker, Tab, Toast } from '../index'
 import { ToastProps } from '../toast/Toast'
