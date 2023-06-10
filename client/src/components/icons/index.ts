@@ -2,6 +2,7 @@ import FileIcon from './FileIcon'
 import DownloadIcon from './DownloadIcon'
 import PreviewIcon from './PreviewIcon'
 import DeleteIcon from './DeleteIcon'
+import EditIcon from './EditIcon'
 import ErrorIcon from './ErrorIcon'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowLeftIcon'
@@ -34,6 +35,7 @@ export {
   DownloadIcon,
   PreviewIcon,
   DeleteIcon,
+  EditIcon,
   ErrorIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
