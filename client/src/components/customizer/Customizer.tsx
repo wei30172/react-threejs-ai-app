@@ -1,11 +1,11 @@
 import { FC, useState } from 'react'
 
 import designState, { EditorTabs, FilterTabs, DecalTypes, DecalTypeKey, ActiveFilterTabKey } from '../../store/designState'
-import newRequest from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 import { downloadCanvasToImage } from '../../utils/handleCanvasImage'
 import fileReader from '../../utils/fileReader'
+import { useToast } from '../../hooks/useToast'
 import { AIPicker, ColorPicker, FilePicker, Tab, Toast } from '../index'
-import { ToastProps } from '../toast/Toast'
 import { DownloadIcon } from '../icons'
 import './Customizer.scss'
 
@@ -18,18 +18,12 @@ const Customizer: FC = () => {
     logoShirt: true,
     stylishShirt: false
   })
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const handleSubmit = async (type: 'logo' | 'full') => {
     if (!prompt) {
-      setToastConfig({
-        message: 'Please enter a prompt',
-        isVisible: true,
-        type: 'warning'
-      })
+      showToast('Please enter a prompt', 'warning')
       return
     }
 
@@ -37,12 +31,12 @@ const Customizer: FC = () => {
       setGeneratingImg(true)
       const response = await newRequest.post('/dalle', { prompt })
       handleDecals(type, `data:image/jpeg;base64,${response.data}`)
+      
     } catch (error) {
-      setToastConfig({
-        message: `Error: ${error}`,
-        isVisible: true,
-        type: 'error'
-      })
+      const axiosError = error as AxiosError
+      const errorMessage = axiosError.response?.data?.message || 'Generate failed'
+      showToast(errorMessage, 'error')
+
     } finally {
       setGeneratingImg(false)
       setActiveEditorTab('')
@@ -126,7 +120,7 @@ const Customizer: FC = () => {
         isVisible={toastConfig.isVisible}
         message={toastConfig.message}
         type={toastConfig.type}
-        onHide={() => setToastConfig({isVisible: false, message: ''})}
+        onHide={hideToast}
       />
       <>
         {/* Side Editor Tabs */}

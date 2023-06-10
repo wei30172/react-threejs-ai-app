@@ -1,9 +1,11 @@
 import { FC, useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { HomeIcon } from '../icons/index'
-import Toast, { ToastProps } from '../toast/Toast'
+
+import { useToast } from '../../hooks/useToast'
+import Toast from '../toast/Toast'
 import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest from '../../utils/newRequest'
+import newRequest, { AxiosError } from '../../utils/newRequest'
+import { HomeIcon } from '../icons/index'
 import './Navbar.scss'
 
 const Navbar: FC = () => {
@@ -12,10 +14,7 @@ const Navbar: FC = () => {
 
   const { pathname } = useLocation()
 
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false)
@@ -36,12 +35,11 @@ const Navbar: FC = () => {
       await newRequest.post('/auth/logout')
       localStorage.setItem('currentUser', '')
       navigate('/')
+      
     } catch (error) {
-      setToastConfig({
-        message: `Error: ${error}`,
-        isVisible: true,
-        type: 'error'
-      })
+      const axiosError = error as AxiosError
+      const errorMessage = axiosError.response?.data?.message || 'Logout failed'
+      showToast(errorMessage, 'error')
     }
   }
 
@@ -51,7 +49,7 @@ const Navbar: FC = () => {
         isVisible={toastConfig.isVisible}
         message={toastConfig.message}
         type={toastConfig.type}
-        onHide={() => setToastConfig({isVisible: false, message: ''})}
+        onHide={hideToast}
       />
       <div className={active || pathname !== '/' ? 'navbar active' : 'navbar'}>
         <div className='container flex-between'>

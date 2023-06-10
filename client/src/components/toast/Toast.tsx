@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { CloseIcon } from '../icons/index'
 import './Toast.scss'
 
@@ -8,17 +8,17 @@ export type ToastProps = {
   message: string
   isVisible: boolean
   type?: ToastType
-  onHide?: () => void
 }
 
-const Toast: FC<ToastProps> = ({ message, isVisible, onHide, type= 'success'}) => {
-  const [visibility, setVisibility] = useState(isVisible)
-
+const Toast: FC<ToastProps & { onHide: () => void }> = (
+  { message, isVisible, type = 'success', onHide }
+) => {
   useEffect(() => {
-    setVisibility(isVisible)
-  }, [isVisible])
+    const timer = setTimeout(onHide, 3000)
+    return () => clearTimeout(timer)
+  }, [onHide])
 
-  if (!visibility) {
+  if (!isVisible) {
     return null
   }
 

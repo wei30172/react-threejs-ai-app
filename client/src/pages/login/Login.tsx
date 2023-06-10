@@ -2,8 +2,8 @@ import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
-import { ToastProps } from '../../components/toast/Toast'
 import './Login.scss'
 
 interface User {
@@ -17,10 +17,7 @@ const Login: FC = () => {
     password: ''
   })
 
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const navigate = useNavigate()
 
@@ -62,15 +59,11 @@ const Login: FC = () => {
       const res = await newRequest.post('auth/login', user)
       localStorage.setItem('currentUser', JSON.stringify(res.data))
       navigate('/')
+      
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Login failed'
-      
-      setToastConfig({
-        message: errorMessage,
-        isVisible: true,
-        type: 'error'
-      })
+      showToast(errorMessage, 'error')
     }
   }
   
@@ -80,7 +73,7 @@ const Login: FC = () => {
         isVisible={toastConfig.isVisible}
         message={toastConfig.message}
         type={toastConfig.type}
-        onHide={() => setToastConfig({isVisible: false, message: ''})}
+        onHide={hideToast}
       />
       <div className='login flex-center'>
         <form className='flex-center' onSubmit={handleSubmit}>

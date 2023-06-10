@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import uploadImage from '../../utils/uploadImage'
+import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
-import { ToastProps } from '../../components/toast/Toast'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
@@ -35,10 +35,7 @@ const Register: FC = () => {
     isSeller: false
   })
 
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const navigate = useNavigate()
 
@@ -139,32 +136,21 @@ const Register: FC = () => {
           ...user,
           img: url
         })
-        setToastConfig({
-          message: `${response.data.message} To the homepage in 10 seconds...`,
-          isVisible: true,
-          type: 'success'
-        })
+        showToast(`${response.data.message} To the homepage in 10 seconds...`, 'success')
         setTimeout(() => {
           navigate('/')
         }, 10000)
+
       } catch (error) {
         const axiosError = error as AxiosError
         const errorMessage = axiosError.response?.data?.message || 'Register failed'
+        showToast(errorMessage, 'error')
         
-        setToastConfig({
-          message: errorMessage,
-          isVisible: true,
-          type: 'error'
-        })
       } finally {
         setIsLoading(false)
       }
     } else {
-      setToastConfig({
-        message: 'Please upload an avatar image',
-        isVisible: true,
-        type: 'warning'
-      })
+      showToast('Please upload an avatar image', 'warning')
     }
   }
 
@@ -174,7 +160,7 @@ const Register: FC = () => {
         isVisible={toastConfig.isVisible}
         message={toastConfig.message}
         type={toastConfig.type}
-        onHide={() => setToastConfig({isVisible: false, message: ''})}
+        onHide={hideToast}
       />
       <div className='register flex-center'>
         <form onSubmit={handleSubmit}>

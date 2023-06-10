@@ -6,7 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import getCurrentUser from '../../utils/getCurrentUser'
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import uploadImage from '../../utils/uploadImage'
-import Toast, { ToastProps } from '../../components/toast/Toast'
+import { useToast } from '../../hooks/useToast'
+import Toast from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'
 import './AddGig.scss'
 
@@ -18,10 +19,7 @@ const AddGig: FC = () => {
   const currentUser = getCurrentUser()
   const [state, dispatch] = useReducer(gigReducer, {...INITIAL_STATE, userId: currentUser?._id || null})
 
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const navigate = useNavigate()
 
@@ -48,11 +46,7 @@ const AddGig: FC = () => {
       setFiles(dataTransfer.files)
 
       if (files.length > fileLimit) {
-        setToastConfig({
-          message: `You can upload up to ${fileLimit} images.`,
-          isVisible: true,
-          type: 'error'
-        })
+        showToast(`You can upload up to ${fileLimit} images.`, 'warning')
       }
     }
   }
@@ -97,15 +91,12 @@ const AddGig: FC = () => {
 
       if (cover && images.length > 0)
         dispatch({ type: GigActionType.ADD_IMAGES, payload: { cover, images } })
+
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
-      
-      setToastConfig({
-        message: errorMessage,
-        isVisible: true,
-        type: 'error'
-      })
+      showToast(errorMessage, 'error')
+
     } finally {
       setUploading(false)
     }
@@ -130,11 +121,7 @@ const AddGig: FC = () => {
     if (state.cover !== '' && state.images.length !== 0) {
       mutation.mutate(state, {
         onSuccess: () => {
-          setToastConfig({
-            message: 'Create gig successfully, To the My Gigs page in 10 seconds...',
-            isVisible: true,
-            type: 'success'
-          })
+          showToast('Create gig successfully, To the My Gigs page in 10 seconds...', 'success')
           setTimeout(() => {
             navigate('/my-gigs')
           }, 10000)
@@ -142,19 +129,11 @@ const AddGig: FC = () => {
         onError: (error: unknown) => {
           const axiosError = error as AxiosError
           const errorMessage = axiosError.response?.data?.message || 'Create gig failed'
-          setToastConfig({
-            message: errorMessage,
-            isVisible: true,
-            type: 'error'
-          })
+          showToast(errorMessage, 'error')
         }
       })
     } else {
-      setToastConfig({
-        message: 'Please upload files first',
-        isVisible: true,
-        type: 'warning'
-      })
+      showToast('Please upload files first', 'warning')
     }
   }
 
@@ -164,7 +143,7 @@ const AddGig: FC = () => {
         isVisible={toastConfig.isVisible}
         message={toastConfig.message}
         type={toastConfig.type}
-        onHide={() => setToastConfig({isVisible: false, message: ''})}
+        onHide={hideToast}
       />
       <div className='add'>
         <div className='container'>

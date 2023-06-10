@@ -5,7 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { IGig } from '../../reducers/gigReducer'
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import getCurrentUser from '../../utils/getCurrentUser'
-import Toast, { ToastProps } from '../../components/toast/Toast'
+import { useToast } from '../../hooks/useToast'
+import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon, DeleteIcon, EditIcon } from '../../components/icons'
 import './myGigs.scss'
 
@@ -14,10 +15,7 @@ const MyGigs: FC = () => {
 
   const currentUser = getCurrentUser()
 
-  const [toastConfig, setToastConfig] = useState<ToastProps>({
-    message: '',
-    isVisible: false
-  })
+  const { showToast, hideToast, toastConfig } = useToast()
 
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['myGigs'],
@@ -34,21 +32,13 @@ const MyGigs: FC = () => {
 
       refetch()
 
-      setToastConfig({
-        message: 'Gig deleted successfully',
-        isVisible: true,
-        type: 'success'
-      })
+      showToast('Gig deleted successfully', 'success')
 
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Delete gig failed'
+      showToast(errorMessage, 'error')
       
-      setToastConfig({
-        message: errorMessage,
-        isVisible: true,
-        type: 'error'
-      })
     } finally {
       setIsDeleteing(false)
     }
@@ -66,7 +56,7 @@ const MyGigs: FC = () => {
             isVisible={toastConfig.isVisible}
             message={toastConfig.message}
             type={toastConfig.type}
-            onHide={() => setToastConfig({isVisible: false, message: ''})}
+            onHide={hideToast}
           />
           <div className='container'>
             <div className='title'>
