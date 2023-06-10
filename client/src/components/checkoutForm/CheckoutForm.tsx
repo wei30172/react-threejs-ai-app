@@ -1,7 +1,6 @@
 import { FC, useEffect, useState, FormEvent } from 'react'
 import {
   PaymentElement,
-  LinkAuthenticationElement,
   useStripe,
   useElements
 } from '@stripe/react-stripe-js'
@@ -12,7 +11,6 @@ const CheckoutForm: FC = () => {
   const stripe = useStripe()
   const elements = useElements()
 
-  const [email, setEmail] = useState<string>('')
   const [message, setMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -76,11 +74,6 @@ const CheckoutForm: FC = () => {
 
   return (
     <form id='payment-form' onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
-        id='link-authentication-element'
-        onChange={(event) => {
-          setEmail(event.value.email)
-        }} />
       <PaymentElement id='payment-element' />
       <button disabled={isLoading || !stripe || !elements} id='submit'>
         {isLoading ? <Loader /> : <span id='button-text'>Pay now</span>}
