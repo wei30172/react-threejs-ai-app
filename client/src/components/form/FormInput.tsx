@@ -54,7 +54,7 @@ const FormInput: FC<Props> = ({
         focused={focused}
       />
       <span>
-        <ErrorIcon className='error-icon'/>
+        <ErrorIcon />
         {errorMessage}
       </span>
     </div>
