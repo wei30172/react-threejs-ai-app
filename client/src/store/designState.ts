@@ -1,7 +1,8 @@
 import { ComponentType, HTMLAttributes } from 'react'
 import { proxy } from 'valtio'
 
-import { SwatchIcon, FileIcon, AiIcon, LogoShirtIcon, StylishShirtIcon } from '../components/icons'
+import { SwatchIcon, FileIcon, LogoShirtIcon, StylishShirtIcon } from '../components/icons'
+// import { SwatchIcon, FileIcon, AiIcon, LogoShirtIcon, StylishShirtIcon } from '../components/icons'
 
 // Editor tabs configuration
 export type TabType = {
@@ -63,7 +64,7 @@ export const DecalTypes: DecalType = {
   }
 }
 
-type State = {
+type IDesign = {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
@@ -71,7 +72,7 @@ type State = {
   fullDecal: string
 }
 
-const state: State = proxy({
+const designState: IDesign = proxy({
   color: '#DB8091',
   isLogoTexture: true,
   isFullTexture: false,
@@ -79,4 +80,4 @@ const state: State = proxy({
   fullDecal: '/img/design.jpg'
 })
 
-export default state
+export default designState
