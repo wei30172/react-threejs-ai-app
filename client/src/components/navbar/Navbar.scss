@@ -11,21 +11,6 @@
   z-index: 999;
   transition: 0.5s all ease;
 
-  &.active {
-    background-color: colors.$white;
-    color: colors.$text-primary;
-
-    button {
-      background-color: colors.$white;
-      color: colors.$primary;
-      border: 1px solid colors.$primary;
-    }
-
-    .home-icon {
-      color: colors.$primary;
-    }
-  }
-
   .container {
     width: 100%;
     margin: 0 auto;
@@ -100,6 +85,25 @@
           background-color: colors.$white;
         }
       }
+    }
+  }
+  
+  &.active {
+    background-color: colors.$white;
+    color: colors.$text-primary;
+
+    .container {
+      .links {
+        button {
+          background-color: colors.$white;
+          color: colors.$primary;
+          border: 1px solid colors.$primary;
+        }
+      }
+    }
+    
+    .home-icon {
+      color: colors.$primary;
     }
   }
 }
