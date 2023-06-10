@@ -26,6 +26,7 @@ const Navbar: FC = () => {
       window.removeEventListener('scroll', isActive)
     }
   }, [])
+  
   const navigate = useNavigate()
 
   const currentUser = getCurrentUser()
