@@ -6,7 +6,7 @@ import { IGig } from '../../reducers/gigReducer'
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import getCurrentUser from '../../utils/getCurrentUser'
 import Toast, { ToastProps } from '../../components/toast/Toast'
-import { Loader, ErrorIcon, DeleteIcon } from '../../components/icons'
+import { Loader, ErrorIcon, DeleteIcon, EditIcon } from '../../components/icons'
 import './myGigs.scss'
 
 const MyGigs: FC = () => {
@@ -95,6 +95,11 @@ const MyGigs: FC = () => {
                     <td>{gig.price}</td>
                     <td>{gig.sales}</td>
                     <td>
+                      <Link to={`/edit-gig/${gig._id}`}>
+                        <button className='cursor-pointer'>
+                          <EditIcon />
+                        </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(gig._id)}
                         className='cursor-pointer'
