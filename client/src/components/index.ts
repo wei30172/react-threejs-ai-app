@@ -13,6 +13,7 @@ import Demo from './demo/Demo'
 import Reviews from './reviews/Reviews'
 import Seller from './seller/Seller'
 import CheckoutForm from './checkoutForm/CheckoutForm'
+import Recipient from './recipient/Recipient'
 
 export {
   Navbar,
@@ -29,5 +30,6 @@ export {
   Demo,
   Reviews,
   Seller,
+  Recipient,
   CheckoutForm
 }
