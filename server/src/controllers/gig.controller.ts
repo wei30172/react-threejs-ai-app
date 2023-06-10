@@ -23,7 +23,9 @@ export const createGig = async (req: IRequest, res: Response, next: NextFunction
 export const getGig = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const gig = await Gig.findById(req.params.id)
-    if (!gig) next(createError(404, 'Gig not found!'))
+    if (!gig) {
+      return next(createError(404, 'Gig not found'))
+    }
     res.status(200).send(gig)
   } catch (err) {
     next(err)
@@ -65,6 +67,35 @@ export const deleteGig = async (req: IRequest, res: Response, next: NextFunction
 
     await Gig.findByIdAndDelete(req.params.id)
     res.status(200).send('Gig has been deleted!')
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const updateGig = async (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    const gig = await Gig.findById(req.params.id)
+
+    if (!gig) {
+      return next(createError(404, 'Gig not found'))
+    }
+
+    if (gig.userId !== req.userId) {
+      return next(createError(403, 'You can only update your gig!'))
+    }
+
+    const updates = ['title', 'desc', 'shortDesc', 'deliveryTime', 'features', 'images', 'cover', 'price'].reduce(
+      (acc: Record<string, unknown>, key) => {
+        if (req.body[key]) acc[key] = req.body[key]
+        return acc
+      }, {})
+
+    if (Object.keys(updates).length > 0) {
+      await Gig.updateOne({ _id: req.params.id }, { $set: updates })
+    }
+
+    const updatedGig = await Gig.findById(req.params.id)
+    res.status(200).json(updatedGig)
   } catch (err) {
     next(err)
   }
