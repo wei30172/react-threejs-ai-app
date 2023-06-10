@@ -4,7 +4,7 @@ interface UploadResponse {
   url: string
 }
 
-const upload = async (file: File): Promise<string | undefined> => {
+const uploadImage = async (file: File): Promise<string | undefined> => {
   const data = new FormData()
   data.append('file', file)
   data.append('upload_preset', import.meta.env.VITE_UPLOAD_PRESET)
@@ -21,4 +21,4 @@ const upload = async (file: File): Promise<string | undefined> => {
   }
 }
 
-export default upload
+export default uploadImage

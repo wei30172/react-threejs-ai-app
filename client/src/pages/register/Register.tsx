@@ -3,7 +3,7 @@ import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
-import upload from '../../utils/uploadImage'
+import uploadImage from '../../utils/uploadImage'
 import { FormInput, Toast } from '../../components'
 import { ToastProps } from '../../components/toast/Toast'
 import { PreviewIcon, Loader } from '../../components/icons'
@@ -133,7 +133,7 @@ const Register: FC = () => {
     
     if (file !== null) {
       setIsLoading(true)
-      const url = await upload(file)
+      const url = await uploadImage(file)
       try {
         const response = await newRequest.post('auth/register', {
           ...user,
