@@ -46,52 +46,58 @@ const Messages: FC = () => {
 
   return (
     <div className='messages'>
-      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-        <div className='container'>
-          <div className='title'>
-            <h1>Messages</h1>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>{currentUser?.isSeller ? 'Buyer' : 'Seller'}</th>
-                <th>Last Message</th>
-                <th>Date</th>
-                <th>Mark as Read</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((c) => (
-                <tr
-                  className={
-                    ((currentUser?.isSeller && !c.readBySeller) ||
-                      (!currentUser?.isSeller && !c.readByBuyer)) ? 'active' : ''
-                  }
-                  key={c.id}
-                >
-                  <td>{currentUser?.isSeller ? c.buyerId : c.sellerId}</td>
-                  <td>
-                    <Link to={`/message/${c.id}`} className='link'>
-                      {c?.lastMessage?.substring(0, 100)}...
-                    </Link>
-                  </td>
-                  <td>{moment(c.updatedAt).fromNow()}</td>
-                  <td>
-                    <button className="cursor-pointer" onClick={() => handleToggleRead(c.id)}>
-                      {((currentUser?.isSeller && !c.readBySeller) ||
-                      (!currentUser?.isSeller && !c.readByBuyer)) ? (
-                          <EllipsisIconFilled />
-                        ) : (
-                          <EllipsisIconOutline />
-                        )}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className='container'>
+        <div className='title'>
+          <h1>Messages</h1>
         </div>
-      )}
+        {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
+          <>
+            {data && data.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>{currentUser?.isSeller ? 'Buyer' : 'Seller'}</th>
+                    <th>Last Message</th>
+                    <th>Date</th>
+                    <th>Mark as Read</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.map((c) => (
+                    <tr
+                      className={
+                        ((currentUser?.isSeller && !c.readBySeller) ||
+                          (!currentUser?.isSeller && !c.readByBuyer)) ? 'active' : ''
+                      }
+                      key={c.id}
+                    >
+                      <td>{currentUser?.isSeller ? c.buyerId : c.sellerId}</td>
+                      <td>
+                        <Link to={`/message/${c.id}`} className='link'>
+                          {c?.lastMessage?.substring(0, 100)}...
+                        </Link>
+                      </td>
+                      <td>{moment(c.updatedAt).fromNow()}</td>
+                      <td>
+                        <button className="cursor-pointer" onClick={() => handleToggleRead(c.id)}>
+                          {((currentUser?.isSeller && !c.readBySeller) ||
+                          (!currentUser?.isSeller && !c.readByBuyer)) ? (
+                              <EllipsisIconFilled />
+                            ) : (
+                              <EllipsisIconOutline />
+                            )}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <h3>Your order history is empty</h3>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
