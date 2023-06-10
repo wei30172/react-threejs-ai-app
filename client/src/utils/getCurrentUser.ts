@@ -1,4 +1,4 @@
-interface User {
+export interface IUser {
   _id: string
   username: string
   email: string
@@ -10,9 +10,9 @@ interface User {
   updatedAt?: string
 }
 
-const getCurrentUser = (): User | null => {
+const getCurrentUser = (): IUser | null => {
   const user = localStorage.getItem('currentUser')
-  return user ? JSON.parse(user) as User : null
+  return user ? JSON.parse(user) as IUser : null
 }
 
 export default getCurrentUser

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import { IGig } from '../../reducers/gigReducer'
+import { IUser } from '../../utils/getCurrentUser'
 import newRequest from '../../utils/newRequest'
 import { Loader, ErrorIcon, StarIconFilled, HeartIconFilled } from '../../components/icons'
 import './GigCard.scss'
@@ -10,16 +11,11 @@ interface GigCardProps {
   item: IGig
 }
 
-interface UserData {
-  img?: string
-  username: string
-}
-
 const GigCard = ({ item }: GigCardProps) => {
-  const { isLoading, error, data } = useQuery<UserData, Error>({
+  const { isLoading, error, data } = useQuery<IUser, Error>({
     queryKey: [item.userId],
     queryFn: () =>
-      newRequest.get<UserData>(`/users/${item.userId}`).then((res) => res.data)
+      newRequest.get<IUser>(`/users/${item.userId}`).then((res) => res.data)
   })
 
   const limitDescription = (description: string, limit = 100) => {

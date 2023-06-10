@@ -1,13 +1,11 @@
 import { FC } from 'react'
 
+import { IUser } from '../../utils/getCurrentUser'
 import { StarIconFilled } from '../../components/icons'
 import './Seller.scss'
 
 interface SellerProps {
-  dataUser: {
-    img?: string
-    username: string
-  };
+  dataUser: IUser
   data: {
     totalStars: number
     starNumber: number
