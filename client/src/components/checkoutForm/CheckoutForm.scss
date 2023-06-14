@@ -1,0 +1,18 @@
+@use "../../styles/mixin/colors" as colors;
+
+#payment-form {
+  button {
+    background-color: colors.$dark-100;
+    border-radius: 5px;
+    border: 1px solid colors.$dark-600;
+    width: 120px;
+    height: 40px;
+    margin: 20px 0;
+    cursor: pointer;
+
+    .loader {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
