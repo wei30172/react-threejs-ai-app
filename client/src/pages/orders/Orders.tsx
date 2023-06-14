@@ -94,7 +94,7 @@ const Orders: FC = () => {
                         <td>
                           <img
                             className='image'
-                            src={order.img}
+                            src={order.url}
                             alt={order.title} />
                         </td>
                         <td>
