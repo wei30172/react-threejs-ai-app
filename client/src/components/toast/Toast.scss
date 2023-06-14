@@ -12,17 +12,17 @@
   left: 50%;
   transform: translateX(-50%);
 
-  &.toast--success {
+  &--success {
     background-color: colors.$success-background;
     color: colors.$success-primary;
   }
   
-  &.toast--warning {
+  &--warning {
     background-color: colors.$warning-background;
     color: colors.$warning-primary;
   }
   
-  &.toast--error {
+  &--error {
     background-color: colors.$error-background;
     color: colors.$error-primary;
   }

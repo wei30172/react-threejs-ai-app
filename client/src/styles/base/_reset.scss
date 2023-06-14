@@ -74,12 +74,12 @@ table {
     cursor: not-allowed;
   }
 
-  &.button--filled {
+  &--filled {
     background-color: colors.$primary;
     color: colors.$white;
   }
   
-  &.button--outline {
+  &--outline {
     background-color: colors.$white;
     color: colors.$primary;
     border: 1px solid colors.$primary;
