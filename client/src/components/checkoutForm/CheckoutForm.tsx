@@ -6,6 +6,9 @@ import {
 } from '@stripe/react-stripe-js'
 
 import { Loader } from '../../components/icons'
+import './CheckoutForm.scss'
+
+const RETURN_URL = 'http://localhost:5173/success' // todo
 
 const CheckoutForm: FC = () => {
   const stripe = useStripe()
@@ -14,7 +17,6 @@ const CheckoutForm: FC = () => {
   const [message, setMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  // handle successful or unsuccessful payments
   useEffect(() => {
     if (!stripe) {
       return
@@ -46,7 +48,6 @@ const CheckoutForm: FC = () => {
     })
   }, [stripe])
 
-  // handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -56,17 +57,24 @@ const CheckoutForm: FC = () => {
 
     setIsLoading(true)
 
-    const result = await stripe.confirmPayment({
+    const {error} = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:5173/success' // todo
+        return_url: RETURN_URL
       }
     })
 
-    if (result.error.type === 'card_error' || result.error.type === 'validation_error') {
-      setMessage(result.error.message || 'Card error or validation error')
-    } else {
-      setMessage('An unexpected error occurred.')
+    if (error) {
+      switch (error.type) {
+      case 'card_error':
+        setMessage('There was an error with your card. Please check your information and try again.')
+        break
+      case 'validation_error':
+        setMessage('Validation error. Please check your information and try again.')
+        break
+      default:
+        setMessage('An unexpected error occurred. Please try again later.')
+      }
     }
 
     setIsLoading(false)
