@@ -7,7 +7,6 @@ import { IRequest } from '../middleware/jwt'
 
 const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'logoDecal', 'fullDecal', 'url']
 
-
 export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.body.gigId)
