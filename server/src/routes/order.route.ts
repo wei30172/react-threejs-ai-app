@@ -1,13 +1,13 @@
 import express, { Router } from 'express'
 import { verifyToken } from '../middleware/jwt'
-import { getOrders, intent, confirm } from '../controllers/order.controller'
-// import { getOrders, confirm, createOrder } from '../controllers/order.controller'
+import { getOrder, getOrders, createOrder, intent, confirm } from '../controllers/order.controller'
 
 const router: Router = express.Router()
 
-// router.post('/:gigId', verifyToken, createOrder)
-router.get('/', verifyToken, getOrders)
+router.post('/', verifyToken, createOrder)
 router.post('/create-payment-intent/:id', verifyToken, intent)
+router.get('/single/:id', verifyToken, getOrder)
+router.get('/', verifyToken, getOrders)
 router.put('/', verifyToken, confirm)
 
 export default router

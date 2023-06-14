@@ -5,66 +5,90 @@ import Order from '../models/order.model'
 import Gig from '../models/gig.model'
 import { IRequest } from '../middleware/jwt'
 
-// export const createOrder =  async (req: IRequest, res: Response): Promise<void> => {
-//   const gig = await Gig.findById(req.params.gigId)
+const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'logoDecal', 'fullDecal', 'url']
 
-//   if (!gig) throw createError(404, 'Gig not found')
-  
-//   const newOrder = new Order({
-//     gigId: gig._id,
-//     img: gig.cover,
-//     title: gig.title,
-//     buyerId: req.userId,
-//     sellerId: gig.userId,
-//     price: gig.price,
-//     payment_intent: 'test'
-//   })
 
-//   await newOrder.save()
-//   res.status(200).send('successful')
-// }
+export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const gig = await Gig.findById(req.body.gigId)
+
+    if (!gig) {
+      return next(createError(404, 'Gig not found'))
+    }
+
+    for (const param of requiredParams) {
+      if (!req.body[param]) {
+        return next(createError(400, `Missing parameter: ${param}`))
+      }
+    }
+
+    const newOrder = new Order({
+      img: gig.cover,
+      title: gig.title,
+      price: gig.price,
+      sellerId: gig.userId,
+      isPaid: false,
+      payment_intent: '',
+      ...req.body
+    })
+
+    await newOrder.save()
+    res.status(200).json({ message: 'Order created successfully', orderId: newOrder._id })
+  } catch (err) {
+    next(err)
+  }
+}
 
 export const intent = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
-  const stripeKey = process.env.STRIPE_KEY
-  if (!stripeKey) {
-    return next(createError(500, 'Stripe key not set' )) 
-  }
-  const stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15'})
+  try {
+    const order = await Order.findById(req.params.id)
 
-  const gig = await Gig.findById(req.params.id)
-
-  if (!gig) throw createError(404, 'Gig not found')
-
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: gig.price * 100,
-    currency: 'usd', // todo
-    automatic_payment_methods: {
-      enabled: true
+    if (!order) {
+      return next(createError(404, 'Order not found'))
     }
-  })
 
-  const newOrder = new Order({
-    gigId: gig._id,
-    img: gig.cover,
-    title: gig.title,
-    buyerId: req.userId,
-    sellerId: gig.userId,
-    price: gig.price,
-    payment_intent: paymentIntent.id
-  })
+    const stripeKey = process.env.STRIPE_KEY
+    if (!stripeKey) {
+      return next(createError(500, 'Stripe key not set'))
+    }
+    const stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15' })
 
-  await newOrder.save()
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: order.price * 100,
+      currency: 'twd',
+      automatic_payment_methods: {
+        enabled: true
+      }
+    })
 
-  res.status(200).send({
-    clientSecret: paymentIntent.client_secret
-  })
+    if (paymentIntent) order.payment_intent = paymentIntent.id
+
+    await order.save()
+
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getOrder = async (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.findById(req.params.id)
+    if (!order) {
+      return next(createError(404, 'Order not found!'))
+    }
+    res.status(200).send(order)
+  } catch (err) {
+    next(err)
+  }
 }
 
 export const getOrders = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const orders = await Order.find({
-      ...(req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId }),
-      isPaid: true
+      ...(req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId })
     })
 
     res.status(200).send(orders)
@@ -75,16 +99,14 @@ export const getOrders = async (req: IRequest, res: Response, next: NextFunction
 
 export const confirm = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await Order.findOneAndUpdate(
-      {
-        payment_intent: req.body.payment_intent
-      },
-      {
-        $set: {
-          isPaid: true
-        }
+    await Order.findOneAndUpdate({
+      payment_intent: req.body.payment_intent
+    },
+    {
+      $set: {
+        isPaid: true
       }
-    )
+    })
 
     res.status(200).send('Order has been confirmed.')
   } catch (err) {

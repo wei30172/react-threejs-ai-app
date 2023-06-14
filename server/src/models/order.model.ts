@@ -9,6 +9,16 @@ export interface IOrder extends Document {
   buyerId: string
   isPaid: boolean
   payment_intent: string
+  name: string
+  email: string
+  address: string
+  phone: string
+  color: string
+  isLogoTexture: boolean
+  isFullTexture: boolean
+  logoDecal: string
+  fullDecal: string
+  url: string
 }
 
 const OrderSchema: Schema = new Schema(
@@ -42,6 +52,46 @@ const OrderSchema: Schema = new Schema(
       default: false
     },
     payment_intent: {
+      type: String,
+      required: false
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: String,
+      required: true
+    },
+    color: {
+      type: String,
+      required: true
+    },
+    isLogoTexture: {
+      type: Boolean,
+      required: true
+    },
+    isFullTexture: {
+      type: Boolean,
+      required: true
+    },
+    logoDecal: {
+      type: String,
+      required: true
+    },
+    fullDecal: {
+      type: String,
+      required: true
+    },
+    url: {
       type: String,
       required: true
     }
