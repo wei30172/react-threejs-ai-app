@@ -1,10 +1,11 @@
-import { FC, useState, useEffect  } from 'react'
+import { FC, useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 
 import newRequest from '../../utils/newRequest'
 import { CheckoutForm } from '../../components'
+import { Loader } from '../../components/icons'
 import './Pay.scss'
 
 const stripePromise = loadStripe(
@@ -13,20 +14,21 @@ const stripePromise = loadStripe(
 
 const Pay: FC = () => {
   const [clientSecret, setClientSecret] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
   const { id } = useParams()
 
-  useEffect(() => {
-    const makeRequest = async () => {
-      try {
-        const res = await newRequest.post(`/orders/create-payment-intent/${id}`)
-        setClientSecret(res.data.clientSecret)
-      } catch (err) {
-        console.error(err)
-      }
+  const makeRequest = useCallback(async () => {
+    try {
+      const res = await newRequest.post(`/orders/create-payment-intent/${id}`)
+      setClientSecret(res.data.clientSecret)
+    } catch (err) {
+      setError('An error occurred while creating the payment intent.')
     }
-
-    makeRequest()
   }, [id])
+
+  useEffect(() => {
+    makeRequest()
+  }, [makeRequest])
 
   const options = {
     clientSecret
@@ -35,10 +37,14 @@ const Pay: FC = () => {
   return (
     <div className='pay'>
       <div className='container'>
-        {clientSecret && (
+        {error ? (
+          <p>{error}</p>
+        ) : clientSecret ? (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
+        ) : (
+          <Loader />
         )}
       </div>
     </div>

@@ -7,20 +7,5 @@
   .container {
     width: 960px;
     padding: 20px 10px 40px;
-
-    button {
-      background-color: colors.$dark-100;
-      border-radius: 5px;
-      border: 1px solid colors.$dark-600;
-      width: 120px;
-      height: 60px;
-      margin: 20px 0;
-      cursor: pointer;
-
-      .loader {
-        width: 20px;
-        height: 20px;
-      }
-    }
   }
 }
