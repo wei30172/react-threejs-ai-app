@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import getCurrentUser from '../../utils/getCurrentUser'
 import newRequest, { AxiosError } from '../../utils/newRequest'
-import uploadImage from '../../utils/uploadImage'
+import { uploadImage } from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'

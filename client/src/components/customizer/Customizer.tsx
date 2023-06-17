@@ -2,8 +2,8 @@ import { FC, useState } from 'react'
 
 import designState, { EditorTabs, FilterTabs, DecalTypes, DecalTypeKey, ActiveFilterTabKey } from '../../store/designState'
 import newRequest, { AxiosError } from '../../utils/newRequest'
-import { downloadCanvasToImage } from '../../utils/handleCanvasImage'
-import fileReader from '../../utils/fileReader'
+import { downloadCanvasImage } from '../../utils/handleCanvasImage'
+import { fileReader } from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import { AIPicker, ColorPicker, FilePicker, Tab, Toast } from '../index'
 import { DownloadIcon } from '../icons'
@@ -157,7 +157,7 @@ const Customizer: FC = () => {
 
           <button
             className='download-button flex-center cursor-pointer glassmorphism'
-            onClick={downloadCanvasToImage}
+            onClick={downloadCanvasImage}
           >
             <DownloadIcon />
           </button>

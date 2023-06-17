@@ -14,6 +14,7 @@ import Reviews from './reviews/Reviews'
 import Seller from './seller/Seller'
 import CheckoutForm from './checkoutForm/CheckoutForm'
 import Recipient from './recipient/Recipient'
+import UploadPreview from './uploadPreview/UploadPreview'
 
 export {
   Navbar,
@@ -31,5 +32,6 @@ export {
   Reviews,
   Seller,
   Recipient,
+  UploadPreview,
   CheckoutForm
 }

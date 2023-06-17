@@ -1,39 +1,73 @@
-import { FC } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { FC, useState, useReducer, useCallback } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-import newRequest from '../../utils/newRequest'
+import { orderReducer, INITIAL_STATE, OrderState } from '../../reducers/orderReducer'
 import { IGig } from '../../reducers/gigReducer'
+import getCurrentUser from '../../utils/getCurrentUser'
+import newRequest, { AxiosError } from '../../utils/newRequest'
 // import { IUser } from '../register/Register'
-import { Carousel, Demo } from '../../components'
-// import { Carousel, Demo, Seller, Reviews } from '../../components'
+import { useToast } from '../../hooks/useToast'
+import { Carousel, Demo, Recipient, UploadPreview, Toast } from '../../components'
+// import { Carousel, Demo, Recipient, Seller, Reviews } from '../../components'
 import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
-interface RouteParams extends Record<string, string> {
-  id: string;
-}
-
 const Gig: FC = () => {
-  const { id } = useParams<RouteParams>()
+  const [showCheckOut, setShowCheckOut] = useState(false)
+
+  const { gigId } = useParams()
  
   const { isLoading, error, data } = useQuery<IGig, Error>({
     queryKey: ['gig'],
-    queryFn: () => newRequest.get(`/gigs/single/${id}`).then((res) => res.data)
+    queryFn: () => newRequest.get(`/gigs/single/${gigId}`).then((res) => res.data)
   })
 
-  // const userId = data?.userId
+  const currentUser = getCurrentUser()
+  const [state, dispatch] = useReducer(orderReducer, {
+    ...INITIAL_STATE,
+    buyerId: currentUser?._id || null,
+    gigId: gigId || '',
+    name: currentUser?.username || '',
+    email: currentUser?.email || '',
+    address: currentUser?.address || '',
+    phone: currentUser?.phone || ''
+  })
 
-  // const {
-  //   isLoading: isLoadingUser,
-  //   error: errorUser,
-  //   data: dataUser
-  // } = useQuery<IUser, Error>({
-  //   queryKey: ['user'],
-  //   queryFn: () =>
-  //     newRequest.get(`/users/${userId}`).then((res) => res.data),
-  //   enabled: !!userId
-  // })
+  const { showToast, hideToast, toastConfig } = useToast()
+
+  const navigate = useNavigate()
+
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: (order: OrderState) => {
+      return newRequest.post('/orders', order)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orders'])
+    }
+  })
+
+  const { isLoading: isLoadingOrders } = mutation
+
+  const handleCheckout = useCallback((e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault()
+    mutation.mutate(state, {
+      onSuccess: () => {
+        setShowCheckOut(false)
+        showToast('Created order successfully, To the Order page in 5 seconds...', 'success')
+        setTimeout(() => {
+          navigate('/orders')
+        }, 5000)
+      },
+      onError: (error: unknown) => {
+        const axiosError = error as AxiosError
+        const errorMessage = axiosError.response?.data?.message || 'Update gig failed'
+        showToast(errorMessage, 'error')
+      }
+    })
+  }, [mutation, state, navigate, showToast])
 
   return (
     <div className='gig'>
@@ -52,9 +86,15 @@ const Gig: FC = () => {
             ) : (
               <Seller dataUser={dataUser} data={data} />
             )} */}
-            {/* {id && <Reviews gigId={id} />} */}
+            {/* {gigId && <Reviews gigId={gigId} />} */}
           </div>
           <div className='right'>
+            <Toast
+              isVisible={toastConfig.isVisible}
+              message={toastConfig.message}
+              type={toastConfig.type}
+              onHide={hideToast}
+            />
             <div className='price'>
               <h2>$ {data.price}</h2>
             </div>
@@ -67,9 +107,26 @@ const Gig: FC = () => {
                 </div>
               ))}
             </div>
-            <Link to={`/pay/${id}`}>
-              <button className='button button--filled'>Continue</button>
-            </Link>
+            <button
+              className='button button--filled'
+              onClick={() => setShowCheckOut(true)}
+            >
+              Proceed
+            </button>
+            {showCheckOut && gigId &&  !isLoadingOrders &&
+              <>
+                <Recipient
+                  state={state}
+                  dispatch={dispatch}
+                />
+                <UploadPreview
+                  state={state}
+                  dispatch={dispatch}
+                  handleCheckout={handleCheckout}
+                />
+              </>
+            }
+            {isLoadingOrders && <Loader />}
           </div>
         </div>
       )}

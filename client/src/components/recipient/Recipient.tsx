@@ -1,22 +1,15 @@
-import { FC, useState, FormEvent } from 'react'
-import { useSnapshot } from 'valtio'
+import { FC, FormEvent } from 'react'
 
-import designState from '../../store/designState'
 import { OrderState, OrderAction, OrderActionType } from '../../reducers/orderReducer'
-import { uploadCanvasImage } from '../../utils/handleCanvasImage'
 import { FormInput } from '../../components'
 import './Recipient.scss'
 
 interface RecipientProps {
   state: OrderState
   dispatch: React.Dispatch<OrderAction>
-  handleCheckout: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const Recipient: FC<RecipientProps> = ({ state, dispatch, handleCheckout }) => {
-  const snap = useSnapshot(designState)
-  const [url, setUrl] = useState('')
-
+const Recipient: FC<RecipientProps> = ({ state, dispatch }) => {
   const formInputs = [
     {
       id: 1,
@@ -66,16 +59,6 @@ const Recipient: FC<RecipientProps> = ({ state, dispatch, handleCheckout }) => {
     })
   }
 
-  const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    e.preventDefault()
-    const url = await uploadCanvasImage()
-    if(url) setUrl(url)
-    dispatch({
-      type: OrderActionType.CHANGE_INPUT,
-      payload: {...snap, url}
-    })
-  }
-
   return (
     <div className='recipient'>
       <h2>Recipient</h2>
@@ -91,25 +74,6 @@ const Recipient: FC<RecipientProps> = ({ state, dispatch, handleCheckout }) => {
           </div>
         ))}
       </form>
-      <button
-        disabled={!state.name || !state.email || !state.address || !state.phone}
-        className='button button--outline'
-        onClick={handleUpload}
-      >
-        Upload my design
-      </button>
-      {url && <div  className="my-design">
-        <img src={url} />
-      </div>}
-      <button
-        disabled={
-          !state.name || !state.email || !state.address || !state.phone || !state.url
-        }
-        className='button button--filled'
-        onClick={handleCheckout}
-      >
-        Checkout
-      </button>
     </div>
   )
 

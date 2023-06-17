@@ -42,7 +42,6 @@ const Order: FC = () => {
     backgroundColor: data?.color || '',
     color: getContrastingColor(data?.color || '#000000')
   }
-  
 
   return (
     <div className='order'>
@@ -142,7 +141,7 @@ const Order: FC = () => {
                       />}
                     </td>
                     <td>
-                      {data?.logoDecal !== '' && <img
+                      {data?.fullDecal !== '' && <img
                         className='image'
                         src={data?.fullDecal}
                         alt='logoDecal'

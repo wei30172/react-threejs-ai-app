@@ -1,6 +1,6 @@
-import uploadImage from './uploadImage'
+import { uploadImage } from './handleUploadImage'
 
-export const downloadCanvasToImage = (): void => {
+export const downloadCanvasImage = (): void => {
   const canvas = document.querySelector('canvas')
   if (!canvas) {
     console.error('Canvas not found.')

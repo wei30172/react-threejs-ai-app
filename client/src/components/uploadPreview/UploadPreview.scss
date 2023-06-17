@@ -1,0 +1,16 @@
+@use "../../styles/mixin/colors" as colors;
+
+.upload-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .my-design {
+    display: flex;
+
+    img, .preview-icon {
+      width: 100%;
+      margin: 0 auto;
+    }
+  }
+}

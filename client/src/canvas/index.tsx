@@ -3,7 +3,6 @@ import { Canvas } from '@react-three/fiber'
 import { Environment, Center } from '@react-three/drei'
 
 import Shirt from './Shirt'
-import Backdrop from './Backdrop'
 import CameraRig from './CameraRig'
 import './index.scss'
 
@@ -25,7 +24,6 @@ const CanvasModel: FC = () => {
       <Environment preset="city" />
 
       <CameraRig>
-        <Backdrop />
         <Center>
           <Shirt />
         </Center>

@@ -86,7 +86,7 @@ const CheckoutForm: FC = () => {
       <button disabled={isLoading || !stripe || !elements} id='submit'>
         {isLoading ? <Loader /> : <span id='button-text'>Pay now</span>}
       </button>
-      {message && <div id='payment-message'>{message}</div>}
+      {message && <div id='payment-message' className='error-message'>{message}</div>}
     </form>
   )
 }

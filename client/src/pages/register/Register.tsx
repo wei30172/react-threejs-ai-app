@@ -3,7 +3,7 @@ import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
-import uploadImage from '../../utils/uploadImage'
+import { uploadImage }  from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
