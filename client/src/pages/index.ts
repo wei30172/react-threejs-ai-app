@@ -12,6 +12,7 @@ import Pay from './pay/Pay'
 import Success from './success/Success'
 import Messages from './messages/Messages'
 import Message from './message/Message'
+import NotFound from './notFound/NotFound'
 
 export {
   Home,
@@ -27,5 +28,6 @@ export {
   Pay,
   Success,
   Messages,
-  Message
+  Message,
+  NotFound
 }

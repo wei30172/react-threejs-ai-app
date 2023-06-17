@@ -16,7 +16,8 @@ import {
   Register,
   Login,
   Pay,
-  Success
+  Success,
+  NotFound
 } from './pages'
 import { Navbar, Footer } from './components'
 
@@ -98,6 +99,10 @@ function App() {
       path: '/success',
       element: <Success />
     },
+    {
+      path: '*',
+      element: <NotFound />
+    }
   ])
 
   return <RouterProvider router={router} />
