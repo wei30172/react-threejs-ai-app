@@ -8,7 +8,9 @@ import {
   Gig,
   MyGigs,
   AddGig,
+  EditGig,
   Orders,
+  Order,
   Messages,
   Message,
   MyImages,
@@ -49,7 +51,7 @@ function App() {
           element: <Gigs />
         },
         {
-          path: '/gig/:id',
+          path: '/gig/:gigId',
           element: <Gig />
         },
         {
@@ -61,8 +63,16 @@ function App() {
           element: <AddGig />
         },
         {
+          path: '/edit-gig/:gigId',
+          element: <EditGig />
+        },
+        {
           path: '/orders',
           element: <Orders />
+        },
+        {
+          path: '/orders/:orderId',
+          element: <Order />
         },
         {
           path: '/messages',
