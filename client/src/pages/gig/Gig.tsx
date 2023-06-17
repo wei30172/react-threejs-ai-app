@@ -70,67 +70,70 @@ const Gig: FC = () => {
   }, [mutation, state, navigate, showToast])
 
   return (
-    <div className='gig'>
-      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-        <div className='container'>
-          <div className='left'>
-            <h1>{data.title}</h1>
-            <h2>About</h2>
-            <p>{data.desc}</p>
-            <Carousel carouselImages={data.images} />
-            <Demo />
-            {/* {isLoadingUser ? (
-              'loading'
-            ) : errorUser ? (
-              'Something went wrong!'
-            ) : (
-              <Seller dataUser={dataUser} data={data} />
-            )} */}
-            {/* {gigId && <Reviews gigId={gigId} />} */}
-          </div>
-          <div className='right'>
-            <Toast
-              isVisible={toastConfig.isVisible}
-              message={toastConfig.message}
-              type={toastConfig.type}
-              onHide={hideToast}
-            />
-            <div className='price'>
-              <h2>$ {data.price}</h2>
+    <>
+      <Toast
+        isVisible={toastConfig.isVisible}
+        message={toastConfig.message}
+        type={toastConfig.type}
+        onHide={hideToast}
+      />
+      <div className='gig'>
+        {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
+          <div className='container'>
+            
+            <div className='left'>
+              <h1>{data.title}</h1>
+              <h2>About</h2>
+              <p>{data.desc}</p>
+              <Carousel carouselImages={data.images} />
+              <Demo />
+              {/* {isLoadingUser ? (
+                'loading'
+              ) : errorUser ? (
+                'Something went wrong!'
+              ) : (
+                <Seller dataUser={dataUser} data={data} />
+              )} */}
+              {/* {gigId && <Reviews gigId={gigId} />} */}
             </div>
-            <p>{data.shortDesc}</p>
-            <div className='features'>
-              {data.features.map((feature) => (
-                <div className='item' key={feature}>
-                  <CheckIcon />
-                  <span>{feature}</span>
-                </div>
-              ))}
+            <div className='right'>
+              <div className='price'>
+                <h2>$ {data.price}</h2>
+              </div>
+              <p>{data.shortDesc}</p>
+              <div className='features'>
+                {data.features.map((feature) => (
+                  <div className='item' key={feature}>
+                    <CheckIcon />
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                className='button button--filled'
+                onClick={() => setShowCheckOut(true)}
+              >
+                Proceed
+              </button>
+              {showCheckOut && gigId &&  !isLoadingOrders &&
+                <>
+                  <Recipient
+                    state={state}
+                    dispatch={dispatch}
+                  />
+                  <UploadPreview
+                    state={state}
+                    dispatch={dispatch}
+                    handleCheckout={handleCheckout}
+                  />
+                </>
+              }
+              {isLoadingOrders && <Loader />}
             </div>
-            <button
-              className='button button--filled'
-              onClick={() => setShowCheckOut(true)}
-            >
-              Proceed
-            </button>
-            {showCheckOut && gigId &&  !isLoadingOrders &&
-              <>
-                <Recipient
-                  state={state}
-                  dispatch={dispatch}
-                />
-                <UploadPreview
-                  state={state}
-                  dispatch={dispatch}
-                  handleCheckout={handleCheckout}
-                />
-              </>
-            }
-            {isLoadingOrders && <Loader />}
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   )
 }
 
