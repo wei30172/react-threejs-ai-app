@@ -2,8 +2,9 @@
 
 .form-input {
   width: 100%;
+  
   span {
-    width: 300px;
+    max-width: 300px;
     display: none;
     font-size: 12px;
     line-height: 14px;
