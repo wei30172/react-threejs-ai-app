@@ -180,7 +180,7 @@ const Register: FC = () => {
             <div className='picture flex-center'>
               <label htmlFor=''>Profile Picture</label>
               <input type='file' onChange={handleFileChange} />
-              {previewURL ? <img src={previewURL} alt='Preview' /> : <PreviewIcon />}
+              {previewURL ? <img src={previewURL} alt='preview' /> : <PreviewIcon />}
             </div>
             {/* <div className='toggle flex-center'>
               <label htmlFor=''>Activate the seller account for FREE</label>
