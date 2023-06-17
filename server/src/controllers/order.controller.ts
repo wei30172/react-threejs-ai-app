@@ -5,7 +5,7 @@ import Order from '../models/order.model'
 import Gig from '../models/gig.model'
 import { IRequest } from '../middleware/jwt'
 
-const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'logoDecal', 'fullDecal', 'url']
+const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'url']
 
 export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {

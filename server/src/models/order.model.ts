@@ -84,12 +84,10 @@ const OrderSchema: Schema = new Schema(
       required: true
     },
     logoDecal: {
-      type: String,
-      required: true
+      type: String
     },
     fullDecal: {
-      type: String,
-      required: true
+      type: String
     },
     url: {
       type: String,
