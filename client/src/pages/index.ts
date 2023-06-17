@@ -12,8 +12,6 @@ import Pay from './pay/Pay'
 import Success from './success/Success'
 import Messages from './messages/Messages'
 import Message from './message/Message'
-import MyImages from './MyImages'
-import AddImage from './AddImage'
 
 export {
   Home,
@@ -29,7 +27,5 @@ export {
   Pay,
   Success,
   Messages,
-  Message,
-  MyImages,
-  AddImage
+  Message
 }

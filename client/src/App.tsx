@@ -13,8 +13,6 @@ import {
   Order,
   Messages,
   Message,
-  MyImages,
-  AddImage,
   Register,
   Login,
   Pay,
@@ -81,14 +79,6 @@ function App() {
         {
           path: '/message/:id',
           element: <Message />
-        },
-        {
-          path: '/my-images',
-          element: <MyImages />
-        },
-        {
-          path: '/add-image',
-          element: <AddImage />
         }
       ]
     },
