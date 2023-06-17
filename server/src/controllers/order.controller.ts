@@ -32,6 +32,11 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
     })
 
     await newOrder.save()
+
+    await Gig.findByIdAndUpdate(req.body.gigId, {
+      $inc: { sales: 1 }
+    }, { new: true })
+
     res.status(200).json({ message: 'Order created successfully', orderId: newOrder._id })
   } catch (err) {
     next(err)
