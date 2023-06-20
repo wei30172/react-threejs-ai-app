@@ -14,7 +14,7 @@ const Toast: FC<ToastProps & { onHide: () => void }> = (
   { message, isVisible, type = 'success', onHide }
 ) => {
   useEffect(() => {
-    const timer = setTimeout(onHide, 3000)
+    const timer = setTimeout(onHide, 10000)
     return () => clearTimeout(timer)
   }, [onHide])
 

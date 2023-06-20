@@ -18,7 +18,7 @@ const MyGigs: FC = () => {
   const { showToast, hideToast, toastConfig } = useToast()
 
   const { isLoading, error, data, refetch } = useQuery({
-    queryKey: ['myGigs'],
+    queryKey: ['mygigs'],
     queryFn: () =>
       newRequest.get(`/gigs?userId=${currentUser?._id}`).then((res) => {
         return res.data

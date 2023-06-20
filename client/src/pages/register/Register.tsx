@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 // import { FC, ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import { uploadImage }  from '../../utils/handleUploadImage'
@@ -21,7 +22,6 @@ export interface IUser {
 }
 
 const Register: FC = () => {
-  const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUser>({
@@ -38,7 +38,7 @@ const Register: FC = () => {
   const { showToast, hideToast, toastConfig } = useToast()
 
   const navigate = useNavigate()
-
+  
   const formInputs = [
     {
       id: 1,
@@ -124,33 +124,40 @@ const Register: FC = () => {
   //   })
   // }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    
-    if (file !== null) {
-      setIsLoading(true)
-      const url = await uploadImage(file)
-      try {
-        const response = await newRequest.post('auth/register', {
-          ...user,
+  const registerMutation = useMutation({
+    mutationFn: async (userData: IUser) => {
+      if (file !== null) {
+        const url = await uploadImage(file)
+        return newRequest.post('/auth/register', {
+          ...userData,
           img: url
         })
-        showToast(`${response.data.message} To the homepage in 10 seconds...`, 'success')
-        setTimeout(() => {
-          navigate('/')
-        }, 10000)
-
-      } catch (error) {
+      } else {
+        throw new Error('Please upload an avatar image')
+      }
+    },
+    onSuccess: () => {
+      showToast('User has been created please login. To the home page in 10 seconds...', 'success')
+      setTimeout(() => {
+        navigate('/')
+      }, 10000)
+    },
+    onError: (error) => {
+      if (error instanceof Error && error.message === 'Please upload an avatar image') {
+        showToast('Please upload an avatar image', 'warning')
+      } else {
         const axiosError = error as AxiosError
         const errorMessage = axiosError.response?.data?.message || 'Register failed'
         showToast(errorMessage, 'error')
-        
-      } finally {
-        setIsLoading(false)
       }
-    } else {
-      showToast('Please upload an avatar image', 'warning')
     }
+  })
+
+  const { isLoading } = registerMutation
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    registerMutation.mutateAsync(user)
   }
 
   return (

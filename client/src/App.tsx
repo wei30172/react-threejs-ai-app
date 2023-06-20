@@ -1,4 +1,3 @@
-import './styles/_main.scss'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -15,27 +14,27 @@ import {
   Message,
   Register,
   Login,
+  Profile,
   Pay,
   Success,
   NotFound
 } from './pages'
 import { Navbar, Footer } from './components'
+import './styles/_main.scss'
 
 function App() {
   const Layout = () => {
-    const queryClient = new QueryClient()
-    
     return (
       <div className='app'>
-        <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Outlet />
-          <Footer />
-        </QueryClientProvider>
+        <Navbar />
+        <Outlet />
+        <Footer />
       </div>
     )
   }
 
+  const queryClient = new QueryClient()
+  
   const router = createBrowserRouter([
     {
       path: '/',
@@ -80,6 +79,10 @@ function App() {
         {
           path: '/message/:id',
           element: <Message />
+        },
+        {
+          path: '/profile',
+          element: <Profile />
         }
       ]
     },
@@ -105,7 +108,11 @@ function App() {
     }
   ])
 
-  return <RouterProvider router={router} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  )
 }
 
 export default App

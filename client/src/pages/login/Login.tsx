@@ -1,9 +1,11 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
 
 import newRequest, { AxiosError } from '../../utils/newRequest'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
+import { Loader } from '../../components/icons'
 import './Login.scss'
 
 interface User {
@@ -51,19 +53,26 @@ const Login: FC = () => {
     setUser({ ...user, [target.name]: target.value })
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    
-    try {
-      const res = await newRequest.post('auth/login', user)
-      localStorage.setItem('currentUser', JSON.stringify(res.data))
+  const loginMutation = useMutation({
+    mutationFn: (user: User) => {
+      return newRequest.post('/auth/login', user)
+    },
+    onSuccess: ({data}) => {
+      localStorage.setItem('currentUser', JSON.stringify(data))
       navigate('/')
-      
-    } catch (error) {
+    },
+    onError: (error) => {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Login failed'
       showToast(errorMessage, 'error')
     }
+  })
+
+  const { isLoading } = loginMutation
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    loginMutation.mutate(user)
   }
   
   return (
@@ -88,11 +97,15 @@ const Login: FC = () => {
             </div>
           ))}
           <button
-            disabled={!user.email || !user.password}
+            disabled={
+              !user.email ||
+              !user.password ||
+              isLoading
+            }
             className='button button--filled'
             type='submit'
           >
-            Login
+            {isLoading ? <Loader /> : 'Login'}
           </button>
           <div className='navigation flex-center'>
             <p>Do not have an account?</p>

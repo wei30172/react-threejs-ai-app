@@ -27,7 +27,7 @@ const Message: FC = () => {
       })
   })
 
-  const mutation = useMutation({
+  const messageMutation = useMutation({
     mutationFn: (message: { conversationId: string, desc: string }) => {
       return newRequest.post('/messages', message)
     },
@@ -39,7 +39,7 @@ const Message: FC = () => {
     }
   })
 
-  const { isLoading: isLoadingMessage,  error: errorMessage} = mutation
+  const { isLoading: isLoadingMessage,  error: errorMessage} = messageMutation
   const isLoadingOrError = isLoading || error
 
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
@@ -47,12 +47,12 @@ const Message: FC = () => {
     const textarea = e.currentTarget.elements[0] as HTMLTextAreaElement
 
     if (id) {
-      mutation.mutate({
+      messageMutation.mutate({
         conversationId: id,
         desc: textarea.value
       })
     }
-  }, [id, mutation])
+  }, [id, messageMutation])
 
   return (
     <div className='message'>

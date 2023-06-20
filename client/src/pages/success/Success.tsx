@@ -38,7 +38,7 @@ const Success: FC = () => {
     <div className='success'>
       <div className='container'>
         {errorMessage 
-          ? <p>{errorMessage} You are being redirected to the orders page. Please do not close the page.</p> 
+          ? <p className='error-message'>{errorMessage} Please try again later.</p> 
           : <p>Payment successful. You are being redirected to the orders page. Please do not close the page.</p>
         }
       </div>

@@ -1,0 +1,32 @@
+@use "../../styles/mixin/colors" as colors;
+
+.profile {
+  form {
+    flex-direction: column;
+    width: 960px;
+    padding: 80px 0px;
+    display: flex;
+    gap: 40px;
+
+    h1 {
+      color: colors.$dark-800;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      width: 300px;
+      margin: 5px auto;
+    }
+  
+    label {
+      color: colors.$dark-600;
+      font-size: 18px;
+    }
+
+    input {
+      width: 300px;
+      padding: 15px;
+      border: 1px solid colors.$dark-100;
+    }
+  }
+}

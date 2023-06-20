@@ -104,7 +104,7 @@ const AddGig: FC = () => {
 
   const queryClient = useQueryClient()
 
-  const mutation = useMutation({
+  const gigMutation = useMutation({
     mutationFn: (gig: GigState) => {
       return newRequest.post('/gigs', gig)
     },
@@ -113,13 +113,13 @@ const AddGig: FC = () => {
     }
   })
 
-  const { isLoading: isLoadingGigs } = mutation
+  const { isLoading: isLoadingGigs } = gigMutation
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     if (state.cover !== '' && state.images.length !== 0) {
-      mutation.mutate(state, {
+      gigMutation.mutate(state, {
         onSuccess: () => {
           showToast('Create gig successfully, To the My Gigs page in 10 seconds...', 'success')
           setTimeout(() => {

@@ -129,7 +129,7 @@ const EditGig: FC = () => {
 
   const queryClient = useQueryClient()
 
-  const mutation = useMutation({
+  const gigMutation = useMutation({
     mutationFn: (gig: GigState) => {
       return newRequest.put(`/gigs/${gigId}`, gig)
     },
@@ -138,12 +138,12 @@ const EditGig: FC = () => {
     }
   })
 
-  const { isLoading: isLoadingGigs } = mutation
+  const { isLoading: isLoadingGigs } = gigMutation
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    mutation.mutate(state, {
+    gigMutation.mutate(state, {
       onSuccess: () => {
         showToast('Update gig successfully, To the My Gigs page in 10 seconds...', 'success')
         setTimeout(() => {

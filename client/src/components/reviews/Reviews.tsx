@@ -25,7 +25,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
       newRequest.get(`/reviews/${gigId}`).then((res) => res.data)
   })
 
-  const mutation = useMutation({
+  const reviewMutation = useMutation({
     mutationFn: (review: IReview) => {
       return newRequest.post('/reviews', review)
     },
@@ -34,7 +34,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
     }
   })
 
-  const { isLoading: isLoadingReview,  error: errorRview} = mutation
+  const { isLoading: isLoadingReview,  error: errorRview} = reviewMutation
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -42,7 +42,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
       const desc = descRef.current.value
       const star = Number(starRef.current.value)
       const userId = currentUser._id
-      mutation.mutate({ userId , gigId, desc, star })
+      reviewMutation.mutate({ userId , gigId, desc, star })
       descRef.current.value=''
       starRef.current.value='5'
     }

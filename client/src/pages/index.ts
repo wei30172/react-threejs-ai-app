@@ -1,6 +1,7 @@
 import Home from './Home/Home'
 import Register from './register/Register'
 import Login from './login/Login'
+import Profile from './profile/Profile'
 import Gigs from './gigs/Gigs'
 import Gig from './gig/Gig'
 import MyGigs from './myGigs/MyGigs'
@@ -18,6 +19,7 @@ export {
   Home,
   Register,
   Login,
+  Profile,
   Gigs,
   Gig,
   MyGigs,

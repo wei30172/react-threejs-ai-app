@@ -40,7 +40,7 @@ const Gig: FC = () => {
 
   const queryClient = useQueryClient()
 
-  const mutation = useMutation({
+  const orderMutation = useMutation({
     mutationFn: (order: OrderState) => {
       return newRequest.post('/orders', order)
     },
@@ -49,11 +49,11 @@ const Gig: FC = () => {
     }
   })
 
-  const { isLoading: isLoadingOrders } = mutation
+  const { isLoading: isLoadingOrders } = orderMutation
 
   const handleCheckout = useCallback((e: React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault()
-    mutation.mutate(state, {
+    orderMutation.mutate(state, {
       onSuccess: () => {
         setShowCheckOut(false)
         showToast('Created order successfully, To the Order page in 5 seconds...', 'success')
@@ -67,7 +67,7 @@ const Gig: FC = () => {
         showToast(errorMessage, 'error')
       }
     })
-  }, [mutation, state, navigate, showToast])
+  }, [orderMutation, state, navigate, showToast])
 
   return (
     <>

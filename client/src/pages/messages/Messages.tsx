@@ -31,7 +31,7 @@ const Messages: FC = () => {
       })
   })
 
-  const mutation = useMutation({
+  const messageMutation = useMutation({
     mutationFn: (id: string) => {
       return newRequest.put(`/conversations/${id}`)
     },
@@ -41,7 +41,7 @@ const Messages: FC = () => {
   })
 
   const handleToggleRead = (id: string) => {
-    mutation.mutate(id)
+    messageMutation.mutate(id)
   }
 
   return (
