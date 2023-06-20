@@ -1,13 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-interface IPost extends Document {
+interface IAiimage extends Document {
   name: string
   prompt: string
   photo: string
   cloudinary_id: string
 }
 
-const PostSchema: Schema = new Schema(
+const AiimageSchema: Schema = new Schema(
   {
     name: {
       type: String,
@@ -31,4 +31,4 @@ const PostSchema: Schema = new Schema(
   }
 )
 
-export default mongoose.model<IPost>('Post', PostSchema)
+export default mongoose.model<IAiimage>('Aiimage', AiimageSchema)

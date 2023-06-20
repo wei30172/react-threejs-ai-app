@@ -10,6 +10,9 @@ interface IUserRegisterRequest extends Request {
 
 const SALT_ROUNDS = 10
 
+// @desc    Register a new user
+// @route   POST /api/auth/register
+// @access  Public
 export const register = async (req: IUserRegisterRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { email, password } = req.body
@@ -43,6 +46,9 @@ interface IUserLoginRequest extends Request {
   }
 }
 
+// @desc    login & get token
+// @route   POST /api/auth/login
+// @access  Public
 export const login = async (req: IUserLoginRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { email, password: userInputPassword } = req.body
@@ -91,6 +97,9 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
   }
 }
 
+// @desc    Logout user & clear cookie
+// @route   POST /api/auth/logout
+// @access  Public
 export const logout = async (req: Request, res: Response): Promise<void> => {
   res
     .clearCookie('accessToken', {

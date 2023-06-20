@@ -9,6 +9,9 @@ interface IRequest extends Request {
 
 const SALT_ROUNDS = 10
 
+// @desc    Get Single User
+// @route   GET /api/users/:id
+// @access  Public
 export const getUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.params.id
@@ -32,6 +35,9 @@ export const getUser = async (req: IRequest, res: Response, next: NextFunction):
   }
 }
 
+// @desc    Delete User
+// @route   DELETE /api/users/profile
+// @access  Private
 export const deleteUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findByIdAndDelete(req.userId)
@@ -47,6 +53,9 @@ export const deleteUser = async (req: IRequest, res: Response, next: NextFunctio
   }
 }
 
+// @desc    Get User Profile
+// @route   GET /api/users/profile
+// @access  Private
 export const getUserProfile = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findById(req.userId) as IUser
@@ -64,6 +73,9 @@ export const getUserProfile = async (req: IRequest, res: Response, next: NextFun
   }
 }
 
+// @desc    Update User Profile
+// @route   PUT /api/users/profile
+// @access  Private
 export const updateUserProfile = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findById(req.userId) as IUser

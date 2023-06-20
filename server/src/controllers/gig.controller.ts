@@ -3,6 +3,9 @@ import createError from '../utils/createError'
 import Gig from '../models/gig.model'
 import { IRequest } from '../middleware/authMiddleware'
 
+// @desc    Create Gig
+// @route   POST /api/gigs
+// @access  Private
 export const createGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   if (!req.isSeller) {
     return next(createError(403, 'Only sellers can create a gig!'))
@@ -21,6 +24,9 @@ export const createGig = async (req: IRequest, res: Response, next: NextFunction
   }
 }
 
+// @desc    Get Single Gig
+// @route   GET /api/gigs/single/:id
+// @access  Public
 export const getGig = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
@@ -33,6 +39,9 @@ export const getGig = async (req: Request, res: Response, next: NextFunction): P
   }
 }
 
+// @desc    Get Gigs
+// @route   GET /api/gigs
+// @access  Public
 export const getGigs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const q = req.query
   const filters = {
@@ -53,7 +62,9 @@ export const getGigs = async (req: Request, res: Response, next: NextFunction): 
     next(err)
   }
 }
-
+// @desc    Delete Gig
+// @route   DELETE /api/gigs/:id
+// @access  Private
 export const deleteGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
@@ -73,6 +84,9 @@ export const deleteGig = async (req: IRequest, res: Response, next: NextFunction
   }
 }
 
+// @desc    Update Gig
+// @route   PUT /api/gigs/:id
+// @access  Private
 export const updateGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)

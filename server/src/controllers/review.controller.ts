@@ -6,6 +6,9 @@ import Gig, { IGig } from '../models/gig.model'
 import Order from '../models/order.model'
 import { IRequest } from '../middleware/authMiddleware'
 
+// @desc    Create Review
+// @route   POST /api/reviews
+// @access  Private
 export const createReview = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   if (req.isSeller) {
     return next(createError(403, 'Sellers can not create a review!'))
@@ -51,6 +54,9 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
   }
 }
 
+// @desc    Get Reviews
+// @route   GET /api/reviews/:gigId
+// @access  Public
 export const getReviews = async (req: Request<{ gigId: IGig['_id'] }>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const reviews = await Review.find({ gigId: req.params.gigId })
@@ -60,6 +66,9 @@ export const getReviews = async (req: Request<{ gigId: IGig['_id'] }>, res: Resp
   }
 }
 
+// @desc    Delete Review
+// @route   DELETE /api/reviews/:id
+// @access  Private
 export const deleteReview = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const review = await Review.findById(req.params.id)

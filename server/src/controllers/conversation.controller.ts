@@ -3,6 +3,9 @@ import createError from '../utils/createError'
 import Conversation from '../models/conversation.model'
 import { IRequest } from '../middleware/authMiddleware'
 
+// @desc    Create Conversation
+// @route   POST /api/conversations
+// @access  Private
 export const createConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const { userId, isSeller, body: { to } } = req
   if (!userId || !to) return next(createError(400, 'Invalid parameters'))
@@ -23,6 +26,9 @@ export const createConversation = async (req: IRequest, res: Response, next: Nex
   }
 }
 
+// @desc    Update Conversation
+// @route   PUT /api/conversations/:id
+// @access  Private
 export const updateConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const { params: { id }, isSeller } = req
   if (!id) return next(createError(400, 'Invalid parameters'))
@@ -50,6 +56,10 @@ export const updateConversation = async (req: IRequest, res: Response, next: Nex
   }
 }
 
+// @desc    Get Single Conversation
+// @route   GET /api/conversations/single/:id
+// @access  Private
+
 export const getSingleConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const { params: { id } } = req
   if (!id) return next(createError(400, 'Invalid parameters'))
@@ -63,6 +73,9 @@ export const getSingleConversation = async (req: IRequest, res: Response, next: 
   }
 }
 
+// @desc    Get Conversations
+// @route   GET /api/conversations
+// @access  Private
 export const getConversations = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const { userId, isSeller } = req
 

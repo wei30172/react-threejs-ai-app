@@ -2,7 +2,7 @@ import express, { Router } from 'express'
 import * as dotenv from 'dotenv'
 import { v2 as cloudinary } from 'cloudinary'
 
-import { getPosts, savePost, deletePost } from '../controllers/post.controlles'
+import { getImages, saveImage, deleteImage } from '../controllers/aiimage.controlles'
 
 dotenv.config()
 
@@ -15,8 +15,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-router.get('/', getPosts)
-router.post('/', savePost)
-router.delete('/:id', deletePost)
+router.get('/', getImages)
+router.post('/', saveImage)
+router.delete('/:id', deleteImage)
 
 export default router

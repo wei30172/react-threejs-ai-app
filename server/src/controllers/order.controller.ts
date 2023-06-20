@@ -7,6 +7,9 @@ import { IRequest } from '../middleware/authMiddleware'
 
 const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'url']
 
+// @desc    Create Order
+// @route   POST /api/orders
+// @access  Private
 export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.body.gigId)
@@ -54,6 +57,9 @@ const getStripe = () => {
 
 export default getStripe
 
+// @desc    Create Payment Intent
+// @route   POST /api/orders/create-payment-intent/:id
+// @access  Private
 export const intent = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const order = await Order.findById(req.params.id)
@@ -86,6 +92,9 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
   }
 }
 
+// @desc    Get Single Order
+// @route   GET /api/orders/single/:id
+// @access  Private
 export const getOrder = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
     const order = await Order.findById(req.params.id)
@@ -98,6 +107,9 @@ export const getOrder = async (req: IRequest, res: Response, next: NextFunction)
   }
 }
 
+// @desc    Get Orders
+// @route   GET /api/orders
+// @access  Private
 export const getOrders = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const orders = await Order.find({
@@ -110,6 +122,9 @@ export const getOrders = async (req: IRequest, res: Response, next: NextFunction
   }
 }
 
+// @desc    Confirm Payment
+// @route   PUT /api/orders
+// @access  Private
 export const confirm = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const stripe = getStripe()

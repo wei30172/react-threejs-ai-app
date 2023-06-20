@@ -13,7 +13,7 @@ import conversationRoute from './routes/conversation.route'
 import messageRoute from './routes/message.route'
 import reviewRoute from './routes/review.route'
 import authRoute from './routes/auth.route'
-import postRoutes from './routes/post.routes'
+import aiimageRoutes from './routes/aiimage.routes'
 import dalleRoutes from './routes/dalle.routes'
 
 dotenv.config()
@@ -51,7 +51,7 @@ app.use('/api/orders', orderRoute)
 app.use('/api/conversations', conversationRoute)
 app.use('/api/messages', messageRoute)
 app.use('/api/reviews', reviewRoute)
-app.use('/api/post', postRoutes)
+app.use('/api/aiimage', aiimageRoutes)
 app.use('/api/dalle', dalleRoutes)
 
 app.get('/', (_req: Request, res: Response) => {
