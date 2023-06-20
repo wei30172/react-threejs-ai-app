@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import createError from '../utils/createError'
 import Gig from '../models/gig.model'
-import { IRequest } from '../middleware/jwt'
+import { IRequest } from '../middleware/authMiddleware'
 
-export const createGig = async (req: IRequest, res: Response, next: NextFunction) => {
-  if (!req.isSeller)
+export const createGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.isSeller) {
     return next(createError(403, 'Only sellers can create a gig!'))
+  }
 
   const newGig = new Gig({
     userId: req.userId,
@@ -20,7 +21,7 @@ export const createGig = async (req: IRequest, res: Response, next: NextFunction
   }
 }
 
-export const getGig = async (req: Request, res: Response, next: NextFunction) => {
+export const getGig = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
     if (!gig) {
@@ -32,7 +33,7 @@ export const getGig = async (req: Request, res: Response, next: NextFunction) =>
   }
 }
 
-export const getGigs = async (req: Request, res: Response, next: NextFunction) => {
+export const getGigs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const q = req.query
   const filters = {
     ...(q.userId && { userId: q.userId }),
@@ -53,7 +54,7 @@ export const getGigs = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-export const deleteGig = async (req: IRequest, res: Response, next: NextFunction) => {
+export const deleteGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
 
@@ -72,7 +73,7 @@ export const deleteGig = async (req: IRequest, res: Response, next: NextFunction
   }
 }
 
-export const updateGig = async (req: IRequest, res: Response, next: NextFunction) => {
+export const updateGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
 

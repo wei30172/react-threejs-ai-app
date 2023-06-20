@@ -14,9 +14,11 @@ interface IPayload {
 
 export const verifyToken = (req: IRequest, res: Response, next: NextFunction): void => {
   const token = req.cookies['accessToken']
+
   if (!token) return next(createError(401, 'You are not authenticated!' ))
   
   const jwtKey = process.env.JWT_KEY
+
   if (!jwtKey) {
     return next(createError(500, 'jwt key not set' )) 
   }

@@ -4,7 +4,7 @@ import createError from '../utils/createError'
 import Review, { IReview } from '../models/review.model'
 import Gig, { IGig } from '../models/gig.model'
 import Order from '../models/order.model'
-import { IRequest } from '../middleware/jwt'
+import { IRequest } from '../middleware/authMiddleware'
 
 export const createReview = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   if (req.isSeller) {
@@ -44,7 +44,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
     await Gig.findByIdAndUpdate(req.body.gigId, {
       $inc: { totalStars: req.body.star, starNumber: 1 }
     })
-    
+
     res.status(201).send(savedReview)
   } catch (err) {
     next(err)
@@ -71,7 +71,7 @@ export const deleteReview = async (req: IRequest, res: Response, next: NextFunct
     if (review.userId !== req.userId) {
       return next(createError(403, 'You can only delete your own reviews'))
     }
-    
+
     await Review.findByIdAndDelete(req.params.id)
 
     await Gig.findByIdAndUpdate(review.gigId, {

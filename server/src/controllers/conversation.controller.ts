@@ -1,15 +1,18 @@
 import { NextFunction, Response } from 'express'
 import createError from '../utils/createError'
 import Conversation from '../models/conversation.model'
-import { IRequest } from '../middleware/jwt'
+import { IRequest } from '../middleware/authMiddleware'
 
 export const createConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const { userId, isSeller, body: { to } } = req
+  if (!userId || !to) return next(createError(400, 'Invalid parameters'))
+
   const newConversation = new Conversation({
-    id: req.isSeller ? req.userId + req.body.to : req.body.to + req.userId, // sellerId + buyerId
-    sellerId: req.isSeller ? req.userId : req.body.to,
-    buyerId: req.isSeller ? req.body.to : req.userId,
-    readBySeller: req.isSeller,
-    readByBuyer: !req.isSeller
+    id: isSeller ? userId + to : to + userId, // sellerId + buyerId
+    sellerId: isSeller ? userId : to,
+    buyerId: isSeller ? to : userId,
+    readBySeller: isSeller,
+    readByBuyer: !isSeller
   })
 
   try {
@@ -21,14 +24,19 @@ export const createConversation = async (req: IRequest, res: Response, next: Nex
 }
 
 export const updateConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const { params: { id }, isSeller } = req
+  if (!id) return next(createError(400, 'Invalid parameters'))
+
   try {
-    const conversation = await Conversation.findOne({ id: req.params.id })
+    const conversation = await Conversation.findOne({ id })
+
+    if (!conversation) return next(createError(404, 'Conversation not found'))
 
     const updatedConversation = await Conversation.findOneAndUpdate(
-      { id: req.params.id },
+      { id },
       {
         $set: {
-          ...(req.isSeller 
+          ...(isSeller 
             ? { readBySeller: !conversation?.readBySeller } 
             : { readByBuyer: !conversation?.readByBuyer })
         }
@@ -43,9 +51,12 @@ export const updateConversation = async (req: IRequest, res: Response, next: Nex
 }
 
 export const getSingleConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const { params: { id } } = req
+  if (!id) return next(createError(400, 'Invalid parameters'))
+
   try {
-    const conversation = await Conversation.findOne({ id: req.params.id })
-    if (!conversation) return next(createError(404, 'Conversation not found!'))
+    const conversation = await Conversation.findOne({ id })
+    if (!conversation) return next(createError(404, 'Conversation not found'))
     res.status(200).send(conversation)
   } catch (err) {
     next(err)
@@ -53,9 +64,11 @@ export const getSingleConversation = async (req: IRequest, res: Response, next: 
 }
 
 export const getConversations = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const { userId, isSeller } = req
+
   try {
     const conversations = await Conversation.find(
-      req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId }
+      isSeller ? { sellerId: userId } : { buyerId: userId }
     ).sort({ updatedAt: -1 })
     res.status(200).send(conversations)
   } catch (err) {

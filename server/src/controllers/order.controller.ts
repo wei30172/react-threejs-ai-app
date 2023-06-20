@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import createError from '../utils/createError'
 import Order from '../models/order.model'
 import Gig from '../models/gig.model'
-import { IRequest } from '../middleware/jwt'
+import { IRequest } from '../middleware/authMiddleware'
 
 const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'url']
 
@@ -43,6 +43,17 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
   }
 }
 
+const getStripe = () => {
+  const stripeKey = process.env.STRIPE_KEY
+  if (!stripeKey) {
+    throw createError(500, 'Stripe key not set')
+  }
+
+  return new Stripe(stripeKey, { apiVersion: '2022-11-15' })
+}
+
+export default getStripe
+
 export const intent = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const order = await Order.findById(req.params.id)
@@ -51,21 +62,19 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
       return next(createError(404, 'Order not found'))
     }
 
-    const stripeKey = process.env.STRIPE_KEY
-    if (!stripeKey) {
-      return next(createError(500, 'Stripe key not set'))
-    }
-    const stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15' })
+    const stripe = getStripe()
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: order.price * 100,
       currency: 'twd',
-      automatic_payment_methods: {
-        enabled: true
-      }
+      metadata: { orderId: order._id.toString() }
     })
 
-    if (paymentIntent) order.payment_intent = paymentIntent.id
+    if (!paymentIntent) {
+      return next(createError(500, 'Failed to create payment intent'))
+    }
+
+    order.payment_intent = paymentIntent.id
 
     await order.save()
 
@@ -103,14 +112,19 @@ export const getOrders = async (req: IRequest, res: Response, next: NextFunction
 
 export const confirm = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await Order.findOneAndUpdate({
-      payment_intent: req.body.payment_intent
-    },
-    {
-      $set: {
-        isPaid: true
-      }
-    })
+    const stripe = getStripe()
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(req.body.payment_intent)
+    const orderId = paymentIntent.metadata.orderId // Get the order id from PaymentIntent metadata
+
+    const order = await Order.findById(orderId)
+
+    if (!order) {
+      return next(createError(400, 'Order not found.'))
+    }
+
+    order.isPaid = true
+    await order.save()
 
     res.status(200).send('Order has been confirmed.')
   } catch (err) {

@@ -1,5 +1,5 @@
 import express, { Router } from 'express'
-import { verifyToken } from '../middleware/jwt'
+import { verifyToken } from '../middleware/authMiddleware'
 import {
   createReview,
   getReviews,

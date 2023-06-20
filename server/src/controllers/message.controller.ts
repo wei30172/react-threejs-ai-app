@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import Message from '../models/message.model'
 import Conversation from '../models/conversation.model'
-import { IRequest } from '../middleware/jwt'
+import { IRequest } from '../middleware/authMiddleware'
 
-export const createMessage = async (req: IRequest, res: Response, next: NextFunction) => {
+export const createMessage = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const newMessage = new Message({
     conversationId: req.body.conversationId,
     userId: req.userId,
@@ -29,7 +29,7 @@ export const createMessage = async (req: IRequest, res: Response, next: NextFunc
   }
 }
 
-export const getMessages = async (req: Request, res: Response, next: NextFunction) => {
+export const getMessages = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const messages = await Message.find({ conversationId: req.params.id })
     res.status(200).send(messages)

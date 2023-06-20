@@ -8,12 +8,22 @@ interface IUserRegisterRequest extends Request {
   body: IUser
 }
 
+const SALT_ROUNDS = 10
+
 export const register = async (req: IUserRegisterRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = await User.findOne({ email: req.body.email })
-    if (user) return next(createError(404, 'The email has been registered'))
+    const { email, password } = req.body
 
-    const hash = bcrypt.hashSync(req.body.password, 5)
+    if (!email || !password) {
+      return next(createError(400, 'Missing email or password'))
+    }
+
+    const user = await User.findOne({ email })
+    if (user) return next(createError(409, 'The email has been registered'))
+
+    const salt = await bcrypt.genSalt(SALT_ROUNDS)
+    const hash = await bcrypt.hash(password, salt)
+
     const newUser = new User({
       ...req.body,
       password: hash
@@ -35,16 +45,21 @@ interface IUserLoginRequest extends Request {
 
 export const login = async (req: IUserLoginRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = await User.findOne({ email: req.body.email })
-    if (!user) return next(createError(404, 'User not found' ))
+    const { email, password: userInputPassword } = req.body
+    
+    if (!email || !userInputPassword) {
+      return next(createError(400, 'Missing email or password'))
+    }
 
-    const isCorrect = bcrypt.compareSync(req.body.password, user.password)
-    if (!isCorrect)
-      return next(createError(400, 'Wrong password' ))
+    const user = await User.findOne({ email })
+    if (!user) return next(createError(404, 'User not found'))
+
+    const isCorrect = await bcrypt.compare(userInputPassword, user.password)
+    if (!isCorrect) return next(createError(400, 'Wrong password'))
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {
-      return next(createError(500, 'jwt key not set' )) 
+      return next(createError(500, 'JWT key not set'))
     }
 
     const token = jwt.sign(
@@ -52,7 +67,10 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
         id: user._id,
         isSeller: user.isSeller
       },
-      jwtKey
+      jwtKey,
+      {
+        expiresIn: '30d'
+      }
     )
 
     const userObject = user.toObject()
@@ -61,7 +79,10 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
     
     res
       .cookie('accessToken', token, {
-        httpOnly: true
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+        sameSite: 'strict', // Prevent CSRF attacks
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
       })
       .status(200)
       .json(info)
