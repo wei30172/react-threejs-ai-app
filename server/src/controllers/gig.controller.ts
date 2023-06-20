@@ -62,7 +62,7 @@ export const getGigs = async (req: Request, res: Response, next: NextFunction): 
     next(err)
   }
 }
-// @desc    Delete Gig
+// @desc    Delete Single Gig
 // @route   DELETE /api/gigs/:id
 // @access  Private
 export const deleteGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {

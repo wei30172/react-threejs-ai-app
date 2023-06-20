@@ -3,6 +3,17 @@ import createError from '../utils/createError'
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
 import Image from '../models/aiimage.model'
 
+// @desc    Get AI Images
+// @route   GET /api/aiimages
+// @access  Public
+
+// @desc    Save Single AI Image
+// @route   POST /api/aiimages
+// @access  Public
+
+// @desc    Delete Single AI Image
+// @route   DELETE /api/aiimages/:id
+// @access  Public
 export const getImages = async (_req: Request, res: Response) => {
   try {
     const images = await Image.find({})

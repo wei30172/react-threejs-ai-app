@@ -35,7 +35,7 @@ export const getUser = async (req: IRequest, res: Response, next: NextFunction):
   }
 }
 
-// @desc    Delete User
+// @desc    Delete Single User
 // @route   DELETE /api/users/profile
 // @access  Private
 export const deleteUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {

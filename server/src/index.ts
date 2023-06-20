@@ -51,7 +51,7 @@ app.use('/api/orders', orderRoute)
 app.use('/api/conversations', conversationRoute)
 app.use('/api/messages', messageRoute)
 app.use('/api/reviews', reviewRoute)
-app.use('/api/aiimage', aiimageRoutes)
+app.use('/api/aiimages', aiimageRoutes)
 app.use('/api/dalle', dalleRoutes)
 
 app.get('/', (_req: Request, res: Response) => {

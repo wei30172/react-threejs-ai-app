@@ -66,7 +66,7 @@ export const getReviews = async (req: Request<{ gigId: IGig['_id'] }>, res: Resp
   }
 }
 
-// @desc    Delete Review
+// @desc    Delete Single Review
 // @route   DELETE /api/reviews/:id
 // @access  Private
 export const deleteReview = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
