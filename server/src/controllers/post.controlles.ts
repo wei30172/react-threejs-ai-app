@@ -6,7 +6,7 @@ import Post from '../models/post.model'
 // @desc    Get AI Images
 // @route   GET /api/imageposts
 // @access  Public
-export const getImagePost = async (_req: Request, res: Response) => {
+export const getImagePosts = async (_req: Request, res: Response) => {
   try {
     const images = await Post.find({})
     

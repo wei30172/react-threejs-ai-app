@@ -57,7 +57,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
 // @desc    Get Reviews
 // @route   GET /api/reviews/:gigId
 // @access  Public
-export const getReviews = async (req: Request<{ gigId: IGig['_id'] }>, res: Response, next: NextFunction): Promise<void> => {
+export const getReviewsByGig = async (req: Request<{ gigId: IGig['_id'] }>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const reviews = await Review.find({ gigId: req.params.gigId })
     res.status(200).send(reviews)
