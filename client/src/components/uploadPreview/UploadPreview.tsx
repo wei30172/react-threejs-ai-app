@@ -1,21 +1,23 @@
 import { FC, useState } from 'react'
-import { useSnapshot } from 'valtio'
+import { useSelector, useDispatch } from 'react-redux'
 
-import designState from '../../store/designState'
-import { OrderState, OrderAction, OrderActionType } from '../../reducers/orderReducer'
+import { changeOrderInput } from '../../slices/orderSlice'
+import { setDesign } from '../../slices/designSlice'
+import { RootState } from '../../store'
 import { uploadCanvasImage } from '../../utils/handleCanvasImage'
 import { uploadImageWithUrl } from '../../utils/handleUploadImage'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './UploadPreview.scss'
 
 interface UploadPreviewProps {
-  state: OrderState
-  dispatch: React.Dispatch<OrderAction>
   handleCheckout: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const UploadPreview: FC<UploadPreviewProps> = ({ state, dispatch, handleCheckout }) => {
-  const snap = useSnapshot(designState)
+const UploadPreview: FC<UploadPreviewProps> = ({ handleCheckout }) => {
+  const dispatch = useDispatch()
+
+  const orderInfo = useSelector((state: RootState) => state.order)
+  const designInfo = useSelector((state: RootState) => state.design)
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -30,23 +32,18 @@ const UploadPreview: FC<UploadPreviewProps> = ({ state, dispatch, handleCheckout
       let logoDecal = ''
       let fullDecal = ''
 
-      if (designState.isLogoTexture) {
-        logoDecal = await uploadImageWithUrl(designState.logoDecal, 'logoDecal') || ''
+      if (designInfo.isLogoTexture) {
+        logoDecal = await uploadImageWithUrl(designInfo.logoDecal, 'logoDecal') || designInfo.logoDecal
+        dispatch(setDesign({ field: 'logoDecal', value: logoDecal }))
       }
 
-      if (designState.isFullTexture) {
-        fullDecal = await uploadImageWithUrl(designState.fullDecal, 'fullDecal') || ''
+      if (designInfo.isFullTexture) {
+        fullDecal = await uploadImageWithUrl(designInfo.fullDecal, 'fullDecal') || designInfo.fullDecal
+        dispatch(setDesign({ field: 'fullDecal', value: fullDecal }))
       }
 
-      dispatch({
-        type: OrderActionType.CHANGE_INPUT,
-        payload: {
-          ...snap,
-          url,
-          logoDecal,
-          fullDecal
-        }
-      })
+      dispatch(changeOrderInput({field: 'url', value: url}))
+
     } catch (err) {
       setError('Failed to upload image. Please try again.')
     } finally {
@@ -59,7 +56,7 @@ const UploadPreview: FC<UploadPreviewProps> = ({ state, dispatch, handleCheckout
       {isLoading 
         ? <Loader />
         : <button
-          disabled={!state.name || !state.email || !state.address || !state.phone}
+          disabled={!orderInfo.name || !orderInfo.email || !orderInfo.address || !orderInfo.phone}
           className='button button--outline'
           onClick={handleUpload}
         >
@@ -68,11 +65,11 @@ const UploadPreview: FC<UploadPreviewProps> = ({ state, dispatch, handleCheckout
       }
       {error && <span className='error-message'>{error}</span>}
       <div  className='my-design'>
-        {state.url ? <img src={state.url} alt='preview' /> : <PreviewIcon />}
+        {orderInfo.url ? <img src={orderInfo.url} alt='preview' /> : <PreviewIcon />}
       </div>
       <button
         disabled={
-          !state.name || !state.email || !state.address || !state.phone || !state.url
+          !orderInfo.name || !orderInfo.email || !orderInfo.address || !orderInfo.phone || !orderInfo.url
         }
         className='button button--filled'
         onClick={handleCheckout}

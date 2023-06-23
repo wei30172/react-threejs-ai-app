@@ -1,22 +1,17 @@
+import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 
-import { IGig } from '../../reducers/gigReducer'
-import { IUser } from '../../utils/getCurrentUser'
-import newRequest from '../../utils/newRequest'
+import { useGetUserInfoByIdQuery } from '../../slices/apiSlice/usersApiSlice'
+import { IGig } from '../../slices/apiSlice/gigsApiSlice'
 import { Loader, ErrorIcon, StarIconFilled, HeartIconFilled } from '../../components/icons'
 import './GigCard.scss'
 
 interface GigCardProps {
-  item: IGig
+  gigItem: IGig
 }
 
-const GigCard = ({ item }: GigCardProps) => {
-  const { isLoading, error, data } = useQuery<IUser, Error>({
-    queryKey: [item.userId],
-    queryFn: () =>
-      newRequest.get<IUser>(`/users/${item.userId}`).then((res) => res.data)
-  })
+const GigCard: FC<GigCardProps> = ({ gigItem }) => {
+  const { isLoading, error, data } = useGetUserInfoByIdQuery(gigItem.userId)
 
   const limitDescription = (description: string, limit = 100) => {
     if (description.length > limit) {
@@ -24,10 +19,11 @@ const GigCard = ({ item }: GigCardProps) => {
     }
     return description
   }
+
   return (
-    <Link to={`/gig/${item._id}`} className='link'>
+    <Link to={`/gig/${gigItem._id}`} className='link'>
       <div className='gig-card'>
-        <img src={item.cover} alt='Gig Cover' />
+        <img src={gigItem.cover} alt='Gig Cover' />
         <div className='info'>
           {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
             <div className='user'>
@@ -35,12 +31,12 @@ const GigCard = ({ item }: GigCardProps) => {
               <span>{data?.username}</span>
             </div>
           )}
-          <p>{limitDescription(item.desc)}</p>
+          <p>{limitDescription(gigItem.desc)}</p>
           <div className='star'>
             <StarIconFilled />
             <span>
-              {!isNaN(item.totalStars / item.starNumber) &&
-                Math.round(item.totalStars / item.starNumber)}
+              {!isNaN(gigItem.totalStars / gigItem.starNumber) &&
+                Math.round(gigItem.totalStars / gigItem.starNumber)}
             </span>
           </div>
         </div>
@@ -49,7 +45,7 @@ const GigCard = ({ item }: GigCardProps) => {
           <HeartIconFilled />
           <div className='price'>
             <span>STARTING AT</span>
-            <h2>$ {item.price}</h2>
+            <h2>$ {gigItem.price}</h2>
           </div>
         </div>
       </div>

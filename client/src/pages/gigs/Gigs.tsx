@@ -1,9 +1,7 @@
 import { FC, useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 
-import { IGig } from '../../reducers/gigReducer'
-import newRequest from '../../utils/newRequest'
+import { useGetGigsQuery } from '../../slices/apiSlice/gigsApiSlice'
 import { GigCard } from '../../components'
 import { Loader, ErrorIcon, BarsArrowDownIcon } from '../../components/icons'
 import './Gigs.scss'
@@ -16,12 +14,11 @@ const Gigs: FC = () => {
 
   const { search } = useLocation()
 
-  const { isLoading, error, data, refetch } = useQuery<IGig[], Error>({
-    queryKey: ['gigs'],
-    queryFn: () =>
-      newRequest
-        .get<IGig[]>(`/gigs?search=${search}&min=${minRef?.current?.value}&max=${maxRef?.current?.value}&sort=${sort}`)
-        .then((res) => res.data)
+  const { isLoading, error, data, refetch } = useGetGigsQuery({
+    search,
+    min: minRef?.current?.value,
+    max: maxRef?.current?.value,
+    sort
   })
 
   const reSort = (type: 'sales' | 'createdAt') => {
@@ -77,7 +74,7 @@ const Gigs: FC = () => {
             ? <Loader /> 
             : error
               ? <ErrorIcon />
-              : data.map((gig) => <GigCard key={gig._id} item={gig} />)}
+              : data?.map((gig) => <GigCard key={gig._id} gigItem={gig} />)}
         </div>
       </div>
     </div>

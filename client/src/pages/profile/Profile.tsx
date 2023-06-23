@@ -1,26 +1,19 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useSelector, useDispatch } from 'react-redux'
 
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useUpdateUserProfileMutation, IUserProfilee } from '../../slices/apiSlice/usersApiSlice'
+import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
+import { ApiError } from '../../slices/apiSlice'
+import { logout } from '../../slices/authSlice'
+import { RootState } from '../../store'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
-import { Loader, ErrorIcon } from '../../components/icons'
+import { Loader } from '../../components/icons'
 import './Profile.scss'
 
-export interface IUserData {
-  username: string
-  password: string
-  confirmPassword: string
-}
-
 const Profile: FC = () => {
-  const { isLoading, error, data } = useQuery<IUserData, Error>({
-    queryKey: ['user'],
-    queryFn: () =>newRequest.get('/users/profile').then((res) => res.data)
-  })
-  
-  const [user, setUser] = useState<IUserData>({
+  const [user, setUser] = useState<IUserProfilee>({
     username: '',
     password: '',
     confirmPassword: ''
@@ -28,7 +21,13 @@ const Profile: FC = () => {
 
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation()
+  const [logoutApiCall] = useLogoutMutation()
+
+  const { userInfo } = useSelector((state: RootState) => state.auth)
 
   const formInputs = [
     {
@@ -38,7 +37,7 @@ const Profile: FC = () => {
         'User Name is required',
       name: 'username',
       type: 'text',
-      placeholder: data?.username || 'User Name',
+      placeholder: userInfo?.username || 'User Name',
       required: false
     },
     {
@@ -70,30 +69,22 @@ const Profile: FC = () => {
     setUser({ ...user, [target.name]: target.value })
   }
 
-  const registerMutation = useMutation({
-    mutationFn: (userData: IUserData) => {
-      return newRequest.put('/users/profile', userData)
-    },
-    onSuccess: async () => {
-      await newRequest.post('/auth/logout')
-      localStorage.setItem('currentUser', '')
-      showToast('User has been updated. Redirecting to the login page in 10 seconds...', 'success')
-      setTimeout(() => {
-        navigate('/login')
-      }, 10000)
-    },
-    onError: (error) => {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Update failed'
-      showToast(errorMessage, 'error')
-    }
-  })
-
-  const { isLoading: isLoadingAuth } = registerMutation
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    registerMutation.mutate(user)
+    try {
+      await updateUserProfile(user).unwrap()
+      await logoutApiCall().unwrap()
+      dispatch(logout())
+      showToast('User has been updated. Redirecting to the login page in 5 seconds...', 'success')
+      setTimeout(() => {
+        navigate('/login')
+      }, 5000)
+
+    } catch (error) {
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Update failed'
+      showToast(errorMessage, 'error')
+    }
   }
 
   return (
@@ -105,31 +96,29 @@ const Profile: FC = () => {
         onHide={hideToast}
       />
       <div className='profile flex-center'>
-        {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-          <form className='flex-center' onSubmit={handleSubmit}>
-            <h1>Update profile</h1>
-            {formInputs.map((input) => (
-              <div key={input.id}>
-                <FormInput
-                  key={input.id}
-                  {...input}
-                  value={user[input.name as keyof IUserData]?.toString()}
-                  handleChange={handleChange}
-                />
-              </div>
-            ))}
-            <button
-              disabled={
-                isLoadingAuth ||
-                toastConfig.type === 'success'
-              }
-              className='button button--filled'
-              type='submit'
-            >
-              {isLoadingAuth ? <Loader /> : 'Update'}
-            </button>
-          </form>
-        )}
+        <form className='flex-center' onSubmit={handleSubmit}>
+          <h1>Update profile</h1>
+          {formInputs.map((input) => (
+            <div key={input.id}>
+              <FormInput
+                key={input.id}
+                {...input}
+                value={user[input.name as keyof IUserProfilee]?.toString()}
+                handleChange={handleChange}
+              />
+            </div>
+          ))}
+          <button
+            disabled={
+              isLoading ||
+              toastConfig.type === 'success'
+            }
+            className='button button--filled'
+            type='submit'
+          >
+            {isLoading ? <Loader /> : 'Update'}
+          </button>
+        </form>
       </div>
     </>
   )

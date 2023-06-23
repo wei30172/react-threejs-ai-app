@@ -1,11 +1,11 @@
-import { FC, useState, useEffect, useReducer, ChangeEvent, FormEvent } from 'react'
+import { FC, useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { gigReducer, INITIAL_STATE, GigState, GigActionType } from '../../reducers/gigReducer'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { IGig } from '../../reducers/gigReducer'
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useGetSingleGigQuery, useUpdateGigMutation } from '../../slices/apiSlice/gigsApiSlice'
+import { initializeState, changeGigInput, addImages, addFeature, removeFeature, IGigState } from '../../slices/gigSlice'
+import { RootState } from '../../store'
+import { ApiError, AxiosError } from '../../slices/apiSlice'
 import { uploadImage }  from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
@@ -13,39 +13,35 @@ import { Loader, ErrorIcon } from '../../components/icons'
 import './EditGig.scss'
 
 const EditGig: FC = () => {
-  
   const { gigId } = useParams()
 
-  const { isLoading, error, data } = useQuery<IGig, Error>({
-    queryKey: ['gig'],
-    queryFn: () => newRequest.get(`/gigs/single/${gigId}`).then((res) => res.data)
-  })
+  const { isLoading, error, data } = useGetSingleGigQuery(gigId)
 
   const [singleFile, setSingleFile] = useState<File | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
   const [uploading, setUploading] = useState(false)
 
-  const currentUser = getCurrentUser()
-  const [state, dispatch] = useReducer(gigReducer, {...INITIAL_STATE, userId: currentUser?._id || null})
+  const gigInfo = useSelector((state: RootState) => state.gig)
 
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (data) {
-      dispatch({
-        type: GigActionType.INITIALIZE_STATE,
-        payload: data
-      })
-    }
-  }, [data])
+    if (data) dispatch(initializeState(data))
+  }, [dispatch, data])
 
+  const [updateGig, { isLoading: isCreatingGig }] = useUpdateGigMutation()
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    dispatch({
-      type: GigActionType.CHANGE_INPUT,
-      payload: { name: e.target.name, value: e.target.value }
-    })
+    const target = e.target as HTMLInputElement
+    dispatch(
+      changeGigInput({
+        field: target.name as keyof IGigState,
+        value: target.value
+      })
+    )
   }
 
   const handleFileChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,24 +71,20 @@ const EditGig: FC = () => {
     const input = form.querySelector('input')
 
     if (input) {
-
-      dispatch({
-        type: GigActionType.ADD_FEATURE,
-        payload: input.value
-      })
+      dispatch(addFeature(input.value))
       input.value = ''
     }
   }
 
   const handleRemoveFeature = (feature: string) => {
-    dispatch({ type: GigActionType.REMOVE_FEATURE, payload: feature })
+    dispatch(removeFeature(feature))
   }
 
   const handleUpload = async () => {
     setUploading(true)
 
     try {
-      let cover = state.cover, images = state.images
+      let cover = gigInfo.cover, images = gigInfo.images
   
       if (singleFile) {
         const uploadResult = await uploadImage(singleFile)
@@ -114,7 +106,7 @@ const EditGig: FC = () => {
       }
 
       if (cover || (images && images.length > 0)) {
-        dispatch({ type: GigActionType.ADD_IMAGES, payload: { cover, images } })
+        dispatch(addImages({ cover, images }))
       }
 
     } catch (error) {
@@ -127,35 +119,20 @@ const EditGig: FC = () => {
     }
   }
 
-  const queryClient = useQueryClient()
-
-  const gigMutation = useMutation({
-    mutationFn: (gig: GigState) => {
-      return newRequest.put(`/gigs/${gigId}`, gig)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['gigs'])
-    }
-  })
-
-  const { isLoading: isLoadingGigs } = gigMutation
-
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
 
-    gigMutation.mutate(state, {
-      onSuccess: () => {
-        showToast('Update gig successfully, To the My Gigs page in 10 seconds...', 'success')
-        setTimeout(() => {
-          navigate('/my-gigs')
-        }, 10000)
-      },
-      onError: (error: unknown) => {
-        const axiosError = error as AxiosError
-        const errorMessage = axiosError.response?.data?.message || 'Update gig failed'
-        showToast(errorMessage, 'error')
-      }
-    })
+    try {
+      await updateGig({gigId, data: gigInfo}).unwrap()
+      showToast('Update gig successfully, To the My Gigs page in 5 seconds...', 'success')
+      setTimeout(() => {
+        navigate('/my-gigs')
+      }, 5000)
+    } catch (error) {
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Update gig failed'
+      showToast(errorMessage, 'error')
+    }
   }
 
   return (
@@ -177,7 +154,7 @@ const EditGig: FC = () => {
                 <input
                   type='text'
                   name='title'
-                  placeholder={data.title}
+                  placeholder={data?.title}
                   onChange={handleChange}
                 />
                 
@@ -185,14 +162,14 @@ const EditGig: FC = () => {
                 <label htmlFor=''>Price ($)</label>
                 <input
                   type='number'
-                  placeholder={data.price.toString()}
+                  placeholder={data?.price.toString()}
                   onChange={handleChange} name='price'
                 />
                 {/* Delivery Time */}
                 <label htmlFor=''>Delivery day(s)</label>
                 <input type='number'
                   name='deliveryTime'
-                  placeholder={data.deliveryTime.toString()}
+                  placeholder={data?.deliveryTime.toString()}
                   onChange={handleChange}
                 />
                 
@@ -214,7 +191,7 @@ const EditGig: FC = () => {
                       onChange={(e) => handleFileChange(5, e)}
                     />
                     {!files && <div className='images_img' >
-                      {data?.images?.map((image) => (
+                      {data?.images?.map((image: string) => (
                         <img key={image} src={image} alt='' />
                       ))}
                     </div>}
@@ -237,7 +214,7 @@ const EditGig: FC = () => {
                   name='shortDesc'
                   rows={5}
                   id=''
-                  placeholder={data.shortDesc}
+                  placeholder={data?.shortDesc}
                   onChange={handleChange}
                 ></textarea>
                 <label htmlFor=''>Description</label>
@@ -245,7 +222,7 @@ const EditGig: FC = () => {
                   name='desc'
                   rows={8}
                   id=''
-                  placeholder={data.desc}
+                  placeholder={data?.desc}
                   onChange={handleChange}
                 ></textarea>
                 
@@ -258,7 +235,7 @@ const EditGig: FC = () => {
                   </button>
                 </form>
                 <div className='addedFeatures'>
-                  {state?.features?.map((f, i) => (
+                  {gigInfo?.features?.map((f, i) => (
                     <div className='item' key={`${f}-${i}`}>
                       <button
                         onClick={() => handleRemoveFeature(f)}
@@ -274,12 +251,12 @@ const EditGig: FC = () => {
             <button
               disabled={
                 uploading ||
-                isLoadingGigs
+                isCreatingGig
               }
               onClick={handleSubmit} 
               className='button button--filled'
             >
-              {isLoadingGigs ? <Loader /> : 'Update'}
+              {isCreatingGig ? <Loader /> : 'Update'}
             </button>
             <Link to='/my-gigs'>
               <button className='button button--outline'>

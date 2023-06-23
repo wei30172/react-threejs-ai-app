@@ -1,68 +1,50 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
 
-import { IGig } from '../../reducers/gigReducer'
-import newRequest, { AxiosError } from '../../utils/newRequest'
-import getCurrentUser from '../../utils/getCurrentUser'
+import { useGetGigsQuery, useDeleteGigMutation, IGig } from '../../slices/apiSlice/gigsApiSlice'
+import { RootState } from '../../store'
+import { ApiError } from '../../slices/apiSlice'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon, DeleteIcon, EditIcon } from '../../components/icons'
 import './myGigs.scss'
 
 const MyGigs: FC = () => {
-  const [isDeleteing, setIsDeleteing] = useState(false)
-
-  const currentUser = getCurrentUser()
+  const { userInfo } = useSelector((state: RootState) => state.auth)
 
   const { showToast, hideToast, toastConfig } = useToast()
 
-  const { isLoading, error, data, refetch } = useQuery({
-    queryKey: ['mygigs'],
-    queryFn: () =>
-      newRequest.get(`/gigs?userId=${currentUser?._id}`).then((res) => {
-        return res.data
-      })
-  })
+  const { isLoading, error, data } = useGetGigsQuery({ userId: userInfo?._id })
+  
+  const [deleteGig, { isLoading: isDeletingGig }] = useDeleteGigMutation()
 
   const handleDelete = async (id: string) => {
     try {
-      setIsDeleteing(true)
-      await newRequest.delete(`/gigs/${id}`)
-
-      refetch()
-
+      await deleteGig(id).unwrap()
       showToast('Gig deleted successfully', 'success')
-
     } catch (error) {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Delete gig failed'
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Delete gig failed'
       showToast(errorMessage, 'error')
-      
-    } finally {
-      setIsDeleteing(false)
     }
   }
 
   return (
-    <div className='my-gigs'>
-      {isLoading || isDeleteing? (
-        <Loader /> 
-      ) : error ? (
-        <ErrorIcon />
-      ) : (
-        <>
-          <Toast
-            isVisible={toastConfig.isVisible}
-            message={toastConfig.message}
-            type={toastConfig.type}
-            onHide={hideToast}
-          />
+    <>
+      <Toast
+        isVisible={toastConfig.isVisible}
+        message={toastConfig.message}
+        type={toastConfig.type}
+        onHide={hideToast}
+      />
+      <div className='my-gigs'>
+        {isLoading || isDeletingGig ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='container'>
             <div className='title'>
               <h1>Gigs</h1>
-              {currentUser?.isSeller && (
-                <Link to='/add-gig'>
+              {userInfo?.isSeller && (
+                <Link to='/my-gigs/add-gig'>
                   <button className='button button--filled'>Add New Gig</button>
                 </Link>
               )}
@@ -76,7 +58,7 @@ const MyGigs: FC = () => {
                   <th>Sales</th>
                   <th>Action</th>
                 </tr>
-                {data.map((gig: IGig) => (
+                {data?.map((gig: IGig) => (
                   <tr key={gig._id}>
                     <td>
                       <img className='image' src={gig.cover} alt='' />
@@ -85,7 +67,7 @@ const MyGigs: FC = () => {
                     <td>{gig.price}</td>
                     <td>{gig.sales}</td>
                     <td>
-                      <Link to={`/edit-gig/${gig._id}`}>
+                      <Link to={`/my-gigs/edit-gig/${gig._id}`}>
                         <button className='cursor-pointer'>
                           <EditIcon />
                         </button>
@@ -102,9 +84,9 @@ const MyGigs: FC = () => {
               </tbody>
             </table>
           </div>
-        </>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   )
 }
 

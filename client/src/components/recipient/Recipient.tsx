@@ -1,15 +1,16 @@
 import { FC, FormEvent } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { OrderState, OrderAction, OrderActionType } from '../../reducers/orderReducer'
+import { IOrderState, changeOrderInput } from '../../slices/orderSlice'
+import { RootState } from '../../store'
 import { FormInput } from '../../components'
 import './Recipient.scss'
 
-interface RecipientProps {
-  state: OrderState
-  dispatch: React.Dispatch<OrderAction>
-}
+const Recipient: FC = () => {
+  const dispatch = useDispatch()
 
-const Recipient: FC<RecipientProps> = ({ state, dispatch }) => {
+  const orderInfo = useSelector((state: RootState) => state.order)
+  
   const formInputs = [
     {
       id: 1,
@@ -53,10 +54,12 @@ const Recipient: FC<RecipientProps> = ({ state, dispatch }) => {
   
   const handleChange = (e: FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement
-    dispatch({
-      type: OrderActionType.CHANGE_INPUT,
-      payload: { [target.name]: target.value }
-    })
+    dispatch(
+      changeOrderInput({
+        field: target.name as keyof IOrderState,
+        value: target.value
+      })
+    )
   }
 
   return (
@@ -68,7 +71,7 @@ const Recipient: FC<RecipientProps> = ({ state, dispatch }) => {
             <FormInput
               key={input.id}
               {...input}
-              value={(state[input.name as keyof OrderState] ?? '').toString()}
+              value={(orderInfo[input.name as keyof IOrderState] ?? '').toString()}
               handleChange={handleChange}
             />
           </div>

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import newRequest from '../../utils/newRequest'
+import { useConfirmMutation } from '../../slices/apiSlice/ordersApiSlice'
 import './Success.scss'
 
 const Success: FC = () => {
@@ -12,6 +12,8 @@ const Success: FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  const [confirm, { isLoading: isConfirmingPayment }] = useConfirmMutation()
+
   useEffect(() => {
     const makeRequest = async () => {
 
@@ -21,9 +23,9 @@ const Success: FC = () => {
       }
 
       try {
-        await newRequest.put('/orders', { payment_intent: paymentIntent })
-      } catch (err) {
-        setErrorMessage('Failed to process the order.')
+        await confirm({ payment_intent: paymentIntent }).unwrap()
+      } catch (error) {
+        setErrorMessage('Failed to confirm payment. Please try again later.')
       } finally {
         setTimeout(() => {
           navigate('/orders')
@@ -32,15 +34,16 @@ const Success: FC = () => {
     }
 
     makeRequest()
-  }, [navigate, paymentIntent])
+  }, [navigate, paymentIntent, confirm])
 
   return (
     <div className='success'>
       <div className='container'>
-        {errorMessage 
-          ? <p className='error-message'>{errorMessage} Please try again later.</p> 
-          : <p>Payment successful. You are being redirected to the orders page. Please do not close the page.</p>
-        }
+        <p>
+          {isConfirmingPayment? 'Loading...'
+            : errorMessage? errorMessage
+              : 'Payment successful. You are being redirected to the orders page. Please do not close the page.'}
+        </p>
       </div>
     </div>
   )

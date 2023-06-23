@@ -1,47 +1,22 @@
 import { FC } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import { useSelector} from 'react-redux'
 
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest from '../../utils/newRequest'
+import { useGetConversationsQuery, useUpdateConversationMutation } from '../../slices/apiSlice/conversationsApiSlice'
+import { RootState } from '../../store'
 import { Loader, ErrorIcon, EllipsisIconOutline, EllipsisIconFilled } from '../../components/icons'
 import './Messages.scss'
 
-interface Conversation {
-  id: string
-  buyerId: string
-  sellerId: string
-  lastMessage: string
-  updatedAt: string
-  readBySeller: boolean
-  readByBuyer: boolean
-}
-
 const Messages: FC = () => {
-  const currentUser = getCurrentUser()
+  const { isLoading, error, data } = useGetConversationsQuery()
 
-  const queryClient = useQueryClient()
+  const [updateConversation] = useUpdateConversationMutation()
 
-  const { isLoading, error, data } = useQuery<Conversation[]>({
-    queryKey: ['conversations'],
-    queryFn: () =>
-      newRequest.get('/conversations').then((res) => {
-        return res.data
-      })
-  })
-
-  const messageMutation = useMutation({
-    mutationFn: (id: string) => {
-      return newRequest.put(`/conversations/${id}`)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['conversations'])
-    }
-  })
-
-  const handleToggleRead = (id: string) => {
-    messageMutation.mutate(id)
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+  
+  const handleToggleRead = async (id: string) => {
+    await updateConversation(id)
   }
 
   return (
@@ -56,7 +31,7 @@ const Messages: FC = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>{currentUser?.isSeller ? 'Buyer' : 'Seller'}</th>
+                    <th>{userInfo?.isSeller ? 'Buyer' : 'Seller'}</th>
                     <th>Last Message</th>
                     <th>Date</th>
                     <th>Mark as Read</th>
@@ -66,22 +41,22 @@ const Messages: FC = () => {
                   {data?.map((c) => (
                     <tr
                       className={
-                        ((currentUser?.isSeller && !c.readBySeller) ||
-                          (!currentUser?.isSeller && !c.readByBuyer)) ? 'active' : ''
+                        ((userInfo?.isSeller && !c.readBySeller) ||
+                          (!userInfo?.isSeller && !c.readByBuyer)) ? 'active' : ''
                       }
                       key={c.id}
                     >
-                      <td>{currentUser?.isSeller ? c.buyerId : c.sellerId}</td>
+                      <td>{userInfo?.isSeller ? c.buyerId : c.sellerId}</td>
                       <td>
-                        <Link to={`/message/${c.id}`} className='link'>
+                        <Link to={`/messages/${c.id}`} className='link'>
                           {c?.lastMessage?.substring(0, 100)}...
                         </Link>
                       </td>
                       <td>{moment(c.updatedAt).fromNow()}</td>
                       <td>
                         <button className="cursor-pointer" onClick={() => handleToggleRead(c.id)}>
-                          {((currentUser?.isSeller && !c.readBySeller) ||
-                          (!currentUser?.isSeller && !c.readByBuyer)) ? (
+                          {((userInfo?.isSeller && !c.readBySeller) ||
+                          (!userInfo?.isSeller && !c.readByBuyer)) ? (
                               <EllipsisIconFilled />
                             ) : (
                               <EllipsisIconOutline />

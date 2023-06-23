@@ -1,21 +1,24 @@
 import { FC } from 'react'
 import { SketchPicker, ColorResult } from 'react-color'
-import { useSnapshot } from 'valtio'
+import { useSelector, useDispatch } from 'react-redux'
 
-import designState from '../../../store/designState'
+import { setDesign } from '../../../slices/designSlice'
+import { RootState } from '../../../store'
 import './ColorPicker.scss'
 
 const ColorPicker: FC = () => {
-  const snap = useSnapshot(designState)
+  const dispatch = useDispatch()
+  
+  const designInfo = useSelector((state: RootState) => state.design)
 
   const handleChange = (color: ColorResult) => {
-    designState.color = color.hex
+    dispatch(setDesign({field: 'color', value: color.hex}))
   }
 
   return (
     <div className='color-picker'>
       <SketchPicker 
-        color={snap.color}
+        color={designInfo.color}
         disableAlpha
         onChange={handleChange}
       />

@@ -1,8 +1,13 @@
-import { FC } from 'react'
-import { useSnapshot } from 'valtio'
+import { FC, ComponentType, HTMLAttributes } from 'react'
+import { useSelector } from 'react-redux'
 
-import designState, { TabType }  from '../../../store/designState'
+import { RootState } from '../../../store'
 import './Tab.scss'
+
+export type TabType = {
+  name: string
+  icon: ComponentType<Pick<HTMLAttributes<SVGElement>, 'className'>>
+}
 
 interface TabProps {
   tab: TabType
@@ -12,10 +17,10 @@ interface TabProps {
 }
 
 const Tab: FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
-  const snap = useSnapshot(designState)
+  const designInfo = useSelector((state: RootState) => state.design)
 
   const activeStyles = isFilterTab && isActiveTab
-    ? { borderColor: snap.color, borderWidth: 2 }
+    ? { borderColor: designInfo.color, borderWidth: 2 }
     : { borderColor: 'transparent'}
 
 

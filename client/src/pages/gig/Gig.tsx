@@ -1,15 +1,15 @@
-import { FC, useState, useReducer, useCallback } from 'react'
+import { FC, useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { orderReducer, INITIAL_STATE, OrderState } from '../../reducers/orderReducer'
-import { IGig } from '../../reducers/gigReducer'
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest, { AxiosError } from '../../utils/newRequest'
-// import { IUser } from '../register/Register'
+import { useGetSingleGigQuery } from '../../slices/apiSlice/gigsApiSlice'
+import { useCreateOrderMutation } from '../../slices/apiSlice/ordersApiSlice'
+import { changeOrderInput } from '../../slices/orderSlice'
+import { RootState } from '../../store'
+import { ApiError } from '../../slices/apiSlice'
 import { useToast } from '../../hooks/useToast'
 import { Carousel, Demo, Recipient, UploadPreview, Toast } from '../../components'
-// import { Carousel, Demo, Recipient, Seller, Reviews } from '../../components'
+// import { Carousel, Demo, Recipient, Seller, Reviews, UploadPreview, Toast } from '../../components'
 import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
@@ -18,56 +18,38 @@ const Gig: FC = () => {
 
   const { gigId } = useParams()
  
-  const { isLoading, error, data } = useQuery<IGig, Error>({
-    queryKey: ['gig'],
-    queryFn: () => newRequest.get(`/gigs/single/${gigId}`).then((res) => res.data)
-  })
+  const { isLoading, error, data } = useGetSingleGigQuery(gigId)
 
-  const currentUser = getCurrentUser()
-  const [state, dispatch] = useReducer(orderReducer, {
-    ...INITIAL_STATE,
-    buyerId: currentUser?._id || null,
-    gigId: gigId || '',
-    name: currentUser?.username || '',
-    email: currentUser?.email || '',
-    address: currentUser?.address || '',
-    phone: currentUser?.phone || ''
-  })
+  const orderInfo = useSelector((state: RootState) => state.order)
+  const designInfo = useSelector((state: RootState) => state.design)
 
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const queryClient = useQueryClient()
+  useEffect(() => {
+    if (gigId) dispatch(changeOrderInput({field: 'gigId', value: gigId}))
+  }, [dispatch, gigId])
 
-  const orderMutation = useMutation({
-    mutationFn: (order: OrderState) => {
-      return newRequest.post('/orders', order)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['orders'])
-    }
-  })
+  const [createOrder, { isLoading: isCreatingOrder, isSuccess }] = useCreateOrderMutation()
 
-  const { isLoading: isLoadingOrders } = orderMutation
-
-  const handleCheckout = useCallback((e: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleCheckout = useCallback(async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
-    orderMutation.mutate(state, {
-      onSuccess: () => {
-        setShowCheckOut(false)
-        showToast('Created order successfully, To the Order page in 5 seconds...', 'success')
-        setTimeout(() => {
-          navigate('/orders')
-        }, 5000)
-      },
-      onError: (error: unknown) => {
-        const axiosError = error as AxiosError
-        const errorMessage = axiosError.response?.data?.message || 'Update gig failed'
-        showToast(errorMessage, 'error')
-      }
-    })
-  }, [orderMutation, state, navigate, showToast])
+
+    try {
+      await createOrder({...orderInfo, ...designInfo}).unwrap()
+      setShowCheckOut(false)
+      showToast('Created order successfully, To the Order page in 5 seconds...', 'success')
+      setTimeout(() => {
+        navigate('/orders')
+      }, 5000)
+    } catch (error) {
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Update gig failed'
+      showToast(errorMessage, 'error')
+    }
+  }, [createOrder, orderInfo, designInfo, navigate, showToast])
 
   return (
     <>
@@ -80,29 +62,22 @@ const Gig: FC = () => {
       <div className='gig'>
         {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='container'>
-            
             <div className='left'>
-              <h1>{data.title}</h1>
+              <h1>{data?.title}</h1>
               <h2>About</h2>
-              <p>{data.desc}</p>
-              <Carousel carouselImages={data.images} />
+              <p>{data?.desc}</p>
+              {data?.images && <Carousel carouselImages={data?.images} />}
               <Demo />
-              {/* {isLoadingUser ? (
-                'loading'
-              ) : errorUser ? (
-                'Something went wrong!'
-              ) : (
-                <Seller dataUser={dataUser} data={data} />
-              )} */}
+              {/* {data && <Seller gigData={data} />} */}
               {/* {gigId && <Reviews gigId={gigId} />} */}
             </div>
             <div className='right'>
               <div className='price'>
-                <h2>$ {data.price}</h2>
+                <h2>$ {data?.price}</h2>
               </div>
-              <p>{data.shortDesc}</p>
+              <p>{data?.shortDesc}</p>
               <div className='features'>
-                {data.features.map((feature) => (
+                {data?.features.map((feature: string) => (
                   <div className='item' key={feature}>
                     <CheckIcon />
                     <span>{feature}</span>
@@ -115,20 +90,16 @@ const Gig: FC = () => {
               >
                 Proceed
               </button>
-              {showCheckOut && gigId &&  !isLoadingOrders &&
+              <span className='success-message'>
+                {isSuccess ? 'Order created successfully ' : ''}
+              </span>
+              {showCheckOut && gigId &&  !isCreatingOrder &&
                 <>
-                  <Recipient
-                    state={state}
-                    dispatch={dispatch}
-                  />
-                  <UploadPreview
-                    state={state}
-                    dispatch={dispatch}
-                    handleCheckout={handleCheckout}
-                  />
+                  <Recipient />
+                  <UploadPreview handleCheckout={handleCheckout}/>
                 </>
               }
-              {isLoadingOrders && <Loader />}
+              {isCreatingOrder && <Loader />}
             </div>
           </div>
         )}

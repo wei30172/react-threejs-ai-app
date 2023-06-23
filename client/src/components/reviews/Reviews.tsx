@@ -1,9 +1,10 @@
 import { FC, useRef, FormEvent } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
 
-import newRequest, { AxiosError } from '../../utils/newRequest'
-import getCurrentUser from '../../utils/getCurrentUser'
-import Review, { IReview } from '../review/Review'
+import { useGetReviewsByGigQuery, useCreateReviewMutation } from '../../slices/apiSlice/reviewsApiSlice'
+import { RootState } from '../../store'
+import { ApiError } from '../../slices/apiSlice'
+import Review from '../review/Review'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './Reviews.scss'
 
@@ -12,37 +13,22 @@ interface ReviewsProps {
 }
 
 const Reviews: FC<ReviewsProps> = ({ gigId }) => {
-  const queryClient = useQueryClient()
-  
   const descRef = useRef<HTMLInputElement>(null)
   const starRef = useRef<HTMLSelectElement>(null)
 
-  const currentUser = getCurrentUser()
+  const { userInfo } = useSelector((state: RootState) => state.auth)
 
-  const { isLoading, error, data } = useQuery<IReview[], Error>({
-    queryKey: ['reviews'],
-    queryFn: () =>
-      newRequest.get(`/reviews/${gigId}`).then((res) => res.data)
-  })
+  const { isLoading, error, data } = useGetReviewsByGigQuery(gigId)
 
-  const reviewMutation = useMutation({
-    mutationFn: (review: IReview) => {
-      return newRequest.post('/reviews', review)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['reviews'])
-    }
-  })
+  const [createReview, { isLoading: isCreatingReview, error: createReviewError }] = useCreateReviewMutation()
 
-  const { isLoading: isLoadingReview,  error: errorRview} = reviewMutation
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (currentUser && descRef.current && starRef.current) {
+    if (userInfo && descRef.current && starRef.current) {
       const desc = descRef.current.value
-      const star = Number(starRef.current.value)
-      const userId = currentUser._id
-      reviewMutation.mutate({ userId , gigId, desc, star })
+      const star = Number(starRef.current.value) as 1 | 2 | 3 | 4 | 5
+      const userId = userInfo._id
+      await createReview({ gigId, userId, desc, star })
       descRef.current.value=''
       starRef.current.value='5'
     }
@@ -74,12 +60,12 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
           </select>
           <button
             className='button button--filled'
-            disabled={isLoadingReview}
+            disabled={isCreatingReview}
           >
-            {isLoadingReview ? 'Sending Review' : 'Send'}
+            {isCreatingReview ? 'Sending Review' : 'Send'}
           </button>
           <span className='error-message'>
-            {errorRview ? (errorRview as AxiosError)?.response?.data?.message || 'Create review failed ' : ''}
+            {createReviewError ? (createReviewError as ApiError)?.data?.message || 'Create review failed ' : ''}
           </span>
         </form>
       </div>

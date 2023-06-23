@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react'
-import { useSnapshot } from 'valtio'
 import { easing } from 'maath'
 import { useFrame } from '@react-three/fiber'
 import { Decal, useGLTF, useTexture } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
+import { useSelector } from 'react-redux'
 
-import designState from '../store/designState'
+import { RootState } from '../store'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -17,19 +17,19 @@ type GLTFResult = GLTF & {
 }
 
 const Shirt: FC = () => {
-  const snap = useSnapshot(designState)
+  const designInfo = useSelector((state: RootState) => state.design)
 
   const { nodes, materials } = useGLTF('/shirt_baked.glb') as GLTFResult
 
-  const logoTexture = useTexture(snap.logoDecal)
-  const fullTexture = useTexture(snap.fullDecal)
+  const logoTexture = useTexture(designInfo.logoDecal)
+  const fullTexture = useTexture(designInfo.fullDecal)
 
   //Smoothly transition the shirt's color to the color from state
-  useFrame((_state, delta) => easing.dampC(materials.lambert1.color, snap.color, 0.25, delta))
+  useFrame((_state, delta) => easing.dampC(materials.lambert1.color, designInfo.color, 0.25, delta))
 
 
   // To re-render the component when state changes
-  const stateString = useMemo(() => JSON.stringify(snap), [snap])
+  const stateString = useMemo(() => JSON.stringify(designInfo), [designInfo])
   
   return (
     <group key={stateString}>
@@ -41,7 +41,7 @@ const Shirt: FC = () => {
         dispose={null}
       >
         {/* If full texture decal is enabled, render it */}
-        {snap.isFullTexture && (
+        {designInfo.isFullTexture && (
           <Decal 
             position={[0, 0, 0]}
             rotation={[0, 0, 0]}
@@ -51,7 +51,7 @@ const Shirt: FC = () => {
         )}
 
         {/* If logo texture decal is enabled, render it */}
-        {snap.isLogoTexture && (
+        {designInfo.isLogoTexture && (
           <Decal 
             position={[0, 0.04, 0.15]}
             rotation={[0, 0, 0]}

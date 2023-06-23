@@ -92,6 +92,12 @@ table {
   color: colors.$red-500;
 }
 
+.success-message {
+  font-size: 14px;
+  font-weight: bold;
+  color: colors.$green-500;
+}
+
 .light {
   background-color: colors.$dark-100;
   color: colors.$dark-900;

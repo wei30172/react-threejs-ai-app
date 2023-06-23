@@ -3,28 +3,26 @@ import { useParams } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 
-import newRequest from '../../utils/newRequest'
+import { useIntentMutation } from '../../slices/apiSlice/ordersApiSlice'
 import { CheckoutForm } from '../../components'
-import { Loader } from '../../components/icons'
 import './Pay.scss'
 
-const stripePromise = loadStripe(
-  'pk_test_51KykAtE716I4o6870hC0eNpkyizQWX4lJ8OoyxPZzpZt0Hd2ayUxAJslUbQCs79tOEVo51gAcALHR9ALYgwr9eCr00TMhZylCr'
-)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY as string)
 
 const Pay: FC = () => {
   const [clientSecret, setClientSecret] = useState<string>('')
-  const [error, setError] = useState<string | null>(null)
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
+
+  const [intent, { isLoading: isCreatingIntent, error: createIntentError }] = useIntentMutation()
 
   const makeRequest = useCallback(async () => {
     try {
-      const res = await newRequest.post(`/orders/create-payment-intent/${id}`)
-      setClientSecret(res.data.clientSecret)
-    } catch (err) {
-      setError('An error occurred while creating the payment intent.')
+      const clientSecretResult = await intent(id).unwrap()
+      setClientSecret(clientSecretResult.clientSecret)
+    } catch (error) {
+      console.error(error)
     }
-  }, [id])
+  }, [id, intent])
 
   useEffect(() => {
     makeRequest()
@@ -37,15 +35,14 @@ const Pay: FC = () => {
   return (
     <div className='pay'>
       <div className='container'>
-        {error ? (
-          <p>{error}</p>
-        ) : clientSecret ? (
-          <Elements options={options} stripe={stripePromise}>
-            <CheckoutForm />
-          </Elements>
-        ) : (
-          <Loader />
-        )}
+        {isCreatingIntent? 'Loading...'
+          : createIntentError? 'Failed to confirm payment. Please try again later.'
+            : clientSecret && (
+              <Elements options={options} stripe={stripePromise}>
+                <CheckoutForm />
+              </Elements>
+            )
+        }
       </div>
     </div>
   )

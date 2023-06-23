@@ -1,10 +1,13 @@
 import { FC, useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
+import { ApiError } from '../../slices/apiSlice'
+import { logout } from '../../slices/authSlice'
+import { RootState } from '../../store'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../toast/Toast'
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest, { AxiosError } from '../../utils/newRequest'
 import { HomeIcon } from '../icons/index'
 import './Navbar.scss'
 
@@ -27,19 +30,22 @@ const Navbar: FC = () => {
     }
   }, [])
   
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const currentUser = getCurrentUser()
+  const [logoutApiCall] = useLogoutMutation()
+
+  const { userInfo } = useSelector((state: RootState) => state.auth)
 
   const handleLogout = async () => {
     try {
-      await newRequest.post('/auth/logout')
-      localStorage.setItem('currentUser', '')
-      navigate('/')
+      await logoutApiCall().unwrap()
+      dispatch(logout())
+      navigate('/login')
       
     } catch (error) {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Logout failed'
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Logout failed'
       showToast(errorMessage, 'error')
     }
   }
@@ -58,18 +64,18 @@ const Navbar: FC = () => {
             <HomeIcon />
           </div>
           <div className='links'>
-            {currentUser ? (
+            {userInfo ? (
               <div className='user flex-center cursor-pointer' onClick={() => setOpen(!open)}>
-                <img src={currentUser.img || '/img/noavatar.jpg'} alt='avatar' />
-                <span>{currentUser?.username}</span>
+                <img src={userInfo.img || '/img/noavatar.jpg'} alt='avatar' />
+                <span>{userInfo?.username}</span>
                 {open && (
                   <div className='options'>
-                    {currentUser.isSeller && (
+                    {userInfo.isSeller && (
                       <>
                         <Link className='link' to='/my-gigs'>
                           My Gigs
                         </Link>
-                        <Link className='link' to='/add-gig'>
+                        <Link className='link' to='/my-gigs/add-gig'>
                           Add New Gig
                         </Link>
                       </>

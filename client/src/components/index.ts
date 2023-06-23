@@ -12,9 +12,10 @@ import Carousel from './carousel/Carousel'
 import Demo from './demo/Demo'
 import Reviews from './reviews/Reviews'
 import Seller from './seller/Seller'
-import CheckoutForm from './checkoutForm/CheckoutForm'
 import Recipient from './recipient/Recipient'
 import UploadPreview from './uploadPreview/UploadPreview'
+import PrivateRoute from './PrivateRoute'
+import CheckoutForm from './checkoutForm/CheckoutForm'
 
 export {
   Navbar,
@@ -33,5 +34,6 @@ export {
   Seller,
   Recipient,
   UploadPreview,
-  CheckoutForm
+  CheckoutForm,
+  PrivateRoute
 }

@@ -1,18 +1,76 @@
 import { FC, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-import designState, { EditorTabs, FilterTabs, DecalTypes, DecalTypeKey, ActiveFilterTabKey } from '../../store/designState'
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { setDesign } from '../../slices/designSlice'
+import { TabType } from './tab/Tab'
+import { useGenerateDalleImageMutation } from '../../slices/apiSlice/dalleApiSlice'
+import { ApiError } from '../../slices/apiSlice'
 import { downloadCanvasImage } from '../../utils/handleCanvasImage'
 import { fileReader } from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import { AIPicker, ColorPicker, FilePicker, Tab, Toast } from '../index'
-import { DownloadIcon } from '../icons'
+import { DownloadIcon, SwatchIcon, FileIcon, LogoShirtIcon, StylishShirtIcon } from '../icons'
+// import { DownloadIcon, SwatchIcon, FileIcon, AiIcon, LogoShirtIcon, StylishShirtIcon } from '../icons'
 import './Customizer.scss'
+
+// Editor tabs configuration
+const EditorTabs: TabType[] = [
+  {
+    name: 'colorpicker',
+    icon: SwatchIcon
+  },
+  {
+    name: 'filepicker',
+    icon: FileIcon
+  }
+  // {
+  //   name: 'aipicker',
+  //   icon: AiIcon
+  // }
+]
+
+// Filter tabs configuration
+type DecalTypeKey = 'logo' | 'full'
+type ActiveFilterTabKey = 'logoShirt' | 'stylishShirt'
+type ActiveFilterTabValue = 'logoDecal' | 'fullDecal'
+
+type FilterTabType = TabType & {
+  name: ActiveFilterTabKey
+}
+
+const FilterTabs: FilterTabType[] = [
+  {
+    name: 'logoShirt',
+    icon: LogoShirtIcon
+  },
+  {
+    name: 'stylishShirt',
+    icon: StylishShirtIcon
+  }
+]
+
+// Decal types configuration
+type DecalType = {
+  [key in DecalTypeKey]: {
+    stateProperty: ActiveFilterTabValue
+    filterTab: ActiveFilterTabKey
+  }
+}
+
+const DecalTypes: DecalType = {
+  logo: {
+    stateProperty: 'logoDecal',
+    filterTab: 'logoShirt'
+  },
+  full: {
+    stateProperty: 'fullDecal',
+    filterTab: 'stylishShirt'
+  }
+}
 
 const Customizer: FC = () => {
   const [file, setFile] = useState<File | null>(null)
-  const [prompt, setPrompt] = useState('')
-  const [generatingImg, setGeneratingImg] = useState(false)
+  const [prompt, setPrompt] = useState<string>('')
   const [activeEditorTab, setActiveEditorTab] = useState('')
   const [activeFilterTab, setActiveFilterTab] = useState<Record<ActiveFilterTabKey, boolean>>({
     logoShirt: true,
@@ -21,6 +79,10 @@ const Customizer: FC = () => {
   
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
+
+  const [generateDalleImage, { isLoading: isGeneratingImage }] = useGenerateDalleImageMutation()
+
   const handleSubmit = async (type: 'logo' | 'full') => {
     if (!prompt) {
       showToast('Please enter a prompt', 'warning')
@@ -28,17 +90,13 @@ const Customizer: FC = () => {
     }
 
     try {
-      setGeneratingImg(true)
-      const response = await newRequest.post('/dalle', { prompt })
-      handleDecals(type, `data:image/jpeg;base64,${response.data}`)
-      
+      const imageData = await generateDalleImage({prompt}).unwrap()
+      handleDecals(type, `data:image/jpeg;base64,${imageData}`)
     } catch (error) {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Generate failed'
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Generate failed'
       showToast(errorMessage, 'error')
-
     } finally {
-      setGeneratingImg(false)
       setActiveEditorTab('')
     }
   }
@@ -46,7 +104,7 @@ const Customizer: FC = () => {
   const handleDecals = (type: DecalTypeKey, result: string) => {
     const decalType = DecalTypes[type]
 
-    designState[decalType.stateProperty] = result
+    dispatch(setDesign({ field: decalType.stateProperty, value: result }))
 
     if (!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab)
@@ -56,14 +114,14 @@ const Customizer: FC = () => {
   const handleActiveFilterTab = (tabName: ActiveFilterTabKey) => {
     switch (tabName) {
     case 'logoShirt':
-      designState.isLogoTexture = !activeFilterTab[tabName]
+      dispatch(setDesign({ field: 'isLogoTexture', value: !activeFilterTab[tabName] }))
       break
     case 'stylishShirt':
-      designState.isFullTexture = !activeFilterTab[tabName]
+      dispatch(setDesign({ field: 'isFullTexture', value: !activeFilterTab[tabName] }))
       break
     default:
-      designState.isLogoTexture = true
-      designState.isFullTexture = false
+      dispatch(setDesign({ field: 'isLogoTexture', value: true }))
+      dispatch(setDesign({ field: 'isFullTexture', value: false }))
       break
     }
 
@@ -98,7 +156,7 @@ const Customizer: FC = () => {
       return <AIPicker 
         prompt={prompt}
         setPrompt={setPrompt}
-        generatingImg={generatingImg}
+        generatingImg={isGeneratingImage}
         handleSubmit={handleSubmit}
       />
     default:

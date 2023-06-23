@@ -1,58 +1,36 @@
 import { FC, FormEvent, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
 
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest from '../../utils/newRequest'
+import { useGetMessagesQuery, useCreateMessageMutation } from '../../slices/apiSlice/messagesApiSlice'
+import { RootState } from '../../store'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './Message.scss'
-
-interface Message {
-  _id: string
-  userId: string
-  desc: string
-}
 
 const Message: FC = () => {
   const { id } = useParams()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const currentUser = getCurrentUser()
+  const { userInfo } = useSelector((state: RootState) => state.auth)
 
-  const { isLoading, error, data, refetch } = useQuery<Message[]>({
-    queryKey: [`message${id}`],
-    queryFn: () =>
-      newRequest.get(`/messages/${id}`).then((res) => {
-        return res.data
-      })
-  })
+  const { isLoading, error, data } = useGetMessagesQuery(id)
 
-  const messageMutation = useMutation({
-    mutationFn: (message: { conversationId: string, desc: string }) => {
-      return newRequest.post('/messages', message)
-    },
-    onSuccess: () => {
-      if (textareaRef.current) {
-        textareaRef.current.value = ''
-      }
-      refetch()
-    }
-  })
+  const [createMessage, { isLoading: isCreatingMessage, isError }] = useCreateMessageMutation()
 
-  const { isLoading: isLoadingMessage,  error: errorMessage} = messageMutation
-  const isLoadingOrError = isLoading || error
-
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const textarea = e.currentTarget.elements[0] as HTMLTextAreaElement
 
     if (id) {
-      messageMutation.mutate({
+      await createMessage({
         conversationId: id,
         desc: textarea.value
       })
+      if (textareaRef.current) {
+        textareaRef.current.value = ''
+      }
     }
-  }, [id, messageMutation])
+  }, [id, createMessage])
 
   return (
     <div className='message'>
@@ -63,14 +41,12 @@ const Message: FC = () => {
             <button className='button button--filled'>All Messages</button>
           </Link>
         </div>
-        {isLoadingOrError ? (
-          isLoading ? <Loader /> : <ErrorIcon />
-        ) : (
+        { isLoading ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='messages'>
             {data?.map((m) => (
-              <div className={m.userId === currentUser?._id ? 'item' : 'owner item'} key={m._id}>
+              <div className={m.userId === userInfo?._id ? 'item' : 'owner item'} key={m._id}>
                 <img
-                  src={currentUser?.img}
+                  src={userInfo?.img}
                   alt=''
                 />
                 <p>{m.desc}</p>
@@ -84,13 +60,13 @@ const Message: FC = () => {
           <button
             type='submit'
             className="button button--filled"
-            disabled={isLoadingMessage}
+            disabled={isCreatingMessage}
           >
-            {isLoadingMessage ? 'Sending Message' : 'Send'}
+            {isCreatingMessage ? 'Sending Message' : 'Send'}
           </button>
         </form>
         <span className='error-message'>
-          {errorMessage ? 'Send message failed ' : ''}
+          {isError ? 'Send message failed ' : ''}
         </span>
       </div>
     </div>

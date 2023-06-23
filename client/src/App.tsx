@@ -1,5 +1,4 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import {
   Home,
@@ -19,7 +18,7 @@ import {
   Success,
   NotFound
 } from './pages'
-import { Navbar, Footer } from './components'
+import { Navbar, Footer, PrivateRoute } from './components'
 import './styles/_main.scss'
 
 function App() {
@@ -32,8 +31,6 @@ function App() {
       </div>
     )
   }
-
-  const queryClient = new QueryClient()
   
   const router = createBrowserRouter([
     {
@@ -54,35 +51,59 @@ function App() {
         },
         {
           path: '/my-gigs',
-          element: <MyGigs />
-        },
-        {
-          path: '/add-gig',
-          element: <AddGig />
-        },
-        {
-          path: '/edit-gig/:gigId',
-          element: <EditGig />
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: '',
+              element: <MyGigs />
+            },
+            {
+              path: 'add-gig',
+              element: <AddGig />
+            },
+            {
+              path: 'edit-gig/:gigId',
+              element: <EditGig />
+            }
+          ]
         },
         {
           path: '/orders',
-          element: <Orders />
-        },
-        {
-          path: '/orders/:orderId',
-          element: <Order />
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: '',
+              element: <Orders />
+            },
+            {
+              path: ':orderId',
+              element: <Order />
+            }
+          ]
         },
         {
           path: '/messages',
-          element: <Messages />
-        },
-        {
-          path: '/message/:id',
-          element: <Message />
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: '',
+              element: <Messages />
+            },
+            {
+              path: ':id',
+              element: <Message />
+            }
+          ]
         },
         {
           path: '/profile',
-          element: <Profile />
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: '',
+              element: <Profile />
+            }
+          ]
         }
       ]
     },
@@ -95,12 +116,24 @@ function App() {
       element: <Login />
     },
     {
-      path: '/pay/:id',
-      element: <Pay />
+      path: 'pay/:id',
+      element: <PrivateRoute />,
+      children: [
+        {
+          path: '',
+          element: <Pay />
+        }
+      ]
     },
     {
-      path: '/success',
-      element: <Success />
+      path: 'success',
+      element: <PrivateRoute />,
+      children: [
+        {
+          path: '',
+          element: <Success />
+        }
+      ]
     },
     {
       path: '*',
@@ -109,9 +142,7 @@ function App() {
   ])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <RouterProvider router={router} />
   )
 }
 

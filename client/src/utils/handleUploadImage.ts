@@ -24,8 +24,8 @@ export const uploadImage = async (file: File): Promise<string | undefined> => {
     )
     const { url } = res.data
     return url
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error(error)
   }
 }
 

@@ -1,30 +1,16 @@
 import { FC } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
-import { IUser } from '../../utils/getCurrentUser'
-import newRequest from '../../utils/newRequest'
+import { IReview } from '../../slices/apiSlice/reviewsApiSlice'
+import { useGetUserInfoByIdQuery } from '../../slices/apiSlice/usersApiSlice'
 import { Loader, ErrorIcon, StarIconFilled } from '../../components/icons'
 import './Review.scss'
-
-
-export interface IReview {
-  _id?: string
-  gigId: string
-  userId: string
-  star: number
-  desc: string
-}
 
 interface ReviewProps {
   review: IReview
 }
 
 const Review: FC<ReviewProps> = ({ review }) => {
-  const { isLoading, error, data } = useQuery<IUser, Error>({
-    queryKey: [review.userId],
-    queryFn: () =>
-      newRequest.get(`/users/${review.userId}`).then((res) => res.data)
-  })
+  const { isLoading, error, data } = useGetUserInfoByIdQuery(review.userId)
 
   return (
     <div className='review'>

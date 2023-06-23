@@ -1,27 +1,36 @@
-import { FC, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { FC, useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useLoginMutation, IUserLogin } from '../../slices/apiSlice/authApiSlice'
+import { ApiError } from '../../slices/apiSlice'
+import { login } from '../../slices/authSlice'
+import { RootState } from '../../store'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
 import { Loader } from '../../components/icons'
 import './Login.scss'
 
-interface User {
-  email: string
-  password: string
-}
-
 const Login: FC = () => {
-  const [user, setUser] = useState<User>({
+  const [user, setUser] = useState<IUserLogin>({
     email: '',
     password: ''
   })
 
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const [loginApiCall, { isLoading }] = useLoginMutation()
+
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/')
+    }
+  }, [navigate, userInfo])
 
   const formInputs = [
     {
@@ -53,26 +62,17 @@ const Login: FC = () => {
     setUser({ ...user, [target.name]: target.value })
   }
 
-  const loginMutation = useMutation({
-    mutationFn: (user: User) => {
-      return newRequest.post('/auth/login', user)
-    },
-    onSuccess: ({data}) => {
-      localStorage.setItem('currentUser', JSON.stringify(data))
-      navigate('/')
-    },
-    onError: (error) => {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Login failed'
-      showToast(errorMessage, 'error')
-    }
-  })
-
-  const { isLoading } = loginMutation
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    loginMutation.mutate(user)
+    try {
+      const res = await loginApiCall(user).unwrap()
+      dispatch(login({ ...res }))
+      navigate('/')
+    } catch (error) {
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Login failed'
+      showToast(errorMessage, 'error')
+    }
   }
   
   return (
@@ -91,7 +91,7 @@ const Login: FC = () => {
               <FormInput
                 key={input.id}
                 {...input}
-                value={user[input.name as keyof User]}
+                value={user[input.name as keyof IUserLogin]}
                 handleChange={handleChange}
               />
             </div>
@@ -109,9 +109,11 @@ const Login: FC = () => {
           </button>
           <div className='navigation flex-center'>
             <p>Do not have an account?</p>
-            <button className='cursor-pointer' onClick={() => navigate('/register')}>
-              Signup
-            </button>
+            <Link to='/register'>
+              <button className='cursor-pointer'>
+                Signup
+              </button>
+            </Link>
           </div>
         </form>
       </div>

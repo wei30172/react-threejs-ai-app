@@ -1,30 +1,21 @@
-import { FC, useState } from 'react'
-// import { FC, ChangeEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { FC, useState, useEffect } from 'react'
+// import { FC, ChangeEvent, useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useRegisterMutation, IUserRegister } from '../../slices/apiSlice/authApiSlice'
+import { ApiError } from '../../slices/apiSlice'
+import { RootState } from '../../store'
 import { uploadImage }  from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
-export interface IUser {
-  username: string
-  email: string
-  password: string
-  confirmPassword: string
-  img: string
-  address: string
-  phone: string
-  isSeller: boolean
-}
-
 const Register: FC = () => {
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
-  const [user, setUser] = useState<IUser>({
+  const [user, setUser] = useState<IUserRegister>({
     username: '',
     email: '',
     password: '',
@@ -38,6 +29,16 @@ const Register: FC = () => {
   const { showToast, hideToast, toastConfig } = useToast()
 
   const navigate = useNavigate()
+  
+  const [register, { isLoading }] = useRegisterMutation()
+
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/')
+    }
+  }, [navigate, userInfo])
   
   const formInputs = [
     {
@@ -124,40 +125,29 @@ const Register: FC = () => {
   //   })
   // }
 
-  const registerMutation = useMutation({
-    mutationFn: async (userData: IUser) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    
+    try {
       if (file !== null) {
-        const url = await uploadImage(file)
-        return newRequest.post('/auth/register', {
-          ...userData,
-          img: url
-        })
+        const url = await uploadImage(file) || ''
+        await register({ ...user, img: url }).unwrap()
+        showToast('User has been created please login. To the home page in 5 seconds...', 'success')
+        setTimeout(() => {
+          navigate('/')
+        }, 5000)
       } else {
         throw new Error('Please upload an avatar image')
       }
-    },
-    onSuccess: () => {
-      showToast('User has been created please login. To the home page in 10 seconds...', 'success')
-      setTimeout(() => {
-        navigate('/')
-      }, 10000)
-    },
-    onError: (error) => {
+    } catch (error) {
       if (error instanceof Error && error.message === 'Please upload an avatar image') {
         showToast('Please upload an avatar image', 'warning')
       } else {
-        const axiosError = error as AxiosError
-        const errorMessage = axiosError.response?.data?.message || 'Register failed'
+        const apiError = error as ApiError
+        const errorMessage = apiError.data?.message || 'Register failed'
         showToast(errorMessage, 'error')
       }
     }
-  })
-
-  const { isLoading } = registerMutation
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    registerMutation.mutateAsync(user)
   }
 
   return (
@@ -177,7 +167,7 @@ const Register: FC = () => {
                 <FormInput
                   key={input.id}
                   {...input}
-                  value={user[input.name as keyof IUser]?.toString()}
+                  value={user[input.name as keyof IUserRegister]?.toString()}
                   handleChange={handleChange}
                 />
               </div>
@@ -214,9 +204,11 @@ const Register: FC = () => {
             </button>
             <div className='navigation flex-center'>
               <p>Already have an account?</p>
-              <button className='cursor-pointer' onClick={() => navigate('/login')}>
-                Login
-              </button>
+              <Link to='/login'>
+                <button className='cursor-pointer'>
+                  Login
+                </button>
+              </Link>
             </div>
           </div>
         </form>

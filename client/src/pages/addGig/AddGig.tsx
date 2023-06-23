@@ -1,10 +1,12 @@
-import { FC, useState, useReducer, ChangeEvent, FormEvent } from 'react'
+import { FC, useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gigReducer, INITIAL_STATE, GigState, GigActionType } from '../../reducers/gigReducer'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSelector, useDispatch } from 'react-redux'
 
-import getCurrentUser from '../../utils/getCurrentUser'
-import newRequest, { AxiosError } from '../../utils/newRequest'
+import { useCreateGigMutation } from '../../slices/apiSlice/gigsApiSlice'
+import { changeGigInput, addImages, addFeature, removeFeature, IGigState } from '../../slices/gigSlice'
+import { RootState } from '../../store'
+import { ApiError, AxiosError } from '../../slices/apiSlice'
+
 import { uploadImage } from '../../utils/handleUploadImage'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
@@ -16,18 +18,28 @@ const AddGig: FC = () => {
   const [files, setFiles] = useState<FileList | null>(null)
   const [uploading, setUploading] = useState(false)
 
-  const currentUser = getCurrentUser()
-  const [state, dispatch] = useReducer(gigReducer, {...INITIAL_STATE, userId: currentUser?._id || null})
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+  const gigInfo = useSelector((state: RootState) => state.gig)
 
   const { showToast, hideToast, toastConfig } = useToast()
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (userInfo) dispatch(changeGigInput({field: 'userId', value: userInfo._id}))
+  }, [dispatch, userInfo])
+
+  const [createGig, { isLoading: isCreatingGig }] = useCreateGigMutation()
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    dispatch({
-      type: GigActionType.CHANGE_INPUT,
-      payload: { name: e.target.name, value: e.target.value }
-    })
+    const target = e.target as HTMLInputElement
+    dispatch(
+      changeGigInput({
+        field: target.name as keyof IGigState,
+        value: target.value
+      })
+    )
   }
 
   const handleFileChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,28 +69,24 @@ const AddGig: FC = () => {
     const input = form.querySelector('input')
 
     if (input) {
-
-      dispatch({
-        type: GigActionType.ADD_FEATURE,
-        payload: input.value
-      })
+      dispatch(addFeature(input.value))
       input.value = ''
     }
   }
 
   const handleRemoveFeature = (feature: string) => {
-    dispatch({ type: GigActionType.REMOVE_FEATURE, payload: feature })
+    dispatch(removeFeature(feature))
   }
 
   const handleUpload = async () => {
     if (!singleFile || !files) {
-      return
+      return showToast('Please add files first', 'warning')
     }
 
     setUploading(true)
     try {
       const cover = await uploadImage(singleFile)
-
+      
       const images = await Promise.all(
         Array.from(files).map(async (file) => {
           const url = await uploadImage(file)
@@ -89,49 +97,31 @@ const AddGig: FC = () => {
         })
       )
 
-      if (cover && images.length > 0)
-        dispatch({ type: GigActionType.ADD_IMAGES, payload: { cover, images } })
-
+      if (cover && images.length > 0) dispatch(addImages({ cover, images }))
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
       showToast(errorMessage, 'error')
-
     } finally {
       setUploading(false)
     }
   }
 
-  const queryClient = useQueryClient()
-
-  const gigMutation = useMutation({
-    mutationFn: (gig: GigState) => {
-      return newRequest.post('/gigs', gig)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['gigs'])
-    }
-  })
-
-  const { isLoading: isLoadingGigs } = gigMutation
-
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
 
-    if (state.cover !== '' && state.images.length !== 0) {
-      gigMutation.mutate(state, {
-        onSuccess: () => {
-          showToast('Create gig successfully, To the My Gigs page in 10 seconds...', 'success')
-          setTimeout(() => {
-            navigate('/my-gigs')
-          }, 10000)
-        },
-        onError: (error: unknown) => {
-          const axiosError = error as AxiosError
-          const errorMessage = axiosError.response?.data?.message || 'Create gig failed'
-          showToast(errorMessage, 'error')
-        }
-      })
+    if (gigInfo.cover !== '' && gigInfo.images.length !== 0) {
+      try {
+        await createGig(gigInfo).unwrap()
+        showToast('Create gig successfully, To the My Gigs page in 5 seconds...', 'success')
+        setTimeout(() => {
+          navigate('/my-gigs')
+        }, 5000)
+      } catch (error) {
+        const apiError = error as ApiError
+        const errorMessage = apiError.data?.message || 'Create gig failed'
+        showToast(errorMessage, 'error')
+      }
     } else {
       showToast('Please upload files first', 'warning')
     }
@@ -215,7 +205,7 @@ const AddGig: FC = () => {
                 </button>
               </form>
               <div className='addedFeatures'>
-                {state?.features?.map((f, i) => (
+                {gigInfo?.features?.map((f, i) => (
                   <div className='item' key={`${f}-${i}`}>
                     <button
                       onClick={() => handleRemoveFeature(f)}
@@ -230,18 +220,18 @@ const AddGig: FC = () => {
           </div>
           <button
             disabled={
-              !state.title ||
-              !state.desc ||
-              !state.shortDesc ||
-              !state.deliveryTime ||
-              !state.features ||
+              !gigInfo.title ||
+              !gigInfo.desc ||
+              !gigInfo.shortDesc ||
+              !gigInfo.deliveryTime ||
+              !gigInfo.features ||
               uploading ||
-              isLoadingGigs
+              isCreatingGig
             }
             onClick={handleSubmit} 
             className='button button--filled'
           >
-            {isLoadingGigs ? <Loader /> : 'Create'}
+            {isCreatingGig ? <Loader /> : 'Create'}
           </button>
         </div>
       </div>
