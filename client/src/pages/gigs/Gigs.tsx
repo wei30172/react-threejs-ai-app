@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useGetGigsQuery } from '../../slices/apiSlice/gigsApiSlice'
@@ -6,8 +6,10 @@ import { GigCard } from '../../components'
 import { Loader, ErrorIcon, BarsArrowDownIcon } from '../../components/icons'
 import './Gigs.scss'
 
-const Gigs: FC = () => {
-  const [sort, setSort] = useState<'sales' | 'createdAt'>('sales')
+type SortType = 'sales' | 'createdAt'
+
+const Gigs: React.FC = () => {
+  const [sort, setSort] = useState<SortType>('sales')
   const [open, setOpen] = useState(false)
   const minRef = useRef<HTMLInputElement>(null)
   const maxRef = useRef<HTMLInputElement>(null)
@@ -16,30 +18,31 @@ const Gigs: FC = () => {
 
   const { isLoading, error, data, refetch } = useGetGigsQuery({
     search,
-    min: minRef?.current?.value,
-    max: maxRef?.current?.value,
+    min: minRef.current?.value || '',
+    max: maxRef.current?.value || '',
     sort
   })
 
-  const reSort = (type: 'sales' | 'createdAt') => {
+  const reSort = useCallback((type: SortType) => {
     setSort(type)
-  }
+    setOpen(false)
+  }, [])
 
   useEffect(() => {
     refetch()
-  }, [refetch, sort])
+  }, [sort, refetch])
 
-  const apply = () => {
-    refetch()
-  }
+  const apply = useCallback(() => {
+    if (minRef.current?.value && maxRef.current?.value) {
+      refetch()
+    }
+  }, [refetch])
 
   return (
     <div className='gigs'>
       <div className='container'>
         <h1>Our Plans</h1>
-        <p>
-          Customize your 3D backdrop and photos, unleash creativity.
-        </p>
+        <p>Customize your 3D backdrop and photos, unleash creativity.</p>
         <div className='menu'>
           <div className='left'>
             <span>Budget</span>
@@ -49,32 +52,26 @@ const Gigs: FC = () => {
           </div>
           <div className='right'>
             <span className='sortBy'>Sort by</span>
-            <span className='sortType'>
-              {sort === 'sales' ? 'Best Selling' : 'Newest'}
-            </span>
-            <button
-              className='cursor-pointer'
-              onClick={() => setOpen(!open)}>
-              <BarsArrowDownIcon />
-            </button>
+            <span className='sortType'>{sort === 'sales' ? 'Best Selling' : 'Newest'}</span>
+            <button className='cursor-pointer' onClick={() => setOpen(!open)}><BarsArrowDownIcon /></button>
             {open && (
               <div className='rightMenu'>
-                {sort === 'sales' ? (
-                  <span onClick={() => reSort('createdAt')}>Newest</span>
-                ) : (
-                  <span onClick={() => reSort('sales')}>Best Selling</span>
-                )}
+                {sort === 'sales' 
+                  ? <span onClick={() => reSort('createdAt')}>Newest</span> 
+                  : <span onClick={() => reSort('sales')}>Best Selling</span>
+                }
                 <span onClick={() => reSort('sales')}>Popular</span>
               </div>
             )}
           </div>
         </div>
         <div className='cards'>
-          {isLoading
-            ? <Loader /> 
-            : error
+          {isLoading 
+            ? <Loader />
+            : error 
               ? <ErrorIcon />
-              : data?.map((gig) => <GigCard key={gig._id} gigItem={gig} />)}
+              : data && data.map((gig) => <GigCard key={gig._id} gigItem={gig} />)
+          }
         </div>
       </div>
     </div>
