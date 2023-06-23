@@ -12,7 +12,7 @@ const SALT_ROUNDS = 10
 // @desc    Get Single User
 // @route   GET /api/users/:id
 // @access  Public
-export const getUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getUserInfo = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.params.id
 

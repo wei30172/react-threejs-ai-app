@@ -62,6 +62,7 @@ export const updateConversation = async (req: IRequest, res: Response, next: Nex
 
 export const getSingleConversation = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const { params: { id } } = req
+
   if (!id) return next(createError(400, 'Invalid parameters'))
 
   try {

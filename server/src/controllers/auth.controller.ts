@@ -61,7 +61,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
     if (!user) return next(createError(404, 'User not found'))
 
     const isCorrect = await bcrypt.compare(userInputPassword, user.password)
-    if (!isCorrect) return next(createError(400, 'Wrong password'))
+    if (!isCorrect) return next(createError(400, 'Wrong email or password'))
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {
@@ -86,8 +86,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
     res
       .cookie('accessToken', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
-        sameSite: 'strict', // Prevent CSRF attacks
+        secure: process.env.NODE_ENV !== 'development', // todo: Use secure cookies in production
         maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
       })
       .status(200)

@@ -1,22 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
 import createError from '../utils/createError'
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
-import Image from '../models/aiimage.model'
+import Post from '../models/post.model'
 
 // @desc    Get AI Images
-// @route   GET /api/aiimages
+// @route   GET /api/imageposts
 // @access  Public
-
-// @desc    Save Single AI Image
-// @route   POST /api/aiimages
-// @access  Public
-
-// @desc    Delete Single AI Image
-// @route   DELETE /api/aiimages/:id
-// @access  Public
-export const getImages = async (_req: Request, res: Response) => {
+export const getImagePost = async (_req: Request, res: Response) => {
   try {
-    const images = await Image.find({})
+    const images = await Post.find({})
     
     res.status(200).json(images)
   } catch (err) {
@@ -24,7 +16,10 @@ export const getImages = async (_req: Request, res: Response) => {
   }
 }
 
-export const saveImage = async (req: Request, res: Response, next: NextFunction) => {
+// @desc    Save Single AI Image
+// @route   POST /api/imageposts
+// @access  Public
+export const saveImagePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, prompt, photo } = req.body
 
@@ -34,7 +29,7 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
 
     const photoUrl: UploadApiResponse = await cloudinary.uploader.upload(photo)
 
-    const newImage = await Image.create({
+    const newImage = await Post.create({
       name,
       prompt,
       photo: photoUrl.url,
@@ -47,9 +42,12 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
+// @desc    Delete Single AI Image
+// @route   DELETE /api/imageposts/:id
+// @access  Public
+export const deleteImagePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const image = await Image.findById(req.params.id)
+    const image = await Post.findById(req.params.id)
 
     if (!image) {
       return next(createError(404, 'Image not found' ))
@@ -59,7 +57,7 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
     await cloudinary.uploader.destroy(image.cloudinary_id)
 
     // Delete the image from the database
-    await Image.findByIdAndRemove(req.params.id)
+    await Post.findByIdAndRemove(req.params.id)
 
     res.status(200).json({ message: 'Image deleted successfully' })
   } catch (err) {

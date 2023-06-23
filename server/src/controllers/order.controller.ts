@@ -92,21 +92,6 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
   }
 }
 
-// @desc    Get Single Order
-// @route   GET /api/orders/single/:id
-// @access  Private
-export const getOrder = async (req: IRequest, res: Response, next: NextFunction) => {
-  try {
-    const order = await Order.findById(req.params.id)
-    if (!order) {
-      return next(createError(404, 'Order not found!'))
-    }
-    res.status(200).send(order)
-  } catch (err) {
-    next(err)
-  }
-}
-
 // @desc    Get Orders
 // @route   GET /api/orders
 // @access  Private
@@ -117,6 +102,21 @@ export const getOrders = async (req: IRequest, res: Response, next: NextFunction
     })
 
     res.status(200).send(orders)
+  } catch (err) {
+    next(err)
+  }
+}
+
+// @desc    Get Single Order
+// @route   GET /api/orders/single/:id
+// @access  Private
+export const getSingleOrder = async (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.findById(req.params.id)
+    if (!order) {
+      return next(createError(404, 'Order not found!'))
+    }
+    res.status(200).send(order)
   } catch (err) {
     next(err)
   }
@@ -141,7 +141,7 @@ export const confirm = async (req: IRequest, res: Response, next: NextFunction):
     order.isPaid = true
     await order.save()
 
-    res.status(200).send('Order has been confirmed.')
+    res.status(200).send({ message: 'Order has been confirmed.'})
   } catch (err) {
     next(err)
   }

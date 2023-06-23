@@ -27,7 +27,7 @@ export const createGig = async (req: IRequest, res: Response, next: NextFunction
 // @desc    Get Single Gig
 // @route   GET /api/gigs/single/:id
 // @access  Public
-export const getGig = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getSingleGig = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const gig = await Gig.findById(req.params.id)
     if (!gig) {
@@ -43,20 +43,25 @@ export const getGig = async (req: Request, res: Response, next: NextFunction): P
 // @route   GET /api/gigs
 // @access  Public
 export const getGigs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const q = req.query
+  const { userId, min, max, search, sort } = req.query
   const filters = {
-    ...(q.userId && { userId: q.userId }),
-    ...((q.min || q.max) && {
+    ...(userId && { userId }),
+    ...((min || max) && {
       price: {
-        ...(q.min && { $gt: q.min }),
-        ...(q.max && { $lt: q.max })
+        ...(min && { $gt: min }),
+        ...(max && { $lt: max })
       }
     }),
-    ...(q.search && { title: { $regex: q.search, $options: 'i' } })
+    ...(search && { title: { $regex: search, $options: 'i' } })
   }
   
   try {
-    const gigs = await Gig.find(filters).sort({ [q.sort as string]: -1 })
+    let gigs
+    if (sort) {
+      gigs = await Gig.find(filters).sort({ [sort as string]: -1 })
+    } else {
+      gigs = await Gig.find(filters)
+    }
     res.status(200).send(gigs)
   } catch (err) {
     next(err)
@@ -78,7 +83,7 @@ export const deleteGig = async (req: IRequest, res: Response, next: NextFunction
     }
 
     await Gig.findByIdAndDelete(req.params.id)
-    res.status(200).send('Gig has been deleted!')
+    res.status(200).send({message: 'Gig has been deleted!'})
   } catch (err) {
     next(err)
   }

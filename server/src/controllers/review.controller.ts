@@ -87,7 +87,7 @@ export const deleteReview = async (req: IRequest, res: Response, next: NextFunct
       $inc: { totalStars: -review.star, starNumber: -1 }
     })
 
-    res.status(200).send('Review has been deleted!')
+    res.status(200).send({message: 'Review has been deleted!'})
   } catch (err) {
     next(err)
   }
