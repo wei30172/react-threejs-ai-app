@@ -1,7 +1,6 @@
-import { FC } from 'react'
 import './Footer.scss'
 
-const Footer: FC = () => {
+const Footer: React.FC = () => {
   return (
     <div className='footer flex-between'>
       <p>Copyright &copy; 2023 Company. All rights reserved.</p>

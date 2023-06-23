@@ -1,4 +1,4 @@
-import { FC, ComponentType, HTMLAttributes } from 'react'
+import { ComponentType, HTMLAttributes } from 'react'
 import { useSelector } from 'react-redux'
 
 import { RootState } from '../../../store'
@@ -16,7 +16,7 @@ interface TabProps {
   handleClick: () => void
 }
 
-const Tab: FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
+const Tab: React.FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
   const designInfo = useSelector((state: RootState) => state.design)
 
   const activeStyles = isFilterTab && isActiveTab

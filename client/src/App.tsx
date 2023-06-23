@@ -11,6 +11,8 @@ import {
   Order,
   Messages,
   Message,
+  AddPost,
+  Posts,
   Register,
   Login,
   Profile,
@@ -92,6 +94,20 @@ function App() {
             {
               path: ':id',
               element: <Message />
+            }
+          ]
+        },
+        {
+          path: '/posts',
+          element: <PrivateRoute />,
+          children: [
+            {
+              path: '',
+              element: <Posts />
+            },
+            {
+              path: 'add-post',
+              element: <AddPost />
             }
           ]
         },

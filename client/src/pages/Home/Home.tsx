@@ -1,10 +1,9 @@
-import { FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { CustomButton } from '../../components'
 import './Home.scss'
 
-const Home: FC = () => {
+const Home: React.FC = () => {
   return (
     <div className='home flex-center'>
       <div className='title'>

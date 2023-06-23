@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useGetUserInfoByIdQuery } from '../../slices/apiSlice/usersApiSlice'
@@ -6,38 +5,45 @@ import { IGig } from '../../slices/apiSlice/gigsApiSlice'
 import { Loader, ErrorIcon, StarIconFilled, HeartIconFilled } from '../../components/icons'
 import './GigCard.scss'
 
+const DESCRIPTION_LIMIT = 100
+
+const limitDescription = (description: string, limit = DESCRIPTION_LIMIT) => {
+  return description.length > limit ? `${description.slice(0, limit)}...` : description
+}
+
+const UserInfo: React.FC<{userId: string}> = ({ userId }) => {
+  const { isLoading: isLoadingUserInfo, error: loadUserInfoError, data: userInfodata } = useGetUserInfoByIdQuery(userId)
+
+  if (isLoadingUserInfo) return <Loader />
+  if (loadUserInfoError) return <ErrorIcon />
+
+  return (
+    <div className='user'>
+      <img src={userInfodata?.img || '/img/noavatar.jpg'} alt='User' />
+      <span>{userInfodata?.username}</span>
+    </div>
+  )
+}
+
 interface GigCardProps {
   gigItem: IGig
 }
 
-const GigCard: FC<GigCardProps> = ({ gigItem }) => {
-  const { isLoading, error, data } = useGetUserInfoByIdQuery(gigItem.userId)
-
-  const limitDescription = (description: string, limit = 100) => {
-    if (description.length > limit) {
-      return `${description.slice(0, limit)}...`
-    }
-    return description
-  }
+const GigCard: React.FC<GigCardProps> = ({ gigItem }) => {
+  const averageStars = !isNaN(gigItem.totalStars / gigItem.starNumber)
+    ? Math.round(gigItem.totalStars / gigItem.starNumber)
+    : 0
 
   return (
     <Link to={`/gig/${gigItem._id}`} className='link'>
       <div className='gig-card'>
         <img src={gigItem.cover} alt='Gig Cover' />
         <div className='info'>
-          {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-            <div className='user'>
-              <img src={data?.img || '/img/noavatar.jpg'} alt='User' />
-              <span>{data?.username}</span>
-            </div>
-          )}
+          <UserInfo userId={gigItem.userId} />
           <p>{limitDescription(gigItem.desc)}</p>
           <div className='star'>
             <StarIconFilled />
-            <span>
-              {!isNaN(gigItem.totalStars / gigItem.starNumber) &&
-                Math.round(gigItem.totalStars / gigItem.starNumber)}
-            </span>
+            <span>{averageStars}</span>
           </div>
         </div>
         <hr />

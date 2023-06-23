@@ -1,7 +1,6 @@
-import { FC } from 'react'
 import './Icon.scss'
 
-const Icon: FC = () => (
+const Icon: React.FC = () => (
   <svg
     fill="currentColor"
     viewBox="0 0 20 20"

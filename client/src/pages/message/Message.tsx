@@ -1,4 +1,4 @@
-import { FC, FormEvent, useCallback, useRef } from 'react'
+import { FormEvent, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -7,7 +7,7 @@ import { RootState } from '../../store'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './Message.scss'
 
-const Message: FC = () => {
+const Message: React.FC = () => {
   const { id } = useParams()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -43,7 +43,7 @@ const Message: FC = () => {
         </div>
         { isLoading ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='messages'>
-            {data?.map((m) => (
+            {data && data.map((m) => (
               <div className={m.userId === userInfo?._id ? 'item' : 'owner item'} key={m._id}>
                 <img
                   src={userInfo?.img}

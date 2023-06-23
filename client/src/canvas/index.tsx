@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, Center } from '@react-three/drei'
 
@@ -6,7 +5,7 @@ import Shirt from './Shirt'
 import CameraRig from './CameraRig'
 import './index.scss'
 
-const CanvasModel: FC = () => {
+const CanvasModel: React.FC = () => {
   return (
     // Create a canvas for 3D rendering
     <Canvas

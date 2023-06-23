@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { useEffect } from 'react'
 import { CloseIcon } from '../icons/index'
 import './Toast.scss'
 
@@ -10,7 +10,7 @@ export type ToastProps = {
   type?: ToastType
 }
 
-const Toast: FC<ToastProps & { onHide: () => void }> = (
+const Toast: React.FC<ToastProps & { onHide: () => void }> = (
   { message, isVisible, type = 'success', onHide }
 ) => {
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent } from 'react'
 
 import CustomButton from '../../button/CustomButton'
 import './AIPicker.scss'
@@ -10,7 +10,7 @@ interface AIPickerProps {
   handleSubmit: (value: 'logo' | 'full') => void
 }
 
-const AIPicker: FC<AIPickerProps> = ({ prompt, setPrompt, generatingImg, handleSubmit }) => {
+const AIPicker: React.FC<AIPickerProps> = ({ prompt, setPrompt, generatingImg, handleSubmit }) => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => setPrompt(event.target.value)
 
   return (

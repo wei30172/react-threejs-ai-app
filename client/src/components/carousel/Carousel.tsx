@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 import Card from './Card'
 import { DoubleLeftIcon, DoubleRightIcon } from '../icons'
@@ -8,7 +8,7 @@ type CarouselProps = {
   carouselImages: string[]
 }
 
-const Carousel: FC<CarouselProps> = ({ carouselImages }) => {
+const Carousel: React.FC<CarouselProps> = ({ carouselImages }) => {
   const maxScrollWidth = useRef(0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const carousel = useRef<HTMLDivElement>(null)

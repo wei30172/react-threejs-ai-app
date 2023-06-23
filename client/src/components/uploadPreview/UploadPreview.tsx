@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { changeOrderInput } from '../../slices/orderSlice'
@@ -13,7 +13,7 @@ interface UploadPreviewProps {
   handleCheckout: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const UploadPreview: FC<UploadPreviewProps> = ({ handleCheckout }) => {
+const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
   const dispatch = useDispatch()
 
   const orderInfo = useSelector((state: RootState) => state.order)
@@ -22,7 +22,7 @@ const UploadPreview: FC<UploadPreviewProps> = ({ handleCheckout }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+  const handleUpload = useCallback(async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
@@ -49,7 +49,7 @@ const UploadPreview: FC<UploadPreviewProps> = ({ handleCheckout }) => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [dispatch, designInfo])
 
   return (
     <div className='upload-preview'>

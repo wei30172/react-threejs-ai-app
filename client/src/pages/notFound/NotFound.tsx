@@ -1,9 +1,9 @@
-import { FC, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
 import './NotFound.scss'
 
-const NotFound: FC = () => {
+const NotFound: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {

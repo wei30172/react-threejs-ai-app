@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler } from 'react'
+import { MouseEventHandler } from 'react'
 
 type CustomButtonProps = {
   type: 'filled' | 'outline'
@@ -6,7 +6,7 @@ type CustomButtonProps = {
   handleClick?: MouseEventHandler<HTMLButtonElement>
 }
 
-const CustomButton: FC<CustomButtonProps> = ({ type, title, handleClick }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ type, title, handleClick }) => {
   return (
     <button
       className={`button button--${type}`}

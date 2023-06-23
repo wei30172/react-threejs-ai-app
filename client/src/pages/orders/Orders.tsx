@@ -1,11 +1,10 @@
-import { FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useGetOrdersQuery } from '../../slices/apiSlice/ordersApiSlice'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './Orders.scss'
 
-const Orders: FC = () => {
+const Orders: React.FC = () => {
   const { isLoading, error, data } = useGetOrdersQuery()
 
   return (
@@ -31,7 +30,7 @@ const Orders: FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((order) => (
+                  {data && data.map((order) => (
                     <tr key={order._id}>
                       <td>{order.createdAt?.slice(0, 10)}</td>
                       <td>

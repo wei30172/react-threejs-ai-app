@@ -1,4 +1,4 @@
-import { FC, useState, CSSProperties, useEffect } from 'react'
+import { useState, CSSProperties, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -13,7 +13,7 @@ import Toast from '../../components/toast/Toast'
 import { ChatIcon, Loader, ErrorIcon } from '../../components/icons'
 import './Order.scss'
 
-const Order: FC = () => { 
+const Order: React.FC = () => { 
   const { orderId } = useParams<{orderId: string}>()
   const [conversationId, setConversationId] = useState<string | undefined>(undefined)
 

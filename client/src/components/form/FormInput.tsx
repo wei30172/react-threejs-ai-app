@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { useState } from 'react'
 
 import { ErrorIcon } from '../icons'
 import './FormInput.scss'
@@ -31,7 +31,7 @@ export const Input: React.FC<InputProps> = (props: InputProps) => {
   )
 }
 
-const FormInput: FC<Props> = ({
+const FormInput: React.FC<Props> = ({
   label,
   errorMessage,
   handleChange,

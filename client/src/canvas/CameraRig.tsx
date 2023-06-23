@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 
@@ -6,7 +6,7 @@ interface CameraRigProps {
   children: ReactNode
 }
 
-const CameraRig: FC<CameraRigProps>  = ({ children } ) => {
+const CameraRig: React.FC<CameraRigProps>  = ({ children } ) => {
   const group = useRef<THREE.Group>(null)
 
   useFrame((state, delta) => {

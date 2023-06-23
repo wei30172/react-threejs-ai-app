@@ -1,11 +1,10 @@
-import { FC } from 'react'
 import './Card.scss'
 
 type CardProps = {
   item: string
 };
 
-const Card: FC<CardProps> = ({ item }) => {
+const Card: React.FC<CardProps> = ({ item }) => {
   return (
     <div className='carousel_card'>
       <div className='image-container'>

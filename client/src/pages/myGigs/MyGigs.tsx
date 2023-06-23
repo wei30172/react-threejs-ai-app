@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -10,7 +9,7 @@ import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon, DeleteIcon, EditIcon } from '../../components/icons'
 import './myGigs.scss'
 
-const MyGigs: FC = () => {
+const MyGigs: React.FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth)
 
   const { showToast, hideToast, toastConfig } = useToast()
@@ -58,7 +57,7 @@ const MyGigs: FC = () => {
                   <th>Sales</th>
                   <th>Action</th>
                 </tr>
-                {data?.map((gig: IGig) => (
+                {data && data.map((gig: IGig) => (
                   <tr key={gig._id}>
                     <td>
                       <img className='image' src={gig.cover} alt='' />

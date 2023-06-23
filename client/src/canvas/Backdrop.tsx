@@ -1,7 +1,6 @@
-import { FC } from 'react'
 import { AccumulativeShadows, RandomizedLight } from '@react-three/drei'
 
-const Backdrop: FC = () => {
+const Backdrop: React.FC = () => {
 
   return (
     <AccumulativeShadows

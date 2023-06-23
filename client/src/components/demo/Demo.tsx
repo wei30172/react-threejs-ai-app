@@ -1,11 +1,9 @@
-import { FC } from 'react'
-
 import Customizer from '../customizer/Customizer'
 import CanvasModel from '../../canvas'
 
 import './Demo.scss'
 
-const Demo: FC = () => {
+const Demo: React.FC = () => {
   return (
     <div className='demo'>
       <h2>Demo</h2>

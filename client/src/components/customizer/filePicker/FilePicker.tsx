@@ -1,4 +1,4 @@
-import { FC, ChangeEvent } from 'react'
+import { ChangeEvent } from 'react'
 
 import CustomButton from '../../button/CustomButton'
 import './FilePicker.scss'
@@ -8,7 +8,7 @@ interface FilePickerProps {
   readFile: (type: 'logo' | 'full') => void
 }
 
-const FilePicker: FC<FilePickerProps>  = ({ setFile, readFile }) => {
+const FilePicker: React.FC<FilePickerProps>  = ({ setFile, readFile }) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     

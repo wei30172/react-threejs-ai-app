@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
@@ -9,7 +9,7 @@ import './Pay.scss'
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY as string)
 
-const Pay: FC = () => {
+const Pay: React.FC = () => {
   const [clientSecret, setClientSecret] = useState<string>('')
   const { id } = useParams<{ id: string }>()
 

@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { useMemo } from 'react'
 import { easing } from 'maath'
 import { useFrame } from '@react-three/fiber'
 import { Decal, useGLTF, useTexture } from '@react-three/drei'
@@ -16,7 +16,7 @@ type GLTFResult = GLTF & {
   }
 }
 
-const Shirt: FC = () => {
+const Shirt: React.FC = () => {
   const designInfo = useSelector((state: RootState) => state.design)
 
   const { nodes, materials } = useGLTF('/shirt_baked.glb') as GLTFResult

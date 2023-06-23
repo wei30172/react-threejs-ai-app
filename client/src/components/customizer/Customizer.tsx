@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { setDesign } from '../../slices/designSlice'
@@ -68,7 +68,7 @@ const DecalTypes: DecalType = {
   }
 }
 
-const Customizer: FC = () => {
+const Customizer: React.FC = () => {
   const [file, setFile] = useState<File | null>(null)
   const [prompt, setPrompt] = useState<string>('')
   const [activeEditorTab, setActiveEditorTab] = useState('')
@@ -83,7 +83,7 @@ const Customizer: FC = () => {
 
   const [generateDalleImage, { isLoading: isGeneratingImage }] = useGenerateDalleImageMutation()
 
-  const handleSubmit = async (type: 'logo' | 'full') => {
+  const handleSubmit = async (type: DecalTypeKey) => {
     if (!prompt) {
       showToast('Please enter a prompt', 'warning')
       return
@@ -112,28 +112,21 @@ const Customizer: FC = () => {
   }
 
   const handleActiveFilterTab = (tabName: ActiveFilterTabKey) => {
-    switch (tabName) {
-    case 'logoShirt':
-      dispatch(setDesign({ field: 'isLogoTexture', value: !activeFilterTab[tabName] }))
-      break
-    case 'stylishShirt':
-      dispatch(setDesign({ field: 'isFullTexture', value: !activeFilterTab[tabName] }))
-      break
-    default:
-      dispatch(setDesign({ field: 'isLogoTexture', value: true }))
-      dispatch(setDesign({ field: 'isFullTexture', value: false }))
-      break
+    const switchActions: Record<ActiveFilterTabKey, () => void> = {
+      logoShirt: () => dispatch(setDesign({ field: 'isLogoTexture', value: !activeFilterTab[tabName] })),
+      stylishShirt: () => dispatch(setDesign({ field: 'isFullTexture', value: !activeFilterTab[tabName] }))
     }
 
-    setActiveFilterTab(prevState => {
-      return {
-        ...prevState,
-        [tabName]: !prevState[tabName]
-      }
-    })
+    const switchAction = switchActions[tabName]
+    if (switchAction) switchAction()
+
+    setActiveFilterTab(prevState => ({
+      ...prevState,
+      [tabName]: !prevState[tabName]
+    }))
   }
 
-  const readFile = (type: 'logo' | 'full') => {
+  const readFile = (type: DecalTypeKey) => {
     if (file) {
       fileReader(file)
         .then(result => {

@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -11,7 +11,7 @@ import { FormInput, Toast } from '../../components'
 import { Loader } from '../../components/icons'
 import './Login.scss'
 
-const Login: FC = () => {
+const Login: React.FC = () => {
   const [user, setUser] = useState<IUserLogin>({
     email: '',
     password: ''

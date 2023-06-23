@@ -1,4 +1,4 @@
-import { FC, useRef, FormEvent } from 'react'
+import { useRef, FormEvent } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useGetReviewsByGigQuery, useCreateReviewMutation } from '../../slices/apiSlice/reviewsApiSlice'
@@ -12,7 +12,7 @@ interface ReviewsProps {
   gigId: string
 }
 
-const Reviews: FC<ReviewsProps> = ({ gigId }) => {
+const Reviews: React.FC<ReviewsProps> = ({ gigId }) => {
   const descRef = useRef<HTMLInputElement>(null)
   const starRef = useRef<HTMLSelectElement>(null)
 
@@ -41,7 +41,7 @@ const Reviews: FC<ReviewsProps> = ({ gigId }) => {
         ? <Loader />
         : error
           ? <ErrorIcon />
-          : data?.map((review, i) => 
+          : data && data.map((review, i) => 
             <div key={i} >
               <Review review={review} />
               <hr />

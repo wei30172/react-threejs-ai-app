@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -11,7 +11,7 @@ import Toast from '../toast/Toast'
 import { HomeIcon } from '../icons/index'
 import './Navbar.scss'
 
-const Navbar: FC = () => {
+const Navbar: React.FC = () => {
   const [active, setActive] = useState(false)
   const [open, setOpen] = useState(false)
 

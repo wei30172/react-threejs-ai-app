@@ -1,4 +1,4 @@
-import { FC, FormEvent } from 'react'
+import { FormEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { IOrderState, changeOrderInput } from '../../slices/orderSlice'
@@ -6,7 +6,7 @@ import { RootState } from '../../store'
 import { FormInput } from '../../components'
 import './Recipient.scss'
 
-const Recipient: FC = () => {
+const Recipient: React.FC = () => {
   const dispatch = useDispatch()
 
   const orderInfo = useSelector((state: RootState) => state.order)

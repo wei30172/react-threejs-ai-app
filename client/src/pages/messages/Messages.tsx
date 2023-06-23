@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useSelector} from 'react-redux'
@@ -8,7 +7,7 @@ import { RootState } from '../../store'
 import { Loader, ErrorIcon, EllipsisIconOutline, EllipsisIconFilled } from '../../components/icons'
 import './Messages.scss'
 
-const Messages: FC = () => {
+const Messages: React.FC = () => {
   const { isLoading, error, data } = useGetConversationsQuery()
 
   const [updateConversation] = useUpdateConversationMutation()
@@ -38,7 +37,7 @@ const Messages: FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.map((c) => (
+                  {data && data.map((c) => (
                     <tr
                       className={
                         ((userInfo?.isSeller && !c.readBySeller) ||

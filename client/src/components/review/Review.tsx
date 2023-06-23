@@ -1,5 +1,3 @@
-import { FC } from 'react'
-
 import { IReview } from '../../slices/apiSlice/reviewsApiSlice'
 import { useGetUserInfoByIdQuery } from '../../slices/apiSlice/usersApiSlice'
 import { Loader, ErrorIcon, StarIconFilled } from '../../components/icons'
@@ -9,7 +7,7 @@ interface ReviewProps {
   review: IReview
 }
 
-const Review: FC<ReviewProps> = ({ review }) => {
+const Review: React.FC<ReviewProps> = ({ review }) => {
   const { isLoading, error, data } = useGetUserInfoByIdQuery(review.userId)
 
   return (

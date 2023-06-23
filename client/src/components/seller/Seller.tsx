@@ -1,5 +1,3 @@
-import { FC } from 'react'
-
 import { useGetUserInfoByIdQuery } from '../../slices/apiSlice/usersApiSlice'
 import { IGig } from '../../slices/apiSlice/gigsApiSlice'
 import { StarIconFilled } from '../../components/icons'
@@ -10,9 +8,19 @@ interface SellerProps {
   gigData: IGig
 }
 
-const Seller: FC<SellerProps> = ({ gigData }) => {
+const Seller: React.FC<SellerProps> = ({ gigData }) => {
   const { isLoading, error, data } = useGetUserInfoByIdQuery(gigData.userId)
   
+  const starsIcons = Array(Math.round(gigData.totalStars / gigData.starNumber))
+    .fill(null)
+    .map((_item, i) => (
+      <StarIconFilled key={i}/>
+    ))
+
+  const averageStars = !isNaN(gigData.totalStars / gigData.starNumber)
+    ? Math.round(gigData.totalStars / gigData.starNumber)
+    : 0
+
   return (
     <div className='seller'>
       <h2>Seller</h2>
@@ -23,14 +31,8 @@ const Seller: FC<SellerProps> = ({ gigData }) => {
             <span>{data?.username}</span>
             {!isNaN(gigData.totalStars / gigData.starNumber) && (
               <div className='stars'>
-                {Array(Math.round(gigData.totalStars / gigData.starNumber))
-                  .fill(null)
-                  .map((_item, i) => (
-                    <StarIconFilled key={i}/>
-                  ))}
-                <span>
-                  {Math.round(gigData.totalStars / gigData.starNumber)}
-                </span>
+                {starsIcons}
+                <span>{averageStars}</span>
               </div>
             )}
             <button className='cursor-pointer'>Contact Me</button>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, FormEvent } from 'react'
+import { useEffect, useState, FormEvent } from 'react'
 import {
   PaymentElement,
   useStripe,
@@ -10,7 +10,7 @@ import './CheckoutForm.scss'
 
 const RETURN_URL = 'http://localhost:5173/success' // todo
 
-const CheckoutForm: FC = () => {
+const CheckoutForm: React.FC = () => {
   const stripe = useStripe()
   const elements = useElements()
 

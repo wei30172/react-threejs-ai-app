@@ -1,4 +1,4 @@
-import { FC, ElementType } from 'react'
+import { ElementType } from 'react'
 import { Route, Navigate } from 'react-router-dom'
 
 interface PrivateRouteProps {
@@ -7,7 +7,7 @@ interface PrivateRouteProps {
   path: string;
 }
 
-const PrivateRoute: FC<PrivateRouteProps> = ({
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
   element: Element,
   isAuthenticated,
   ...rest
