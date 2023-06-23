@@ -1,10 +1,10 @@
-import { FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useConfirmMutation } from '../../slices/apiSlice/ordersApiSlice'
 import './Success.scss'
 
-const Success: FC = () => {
+const Success: React.FC = () => {
   const navigate = useNavigate()
   const { search } = useLocation()
   const params = new URLSearchParams(search)

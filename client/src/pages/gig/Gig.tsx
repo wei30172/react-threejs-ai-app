@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -13,7 +13,7 @@ import { Carousel, Demo, Recipient, UploadPreview, Toast } from '../../component
 import { Loader, ErrorIcon, CheckIcon } from '../../components/icons'
 import './Gig.scss'
 
-const Gig: FC = () => {
+const Gig: React.FC = () => {
   const [showCheckOut, setShowCheckOut] = useState(false)
 
   const { gigId } = useParams()
@@ -30,7 +30,7 @@ const Gig: FC = () => {
 
   useEffect(() => {
     if (gigId) dispatch(changeOrderInput({field: 'gigId', value: gigId}))
-  }, [dispatch, gigId])
+  }, [gigId, dispatch])
 
   const [createOrder, { isLoading: isCreatingOrder, isSuccess }] = useCreateOrderMutation()
 
@@ -41,9 +41,11 @@ const Gig: FC = () => {
       await createOrder({...orderInfo, ...designInfo}).unwrap()
       setShowCheckOut(false)
       showToast('Created order successfully, To the Order page in 5 seconds...', 'success')
+      
       setTimeout(() => {
         navigate('/orders')
       }, 5000)
+
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Update gig failed'

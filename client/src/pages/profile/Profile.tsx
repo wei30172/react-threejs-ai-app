@@ -1,8 +1,8 @@
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { useUpdateUserProfileMutation, IUserProfilee } from '../../slices/apiSlice/usersApiSlice'
+import { useUpdateUserProfileMutation, IUserProfile } from '../../slices/apiSlice/usersApiSlice'
 import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
 import { logout } from '../../slices/authSlice'
@@ -12,8 +12,8 @@ import { FormInput, Toast } from '../../components'
 import { Loader } from '../../components/icons'
 import './Profile.scss'
 
-const Profile: FC = () => {
-  const [user, setUser] = useState<IUserProfilee>({
+const Profile: React.FC = () => {
+  const [user, setUser] = useState<IUserProfile>({
     username: '',
     password: '',
     confirmPassword: ''
@@ -71,11 +71,13 @@ const Profile: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     try {
       await updateUserProfile(user).unwrap()
       await logoutApiCall().unwrap()
       dispatch(logout())
       showToast('User has been updated. Redirecting to the login page in 5 seconds...', 'success')
+      
       setTimeout(() => {
         navigate('/login')
       }, 5000)
@@ -103,7 +105,7 @@ const Profile: FC = () => {
               <FormInput
                 key={input.id}
                 {...input}
-                value={user[input.name as keyof IUserProfilee]?.toString()}
+                value={user[input.name as keyof IUserProfile]?.toString()}
                 handleChange={handleChange}
               />
             </div>

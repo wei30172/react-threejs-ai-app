@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, ChangeEvent, FormEvent } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -12,7 +12,7 @@ import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './EditGig.scss'
 
-const EditGig: FC = () => {
+const EditGig: React.FC = () => {
   const { gigId } = useParams()
 
   const { isLoading, error, data } = useGetSingleGigQuery(gigId)
@@ -125,9 +125,11 @@ const EditGig: FC = () => {
     try {
       await updateGig({gigId, data: gigInfo}).unwrap()
       showToast('Update gig successfully, To the My Gigs page in 5 seconds...', 'success')
+      
       setTimeout(() => {
         navigate('/my-gigs')
       }, 5000)
+
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Update gig failed'

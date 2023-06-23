@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, ChangeEvent, FormEvent } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -13,7 +13,7 @@ import Toast from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'
 import './AddGig.scss'
 
-const AddGig: FC = () => {
+const AddGig: React.FC = () => {
   const [singleFile, setSingleFile] = useState<File | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -111,12 +111,15 @@ const AddGig: FC = () => {
     e.preventDefault()
 
     if (gigInfo.cover !== '' && gigInfo.images.length !== 0) {
+      
       try {
         await createGig(gigInfo).unwrap()
         showToast('Create gig successfully, To the My Gigs page in 5 seconds...', 'success')
+        
         setTimeout(() => {
           navigate('/my-gigs')
         }, 5000)
+        
       } catch (error) {
         const apiError = error as ApiError
         const errorMessage = apiError.data?.message || 'Create gig failed'

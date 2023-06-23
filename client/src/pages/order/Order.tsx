@@ -1,4 +1,4 @@
-import { useState, CSSProperties, useEffect } from 'react'
+import { useState, CSSProperties, useEffect, useCallback, useMemo } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -39,8 +39,8 @@ const Order: React.FC = () => {
   } = useGetSingleConversationQuery(conversationId)
 
   const [createConversation, { isLoading: isCreatingConversation }] = useCreateConversationMutation()
-  
-  const fetchConversation = async (order: IOrder) => {
+
+  const fetchConversation = useCallback(async (order: IOrder) => {
     const { sellerId, buyerId } = order
     const newConversationId = sellerId + buyerId
     setConversationId(newConversationId)
@@ -59,9 +59,9 @@ const Order: React.FC = () => {
         throw error
       }
     }
-  }
-  
-  const handleContact = async (order: IOrder) => {
+  }, [createConversation, conversation, refetchSingleConversation, userInfo.isSeller])
+
+  const handleContact = useCallback(async (order: IOrder) => {
     try {
       const conversationId = await fetchConversation(order)
       navigate(`/messages/${conversationId}`)
@@ -69,12 +69,12 @@ const Order: React.FC = () => {
       const errorMessage = 'Create Conversation failed'
       showToast(errorMessage, 'error')
     }
-  }
+  }, [fetchConversation, navigate, showToast])
 
-  const style: CSSProperties = {
+  const style: CSSProperties = useMemo(() => ({
     backgroundColor: data?.color || '',
     color: getContrastingColor(data?.color || '#000000')
-  }
+  }), [data?.color])
 
   return (
     <>

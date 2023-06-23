@@ -5,7 +5,7 @@ export interface IUserInfo {
   img: string
 }
 
-export interface IUserProfilee {
+export interface IUserProfile {
   username: string
   password: string
   confirmPassword: string
@@ -22,7 +22,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
-    updateUserProfile: builder.mutation<void, IUserProfilee>({
+    updateUserProfile: builder.mutation<void, IUserProfile>({
       query: (userData) => ({
         url: `${USERS_URL}/profile`,
         method: 'PUT',

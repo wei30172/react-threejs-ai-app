@@ -1,5 +1,5 @@
-import { FC, useState, useEffect } from 'react'
-// import { FC, ChangeEvent, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+// import { ChangeEvent, useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -12,7 +12,7 @@ import { FormInput, Toast } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
-const Register: FC = () => {
+const Register: React.FC = () => {
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUserRegister>({
@@ -133,9 +133,11 @@ const Register: FC = () => {
         const url = await uploadImage(file) || ''
         await register({ ...user, img: url }).unwrap()
         showToast('User has been created please login. To the home page in 5 seconds...', 'success')
+        
         setTimeout(() => {
           navigate('/')
         }, 5000)
+
       } else {
         throw new Error('Please upload an avatar image')
       }
