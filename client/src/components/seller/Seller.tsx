@@ -11,25 +11,25 @@ interface SellerProps {
 const Seller: React.FC<SellerProps> = ({ gigData }) => {
   const { isLoading, error, data } = useGetUserInfoByIdQuery(gigData.userId)
   
-  const starsIcons = Array(Math.round(gigData.totalStars / gigData.starNumber))
+  const averageStars = !isNaN(gigData.totalStars / gigData.starNumber)
+    ? Math.round(gigData.totalStars / gigData.starNumber)
+    : 0
+
+  const starsIcons = Array(Math.min(5, averageStars)) // Limit the stars to 5
     .fill(null)
     .map((_item, i) => (
       <StarIconFilled key={i}/>
     ))
-
-  const averageStars = !isNaN(gigData.totalStars / gigData.starNumber)
-    ? Math.round(gigData.totalStars / gigData.starNumber)
-    : 0
 
   return (
     <div className='seller'>
       <h2>Seller</h2>
       {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='user'>
-          <img src={data?.img || '/img/noavatar.jpg'} alt='atar' />
+          <img src={data?.img || '/img/noavatar.jpg'} alt={`${data?.username}'s avatar`} />
           <div className='info'>
             <span>{data?.username}</span>
-            {!isNaN(gigData.totalStars / gigData.starNumber) && (
+            {averageStars > 0 && (
               <div className='stars'>
                 {starsIcons}
                 <span>{averageStars}</span>

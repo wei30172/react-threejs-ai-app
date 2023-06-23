@@ -24,8 +24,10 @@ const Success: React.FC = () => {
 
       try {
         await confirm({ payment_intent: paymentIntent }).unwrap()
+
       } catch (error) {
         setErrorMessage('Failed to confirm payment. Please try again later.')
+        
       } finally {
         setTimeout(() => {
           navigate('/orders')
