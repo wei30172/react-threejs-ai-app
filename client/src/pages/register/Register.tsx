@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { useRegisterMutation, IUserRegister } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
 import { RootState } from '../../store'
-import { uploadImage }  from '../../utils/handleUploadImage'
+import { uploadImage }  from '../../utils/handleImage'
 import { useToast } from '../../hooks/useToast'
 import { FormInput, Toast } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
@@ -160,7 +160,7 @@ const Register: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='register flex-center'>
+      <section className='register flex-center'>
         <form onSubmit={handleSubmit}>
           <div className='left flex-center'>
             <h1>Create a new account</h1>
@@ -214,7 +214,7 @@ const Register: React.FC = () => {
             </div>
           </div>
         </form>
-      </div>
+      </section>
     </>
   )
 }

@@ -84,7 +84,7 @@ const Order: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='order'>
+      <section className='order'>
         <div className='container'>
           <div className='title'>
             <h1>Order</h1>
@@ -204,7 +204,7 @@ const Order: React.FC = () => {
             </>
           )}
         </div>
-      </div>
+      </section>
     </>
   )
 }

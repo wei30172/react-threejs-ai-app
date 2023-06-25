@@ -97,7 +97,7 @@ const Profile: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='profile flex-center'>
+      <section className='profile flex-center'>
         <form className='flex-center' onSubmit={handleSubmit}>
           <h1>Update profile</h1>
           {formInputs.map((input) => (
@@ -121,7 +121,7 @@ const Profile: React.FC = () => {
             {isLoading ? <Loader /> : 'Update'}
           </button>
         </form>
-      </div>
+      </section>
     </>
   )
 }

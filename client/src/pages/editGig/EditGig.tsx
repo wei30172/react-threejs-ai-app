@@ -6,7 +6,7 @@ import { useGetSingleGigQuery, useUpdateGigMutation } from '../../slices/apiSlic
 import { initializeState, changeGigInput, addImages, addFeature, removeFeature, IGigState } from '../../slices/gigSlice'
 import { RootState } from '../../store'
 import { ApiError, AxiosError } from '../../slices/apiSlice'
-import { uploadImage }  from '../../utils/handleUploadImage'
+import { uploadImage }  from '../../utils/handleImage'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon } from '../../components/icons'
@@ -145,7 +145,7 @@ const EditGig: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='edit'>
+      <section className='edit-gig'>
         {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='container'>
             <h1>Edit Gig</h1>
@@ -266,7 +266,7 @@ const EditGig: React.FC = () => {
               </button>
             </Link>
           </div>)}
-      </div>
+      </section>
     </>
   )
 }

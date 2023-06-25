@@ -61,7 +61,7 @@ const Gig: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='gig'>
+      <section className='gig'>
         {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
           <div className='container'>
             <div className='left'>
@@ -105,7 +105,7 @@ const Gig: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </section>
     </>
   )
 }

@@ -7,7 +7,7 @@ import { changeGigInput, addImages, addFeature, removeFeature, IGigState } from 
 import { RootState } from '../../store'
 import { ApiError, AxiosError } from '../../slices/apiSlice'
 
-import { uploadImage } from '../../utils/handleUploadImage'
+import { uploadImage } from '../../utils/handleImage'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
 import { Loader } from '../../components/icons'
@@ -138,7 +138,7 @@ const AddGig: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='add'>
+      <section className='add-gig'>
         <div className='container'>
           <h1>Add New Gig</h1>
           <div className='sections'>
@@ -237,7 +237,7 @@ const AddGig: React.FC = () => {
             {isCreatingGig ? <Loader /> : 'Create'}
           </button>
         </div>
-      </div>
+      </section>
     </>
   )
 }

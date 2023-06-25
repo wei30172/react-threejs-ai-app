@@ -19,7 +19,7 @@ const Messages: React.FC = () => {
   }
 
   return (
-    <div className='messages'>
+    <section className='messages'>
       <div className='container'>
         <div className='title'>
           <h1>Messages</h1>
@@ -72,7 +72,7 @@ const Messages: React.FC = () => {
           </>
         )}
       </div>
-    </div>
+    </section>
   )
 }
 

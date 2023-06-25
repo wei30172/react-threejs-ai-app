@@ -83,7 +83,7 @@ const Login: React.FC = () => {
         type={toastConfig.type}
         onHide={hideToast}
       />
-      <div className='login flex-center'>
+      <section className='login flex-center'>
         <form className='flex-center' onSubmit={handleSubmit}>
           <h1>Sign in</h1>
           {formInputs.map((input) => (
@@ -116,7 +116,7 @@ const Login: React.FC = () => {
             </Link>
           </div>
         </form>
-      </div>
+      </section>
     </>
   )
 }

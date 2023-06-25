@@ -39,7 +39,7 @@ const Success: React.FC = () => {
   }, [navigate, paymentIntent, confirm])
 
   return (
-    <div className='success'>
+    <section className='success'>
       <div className='container'>
         <p>
           {isConfirmingPayment? 'Loading...'
@@ -47,7 +47,7 @@ const Success: React.FC = () => {
               : 'Payment successful. You are being redirected to the orders page. Please do not close the page.'}
         </p>
       </div>
-    </div>
+    </section>
   )
 }
 

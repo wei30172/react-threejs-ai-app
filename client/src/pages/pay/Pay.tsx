@@ -33,7 +33,7 @@ const Pay: React.FC = () => {
   }
 
   return (
-    <div className='pay'>
+    <section className='pay'>
       <div className='container'>
         {isCreatingIntent? 'Loading...'
           : createIntentError? 'Failed to confirm payment. Please try again later.'
@@ -44,7 +44,7 @@ const Pay: React.FC = () => {
             )
         }
       </div>
-    </div>
+    </section>
   )
 }
 

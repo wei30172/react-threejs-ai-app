@@ -33,7 +33,7 @@ const Message: React.FC = () => {
   }, [id, createMessage])
 
   return (
-    <div className='message'>
+    <section className='message'>
       <div className='container'>
         <div className='title'>
           <h1>Message</h1>
@@ -69,7 +69,7 @@ const Message: React.FC = () => {
           {isError ? 'Send message failed ' : ''}
         </span>
       </div>
-    </div>
+    </section>
   )
 }
 

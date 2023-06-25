@@ -1,4 +1,4 @@
-import { uploadImage } from './handleUploadImage'
+import { uploadImage, downloadImage } from './handleImage'
 
 export const downloadCanvasImage = (): void => {
   const canvas = document.querySelector('canvas')
@@ -8,14 +8,8 @@ export const downloadCanvasImage = (): void => {
   }
 
   const dataURL = canvas.toDataURL()
-  const link = document.createElement('a')
-
-  link.href = dataURL
-  link.download = 'my-creation.png'
-
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  
+  downloadImage(dataURL, 'download-mydesign.png')
 }
 
 export const uploadCanvasImage = async (): Promise<string | undefined> => {

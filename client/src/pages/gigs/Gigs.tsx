@@ -39,7 +39,7 @@ const Gigs: React.FC = () => {
   }, [refetch])
 
   return (
-    <div className='gigs'>
+    <section className='gigs'>
       <div className='container'>
         <h1>Our Plans</h1>
         <p>Customize your 3D backdrop and photos, unleash creativity.</p>
@@ -74,7 +74,7 @@ const Gigs: React.FC = () => {
           }
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 

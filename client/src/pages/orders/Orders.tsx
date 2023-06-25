@@ -8,7 +8,7 @@ const Orders: React.FC = () => {
   const { isLoading, error, data } = useGetOrdersQuery()
 
   return (
-    <div className='orders'>
+    <section className='orders'>
       <div className='container'>
         <div className='title'>
           <h1>Orders</h1>
@@ -56,7 +56,7 @@ const Orders: React.FC = () => {
           </>
         )}
       </div>
-    </div>
+    </section>
   )
 }
 

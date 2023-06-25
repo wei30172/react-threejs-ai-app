@@ -5,7 +5,7 @@ import { changeOrderInput } from '../../slices/orderSlice'
 import { setDesign } from '../../slices/designSlice'
 import { RootState } from '../../store'
 import { uploadCanvasImage } from '../../utils/handleCanvasImage'
-import { uploadImageWithUrl } from '../../utils/handleUploadImage'
+import { uploadImageWithUrl } from '../../utils/handleImage'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './UploadPreview.scss'
 

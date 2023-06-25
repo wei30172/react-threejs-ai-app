@@ -5,7 +5,7 @@ import './Home.scss'
 
 const Home: React.FC = () => {
   return (
-    <div className='home flex-center'>
+    <section className='home flex-center'>
       <div className='title'>
         <h1>CAPTURE <br className='break' /> THE MOMENT.</h1>
       </div>
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
           />
         </Link>
       </div>
-    </div>
+    </section>
   )
 }
 

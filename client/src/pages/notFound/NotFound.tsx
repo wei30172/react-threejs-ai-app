@@ -19,13 +19,13 @@ const NotFound: React.FC = () => {
   }, [navigate])
 
   return (
-    <div className='not-found'>
+    <section className='not-found'>
       <div className='container'>
         <p>
           Page not found. You are being redirected to the home page in 10 seconds. Click <Link to='/'>here</Link> to go to the home page.
         </p>
       </div>
-    </div>
+    </section>
   )
 }
 
