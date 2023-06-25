@@ -26,6 +26,11 @@
       gap: 100px;
       margin-bottom: 40px;
 
+      @include screens.tablet {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
       label {
         color: colors.$dark-600;
         font-size: 18px;
@@ -88,17 +93,6 @@
             gap: 10px;
           }
         }
-      }
-    }
-  }
-}
-
-@include screens.tablet {
-  .add {
-    .container {
-      .sections {
-        flex-direction: row;
-        justify-content: space-between;
       }
     }
   }

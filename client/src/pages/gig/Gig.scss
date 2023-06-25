@@ -13,6 +13,16 @@
     flex-direction: column;
     gap: 90px;
 
+    @include screens.tablet {
+      flex-direction: row;
+      .left {
+        flex: 2;
+        }
+      .right {
+        flex: 1;
+      }
+    }
+    
     .star-icon,
     .check-icon {
       height: 25px;
@@ -89,20 +99,6 @@
 
       .loader {
         margin: 0 auto;
-      }
-    }
-  }
-}
-
-@include screens.tablet {
-  .gig {
-    .container {
-      flex-direction: row;
-      .left {
-        flex: 2;
-      }
-      .right {
-        flex: 1;
       }
     }
   }
