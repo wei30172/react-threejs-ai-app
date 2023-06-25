@@ -1,0 +1,54 @@
+@use "../../styles/mixin/colors" as colors;
+@use "../../styles/mixin/screens" as screens;
+
+.posts {
+  display: flex;
+  justify-content: center;
+
+  .container {
+    width: 960px;
+    padding: 20px 10px 40px;
+
+    .title {
+      margin-bottom: 10px;
+    }
+
+    .posts__inputs {
+      margin-top: 32px;
+      max-width: 1024px;
+      margin: 20px auto;
+
+      input {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid colors.$dark-100;
+      }
+    }
+  
+    .posts__cards {
+      margin-top: 64px;
+  
+      h2 {
+        font-weight: bold;
+        color: colors.$dark-600;
+        font-size: 20px;
+        margin-top: 20px;
+        text-transform: uppercase;
+      }
+  
+      .posts__image {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        gap: 12px;
+        
+        @include screens.tablet {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include screens.desktop {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    }
+  }
+}

@@ -14,22 +14,10 @@ export interface AuthState {
 
 const userInfoFromStorage = localStorage.getItem('currentUser')
 
-const defaultAuthState: AuthState = {
-  _id: '',
-  username: '',
-  email: '',
-  img: '',
-  address: '',
-  phone: '',
-  isSeller: false,
-  createdAt: '',
-  updatedAt: ''
-}
-
 const initialState = {
   userInfo: userInfoFromStorage
     ? JSON.parse(userInfoFromStorage) 
-    : defaultAuthState
+    : null
 }
 
 const authSlice = createSlice({
@@ -41,7 +29,7 @@ const authSlice = createSlice({
       localStorage.setItem('currentUser', JSON.stringify(action.payload))
     },
     logout: (state) => {
-      state.userInfo = defaultAuthState
+      state.userInfo = null
       if(localStorage.getItem('currentUser')) {
         localStorage.removeItem('currentUser')
       }

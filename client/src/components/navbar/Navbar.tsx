@@ -78,6 +78,12 @@ const Navbar: React.FC = () => {
                         <Link className='link' to='/my-gigs/add-gig'>
                           Add New Gig
                         </Link>
+                        <Link className='link' to='/posts'>
+                          Images Posts
+                        </Link>
+                        <Link className='link' to='/posts/add-post'>
+                          Add New Post
+                        </Link>
                       </>
                     )}
                     <Link className='link' to='/profile'>

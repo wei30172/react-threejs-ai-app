@@ -13,6 +13,8 @@ import Pay from './pay/Pay'
 import Success from './success/Success'
 import Messages from './messages/Messages'
 import Message from './message/Message'
+import AddPost from './addPost/AddPost'
+import Posts from './posts/Posts'
 import NotFound from './notFound/NotFound'
 
 export {
@@ -31,5 +33,7 @@ export {
   Success,
   Messages,
   Message,
+  AddPost,
+  Posts,
   NotFound
 }

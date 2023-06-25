@@ -3,21 +3,30 @@
 .form-input {
   width: 100%;
   
+  button {
+    flex: 1;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 20px 0;
+  }
+
+  input {
+    background-color: colors.$white;
+    &:invalid.focused ~ span{
+      display: block;
+    }
+  }
+
   span {
     max-width: 300px;
     display: none;
     font-size: 12px;
     line-height: 14px;
     color: colors.$error-primary;
+
     .error-icon {
       width: 12px;
       height: 12px;
-    }
-  }
-  input {
-    background-color: colors.$white;
-    &:invalid.focused ~ span{
-      display: block;
     }
   }
 }

@@ -13,7 +13,7 @@ export type InputType = {
   required: boolean
 }
 
-interface Props extends InputType {
+export interface Props extends InputType {
   value: string
   handleChange: (e: React.FormEvent<HTMLInputElement>) => void
 }

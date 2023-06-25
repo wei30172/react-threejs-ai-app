@@ -1,0 +1,86 @@
+@use "../../styles/mixin/colors" as colors;
+
+.post-card {
+  position: relative;
+  margin: 0 auto;
+  width: 300px;
+  height: fit-content;
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 1rem;
+  }
+
+  &:hover {
+    .post-card__info {
+      display: block;
+    }
+  }
+
+  .post-card__info {
+    display: none;
+    flex-direction: column;
+    width: 95%;
+    max-height: 95%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 8px;
+    padding: 15px;
+    border-radius: 6px;
+
+    .post-card__promp {
+      color: white;
+      font-size: 16px;
+      overflow-y: auto;
+    }
+
+    .post-card__detail {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 8px;
+      
+      .post-card__avatar {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+  
+        .avatar__container {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          object-fit: cover;
+          background-color: colors.$blue-400;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+        }
+  
+        p {
+          color: white;
+          font-size: 14px;
+          line-height: 28px;
+        }
+      }
+
+      .post-card__buttons {
+        display: flex;
+        gap: 5px;
+
+        button {
+          width: 30px;
+          height: 30px;
+          padding: 5px;
+          border-radius: 50%;
+          margin: 0 2px;
+          background-color: colors.$dark-100;
+        }
+      }
+    }
+  }
+}

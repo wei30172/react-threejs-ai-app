@@ -20,9 +20,11 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Posts']
     }),
-    getImagePosts: builder.query<IImagePost[], void>({
-      query: () => ({
-        url: `${POSTS_URL}`
+    getImagePosts: builder.query<IImagePost[], {
+      search?: string,
+    }>({
+      query: ({search = ''}) => ({
+        url: `${POSTS_URL}?search=${search}`
       }),
       providesTags: ['Posts']
     }),

@@ -1,6 +1,7 @@
 import Navbar from './navbar/Navbar'
 import Footer from './footer/Footer'
 import FormInput from './form/FormInput'
+import SurpriseMeInput from './form/SurpriseMeInput'
 import CustomButton from './button/CustomButton'
 import Toast from './toast/Toast'
 import GigCard from './gigCard/GigCard'
@@ -16,11 +17,13 @@ import Recipient from './recipient/Recipient'
 import UploadPreview from './uploadPreview/UploadPreview'
 import PrivateRoute from './PrivateRoute'
 import CheckoutForm from './checkoutForm/CheckoutForm'
+import PostCard from './postCard/PostCard'
 
 export {
   Navbar,
   Footer,
   FormInput,
+  SurpriseMeInput,
   CustomButton,
   GigCard,
   Toast,
@@ -35,5 +38,6 @@ export {
   Recipient,
   UploadPreview,
   CheckoutForm,
+  PostCard,
   PrivateRoute
 }
