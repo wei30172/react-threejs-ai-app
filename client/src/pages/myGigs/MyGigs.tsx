@@ -6,7 +6,7 @@ import { RootState } from '../../store'
 import { ApiError } from '../../slices/apiSlice'
 import { useToast } from '../../hooks/useToast'
 import Toast from '../../components/toast/Toast'
-import { Loader, ErrorIcon, DeleteIcon, EditIcon } from '../../components/icons'
+import { Loader, ErrorIcon, DeleteIcon, EditIcon, ComputerIcon } from '../../components/icons'
 import './myGigs.scss'
 
 const MyGigs: React.FC = () => {
@@ -69,6 +69,11 @@ const MyGigs: React.FC = () => {
                       <Link to={`/my-gigs/edit-gig/${gig._id}`}>
                         <button className='cursor-pointer'>
                           <EditIcon />
+                        </button>
+                      </Link>
+                      <Link to={`/gig/${gig._id}`}>
+                        <button className='cursor-pointer'>
+                          <ComputerIcon />
                         </button>
                       </Link>
                       <button
