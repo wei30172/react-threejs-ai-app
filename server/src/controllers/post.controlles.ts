@@ -6,10 +6,15 @@ import Post from '../models/post.model'
 // @desc    Get AI Images
 // @route   GET /api/imageposts
 // @access  Public
-export const getImagePosts = async (_req: Request, res: Response) => {
+export const getImagePosts = async (req: Request, res: Response) => {
+  const { search } = req.query
+
+  const filters = {
+    ...(search && { prompt: { $regex: search, $options: 'i' } })
+  }
+  
   try {
-    const images = await Post.find({})
-    
+    const images = await Post.find(filters)
     res.status(200).json(images)
   } catch (err) {
     res.status(500).json({ message: 'Fetching images failed, please try again' })
@@ -47,6 +52,7 @@ export const saveImagePost = async (req: Request, res: Response, next: NextFunct
 // @access  Public
 export const deleteImagePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.params.id)
     const image = await Post.findById(req.params.id)
 
     if (!image) {
@@ -54,13 +60,15 @@ export const deleteImagePost = async (req: Request, res: Response, next: NextFun
     }
 
     // Delete the image from Cloudinary
-    await cloudinary.uploader.destroy(image.cloudinary_id)
-
+    if (image.cloudinary_id) {
+      await cloudinary.uploader.destroy(image.cloudinary_id)
+    }
+    
     // Delete the image from the database
     await Post.findByIdAndRemove(req.params.id)
 
     res.status(200).json({ message: 'Image deleted successfully' })
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ message: 'Deleting image failed, please try again' })
   }
 }
