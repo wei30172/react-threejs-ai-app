@@ -35,6 +35,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/${userId}`
       }),
       providesTags: ['User']
+    }),
+    isAdminUser: builder.query<{isAdmin: boolean}, void>({
+      query: () => ({
+        url: `${USERS_URL}/isAdmin`
+      })
     })
   })
 })
@@ -42,5 +47,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 export const {
   useDeleteUserMutation,
   useUpdateUserProfileMutation,
-  useGetUserInfoByIdQuery
+  useGetUserInfoByIdQuery,
+  useIsAdminUserQuery
 } = usersApiSlice

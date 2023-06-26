@@ -70,22 +70,6 @@ const Navbar: React.FC = () => {
                 <span>{userInfo?.username}</span>
                 {open && (
                   <div className='options'>
-                    {userInfo.isSeller && (
-                      <>
-                        <Link className='link' to='/my-gigs'>
-                          My Gigs
-                        </Link>
-                        <Link className='link' to='/my-gigs/add-gig'>
-                          Add New Gig
-                        </Link>
-                        <Link className='link' to='/posts'>
-                          Images Posts
-                        </Link>
-                        <Link className='link' to='/posts/add-post'>
-                          Add New Post
-                        </Link>
-                      </>
-                    )}
                     <Link className='link' to='/profile'>
                       Profile
                     </Link>
@@ -95,6 +79,22 @@ const Navbar: React.FC = () => {
                     <Link className='link' to='/messages'>
                       Messages
                     </Link>
+                    <Link className='link' to='/posts'>
+                      Images Posts
+                    </Link>
+                    {userInfo.isSeller && (
+                      <>
+                        <Link className='link' to='/my-gigs'>
+                          My Gigs
+                        </Link>
+                        {<Link className='link' to='/posts/add-post'>
+                          Add New Post
+                        </Link>}
+                        <Link className='link' to='/my-gigs/add-gig'>
+                          Add New Gig
+                        </Link>
+                      </>
+                    )}
                     <button onClick={handleLogout}>
                       Logout
                     </button>

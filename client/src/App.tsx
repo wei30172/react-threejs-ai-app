@@ -20,7 +20,7 @@ import {
   Success,
   NotFound
 } from './pages'
-import { Navbar, Footer, PrivateRoute } from './components'
+import { Navbar, Footer, PrivateRoute, AdminRoute } from './components'
 import './styles/_main.scss'
 
 function App() {
@@ -107,7 +107,13 @@ function App() {
             },
             {
               path: 'add-post',
-              element: <AddPost />
+              element: <AdminRoute />,
+              children: [
+                {
+                  path: '',
+                  element: <AddPost />
+                }
+              ]
             }
           ]
         },

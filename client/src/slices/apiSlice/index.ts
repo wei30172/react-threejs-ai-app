@@ -1,12 +1,12 @@
 import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react'
 
-export interface ApiError { // todo
+export interface ApiError {
   data? :{
     message: string
   }
 }
 
-export interface AxiosError { // todo
+export interface AxiosError {
   response? :{
     data? :{
       message: string

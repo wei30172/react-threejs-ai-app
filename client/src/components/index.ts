@@ -15,9 +15,10 @@ import Reviews from './reviews/Reviews'
 import Seller from './seller/Seller'
 import Recipient from './recipient/Recipient'
 import UploadPreview from './uploadPreview/UploadPreview'
-import PrivateRoute from './PrivateRoute'
 import CheckoutForm from './checkoutForm/CheckoutForm'
 import PostCard from './postCard/PostCard'
+import PrivateRoute from './PrivateRoute'
+import AdminRoute from './AdminRoute'
 
 export {
   Navbar,
@@ -39,5 +40,6 @@ export {
   UploadPreview,
   CheckoutForm,
   PostCard,
-  PrivateRoute
+  PrivateRoute,
+  AdminRoute
 }

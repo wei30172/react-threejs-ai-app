@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux'
+
 import { useDeleteImagePostMutation } from '../../slices/apiSlice/postApiSlice'
 import { ApiError } from '../../slices/apiSlice'
+import { RootState } from '../../store'
 import { DownloadIcon, DeleteIcon } from '../icons'
 import { downloadImage } from '../../utils/handleImage'
 import { Loader } from '../../components/icons'
@@ -21,6 +24,8 @@ const Avatar: React.FC<{ name: string }> = ({ name }) => (
 )
 
 const Card: React.FC<CardProps> = ({ _id, name, prompt, photo, showToast }) => {
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+  
   const [deleteImagePost, { isLoading: isDeletingPost }] = useDeleteImagePostMutation()
 
   const handleDownloadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -63,12 +68,12 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, photo, showToast }) => {
                   >
                     <DownloadIcon />
                   </button>
-                  <button
+                  {userInfo.isSeller &&<button
                     className='button button--filled'
                     onClick={handleDelete}
                   >
                     <DeleteIcon />
-                  </button>
+                  </button>}
                 </>
               )}
           </div>
