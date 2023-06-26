@@ -102,3 +102,21 @@ export const updateUserProfile = async (req: IRequest, res: Response, next: Next
     next(err)
   }
 }
+
+// @desc    Check if User is Admin
+// @route   GET /api/users/isadmin
+// @access  Private
+export const isAdminUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const user = await User.findById(req.userId) as IUser
+  
+    if (user) {
+      res.status(200).json({ isAdmin: user.isSeller })
+    } else {
+      return next(createError(404, 'User not found'))
+    }
+  } catch (err) {
+    console.log(err)
+    next(err)
+  }
+}

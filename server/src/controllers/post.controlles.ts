@@ -21,10 +21,10 @@ export const getImagePosts = async (req: Request, res: Response) => {
   }
 }
 
-// @desc    Save Single AI Image
+// @desc    Create Single AI Image
 // @route   POST /api/imageposts
 // @access  Public
-export const saveImagePost = async (req: Request, res: Response, next: NextFunction) => {
+export const createImagePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, prompt, photo } = req.body
 
@@ -68,7 +68,7 @@ export const deleteImagePost = async (req: Request, res: Response, next: NextFun
     await Post.findByIdAndRemove(req.params.id)
 
     res.status(200).json({ message: 'Image deleted successfully' })
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ message: 'Deleting image failed, please try again' })
   }
 }

@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
+
 import createError from '../utils/createError'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
+import User from '../models/user.model'
 
 export interface IRequest extends Request {
   userId?: string
@@ -32,4 +34,22 @@ export const verifyToken = (req: IRequest, res: Response, next: NextFunction): v
     req.isSeller = typedPayload.isSeller
     next()
   })
+}
+
+export const verifyAdmin = async (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.userId)
+
+    if (!user) {
+      return next(createError(404, 'User not found'))
+    }
+
+    if (!user.isSeller) {
+      return next(createError(403, 'You are not authenticated!'))
+    }
+
+    next()
+  } catch (err) {
+    return next(err)
+  }
 }
