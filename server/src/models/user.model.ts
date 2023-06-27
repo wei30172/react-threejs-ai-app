@@ -4,10 +4,11 @@ export interface IUser extends Document {
   username: string
   email: string
   password: string
-  img?: string
   address: string
   phone: string
-  isSeller: boolean
+  isAdmin: boolean
+  user_photo?: string
+  user_cloudinary_id?: string
 }
 
 const userSchema: Schema = new Schema({
@@ -24,10 +25,6 @@ const userSchema: Schema = new Schema({
     type: String,
     required: true
   },
-  img: {
-    type: String,
-    required: false
-  },
   address: {
     type: String,
     required: true
@@ -36,10 +33,18 @@ const userSchema: Schema = new Schema({
     type: String,
     required: true
   },
-  isSeller: {
+  isAdmin: {
     type: Boolean,
     default: false
-  }
+  },
+  user_photo: {
+    type: String,
+    required: false
+  },
+  user_cloudinary_id: {
+    type: String,
+    required: false
+  },
 },{
   timestamps: true
 })

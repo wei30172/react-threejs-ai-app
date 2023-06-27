@@ -1,77 +1,73 @@
 import { NextFunction, Request, Response } from 'express'
-import createError from '../utils/createError'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User, { IUser } from '../models/user.model'
-
-interface IUserRegisterRequest extends Request {
-  body: IUser
-}
+import { deleteFromFolder } from '../utils/cloudinaryUploader'
+import createError from '../utils/createError'
+import HttpStatusCode from '../constants/httpStatusCodes'
+import User from '../models/user.model'
 
 const SALT_ROUNDS = 10
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
-export const register = async (req: IUserRegisterRequest, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { email, password } = req.body
+export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { email, password, user_cloudinary_id } = req.body
 
+  try {
     if (!email || !password) {
-      return next(createError(400, 'Missing email or password'))
+      return next(createError(HttpStatusCode.BAD_REQUEST, 'Missing email or password'))
     }
 
     const user = await User.findOne({ email })
-    if (user) return next(createError(409, 'The email has been registered'))
+    if (user) return next(createError(HttpStatusCode.CONFLICT, 'The email has been registered'))
 
     const salt = await bcrypt.genSalt(SALT_ROUNDS)
     const hash = await bcrypt.hash(password, salt)
 
     const newUser = new User({
       ...req.body,
+      isAdmin: false,
       password: hash
     })
 
     await newUser.save()
-    res.status(201).json({ message: 'User has been created please login.' })
+    res.status(HttpStatusCode.CREATED).json({ message: 'User has been created please login.' })
   } catch (err) {
+    // Delete the image from Cloudinary
+    if (user_cloudinary_id) {
+      await deleteFromFolder(user_cloudinary_id)
+    }
     next(err)
-  }
-}
-
-interface IUserLoginRequest extends Request {
-  body: {
-    email: string
-    password: string
   }
 }
 
 // @desc    login & get token
 // @route   POST /api/auth/login
 // @access  Public
-export const login = async (req: IUserLoginRequest, res: Response, next: NextFunction): Promise<void> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { email, password: userInputPassword } = req.body
     
     if (!email || !userInputPassword) {
-      return next(createError(400, 'Missing email or password'))
+      return next(createError(HttpStatusCode.BAD_REQUEST, 'Missing email or password'))
     }
 
     const user = await User.findOne({ email })
-    if (!user) return next(createError(404, 'User not found'))
+    if (!user) return next(createError(HttpStatusCode.NOT_FOUND, 'Wrong email or password'))
 
     const isCorrect = await bcrypt.compare(userInputPassword, user.password)
-    if (!isCorrect) return next(createError(400, 'Wrong email or password'))
+    if (!isCorrect) return next(createError(HttpStatusCode.NOT_FOUND, 'Wrong email or password'))
 
     const jwtKey = process.env.JWT_KEY
     if (!jwtKey) {
-      return next(createError(500, 'JWT key not set'))
+      return next(createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'INTERNAL SERVER ERROR'))
     }
 
     const token = jwt.sign(
       {
         id: user._id,
-        isSeller: user.isSeller
+        isAdmin: user.isAdmin
       },
       jwtKey,
       {
@@ -89,7 +85,7 @@ export const login = async (req: IUserLoginRequest, res: Response, next: NextFun
         secure: process.env.NODE_ENV !== 'development', // todo: Use secure cookies in production
         maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
       })
-      .status(200)
+      .status(HttpStatusCode.OK)
       .json(info)
   } catch (err) {
     next(err)
@@ -105,6 +101,6 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
       sameSite: 'none', // todo
       secure: true
     })
-    .status(200)
+    .status(HttpStatusCode.OK)
     .json({ message: 'User has been logged out'})
 }
