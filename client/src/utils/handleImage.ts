@@ -1,40 +1,45 @@
 import axios, { AxiosResponse } from 'axios'
 import FileSaver from 'file-saver'
 
-interface UploadResponse {
+export interface UploadApiResponse {
   url: string
+  public_id: string
 }
 
-export const fileReader = (file: File): Promise<string | ArrayBuffer | null> =>
-  new Promise((resolve, reject) => {
-    const fileReader = new FileReader()
-    fileReader.onload = () => resolve(fileReader.result)
-    fileReader.onerror = (error) => reject(error)
-    fileReader.readAsDataURL(file)
+export const fileReader = (file: File): Promise<string | ArrayBuffer | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
   })
+}
 
-export const uploadImage = async (file: File): Promise<string | undefined> => {
-  const data = new FormData()
-  data.append('file', file)
-  data.append('upload_preset', import.meta.env.VITE_UPLOAD_PRESET)
+export const createFormData = (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('upload_preset', import.meta.env.VITE_UPLOAD_PRESET)
+  return formData
+}
+
+export const uploadImage = async (file: File): Promise<UploadApiResponse | undefined> => {
+  const formData = createFormData(file)
 
   try {
-    const res: AxiosResponse<UploadResponse> = await axios.post(
+    const res: AxiosResponse<UploadApiResponse> = await axios.post(
       import.meta.env.VITE_UPLOAD_LINK as string,
-      data
+      formData
     )
-    const { url } = res.data
-    return url
+    return res.data
   } catch (error) {
     console.error(error)
   }
 }
 
-export const uploadImageWithUrl = async (imageUrl: string, imageName: string): Promise<string | undefined> => {
-  const imageBlob = await fetch(imageUrl).then(response => response.blob())
-  const imageFile = new File([imageBlob], imageName)
-  const uploadedImageUrl = await uploadImage(imageFile)
-  return uploadedImageUrl
+export const uploadImageWithUrl = async (imageUrl: string, imageName: string): Promise<UploadApiResponse | undefined> => {
+  const blob = await fetch(imageUrl).then(response => response.blob())
+  const file = new File([blob], imageName)
+  return await uploadImage(file)
 }
 
 export const downloadImage = (href: string, downloadName: string): void => {

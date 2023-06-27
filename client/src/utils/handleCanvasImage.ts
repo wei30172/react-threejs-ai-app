@@ -1,4 +1,4 @@
-import { uploadImage, downloadImage } from './handleImage'
+import { UploadApiResponse, uploadImage, downloadImage } from './handleImage'
 
 export const downloadCanvasImage = (): void => {
   const canvas = document.querySelector('canvas')
@@ -12,7 +12,7 @@ export const downloadCanvasImage = (): void => {
   downloadImage(dataURL, 'download-mydesign.png')
 }
 
-export const uploadCanvasImage = async (): Promise<string | undefined> => {
+export const uploadCanvasImage = async (): Promise<UploadApiResponse | undefined> => {
   const canvas = document.querySelector('canvas')
   
   if (!canvas) {
