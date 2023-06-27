@@ -19,6 +19,7 @@ import CheckoutForm from './checkoutForm/CheckoutForm'
 import PostCard from './postCard/PostCard'
 import PrivateRoute from './PrivateRoute'
 import AdminRoute from './AdminRoute'
+import Layout from './Layout'
 
 export {
   Navbar,
@@ -41,5 +42,6 @@ export {
   CheckoutForm,
   PostCard,
   PrivateRoute,
-  AdminRoute
+  AdminRoute,
+  Layout
 }

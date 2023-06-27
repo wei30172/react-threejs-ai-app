@@ -1,22 +1,26 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { hideToast } from '../../slices/toastSlice'
+import { RootState } from '../../store'
 import { CloseIcon } from '../icons/index'
 import './Toast.scss'
 
-export type ToastType = 'success' | 'error' | 'warning'
+const Toast: React.FC = () => {
+  const dispatch = useDispatch()
+  
+  const { message, isVisible, type } = useSelector((state: RootState) => state.toast)
 
-export type ToastProps = {
-  message: string
-  isVisible: boolean
-  type?: ToastType
-}
+  const onHide = useCallback(() => {
+    dispatch(hideToast())
+  }, [dispatch])
 
-const Toast: React.FC<ToastProps & { onHide: () => void }> = (
-  { message, isVisible, type = 'success', onHide }
-) => {
   useEffect(() => {
-    const timer = setTimeout(onHide, 10000)
-    return () => clearTimeout(timer)
-  }, [onHide])
+    if (isVisible) {
+      const timer = setTimeout(onHide, 10000)
+      return () => clearTimeout(timer)
+    }
+  }, [isVisible, onHide])
 
   if (!isVisible) {
     return null
