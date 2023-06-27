@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
+import { UploadApiResponse } from 'cloudinary'
+import { uploadToFolder, deleteFromFolder } from '../utils/cloudinaryUploader'
 import createError from '../utils/createError'
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
+import HttpStatusCode from '../constants/httpStatusCodes'
 import Post from '../models/post.model'
 
 // @desc    Get AI Images
 // @route   GET /api/imageposts
 // @access  Public
-export const getImagePosts = async (req: Request, res: Response) => {
+export const getImagePosts = async (req: Request, res: Response, next: NextFunction) => {
   const { search } = req.query
 
   const filters = {
@@ -15,9 +17,9 @@ export const getImagePosts = async (req: Request, res: Response) => {
   
   try {
     const images = await Post.find(filters)
-    res.status(200).json(images)
+    res.status(HttpStatusCode.OK).json(images)
   } catch (err) {
-    res.status(500).json({ message: 'Fetching images failed, please try again' })
+    next(err)
   }
 }
 
@@ -29,21 +31,21 @@ export const createImagePost = async (req: Request, res: Response, next: NextFun
     const { name, prompt, photo } = req.body
 
     if (!name || !prompt || !photo) {
-      return next(createError(400, 'Name, prompt, and photo are required' ))
+      return next(createError(HttpStatusCode.BAD_REQUEST, 'Name, prompt, and photo are required' ))
     }
 
-    const photoUrl: UploadApiResponse = await cloudinary.uploader.upload(photo)
+    const photoData: UploadApiResponse = await uploadToFolder(photo)
 
     const newImage = await Post.create({
       name,
       prompt,
-      photo: photoUrl.url,
-      cloudinary_id: photoUrl.public_id
+      post_photo: photoData.url,
+      post_cloudinary_id: photoData.public_id
     })
 
-    res.status(200).json(newImage)
+    res.status(HttpStatusCode.OK).json(newImage)
   } catch (err) {
-    res.status(500).json({ message: 'Unable to save the image, please try again' })
+    next(err)
   }
 }
 
@@ -52,23 +54,21 @@ export const createImagePost = async (req: Request, res: Response, next: NextFun
 // @access  Public
 export const deleteImagePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.params.id)
-    const image = await Post.findById(req.params.id)
+    const post = await Post.findById(req.params.id)
 
-    if (!image) {
-      return next(createError(404, 'Image not found' ))
+    if (!post) {
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Post not found' ))
     }
 
     // Delete the image from Cloudinary
-    if (image.cloudinary_id) {
-      await cloudinary.uploader.destroy(image.cloudinary_id)
+    if (post.post_cloudinary_id) {
+      await deleteFromFolder(post.post_cloudinary_id)
     }
-    
-    // Delete the image from the database
-    await Post.findByIdAndRemove(req.params.id)
 
-    res.status(200).json({ message: 'Image deleted successfully' })
+    await Post.findByIdAndDelete(req.params.id)
+    
+    res.status(HttpStatusCode.OK).json({ message: 'Post deleted successfully' })
   } catch (err) {
-    res.status(500).json({ message: 'Deleting image failed, please try again' })
+    next(err)
   }
 }
