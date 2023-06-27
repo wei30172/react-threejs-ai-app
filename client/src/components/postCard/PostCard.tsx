@@ -1,20 +1,20 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { useDeleteImagePostMutation } from '../../slices/apiSlice/postApiSlice'
 import { ApiError } from '../../slices/apiSlice'
+import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
 import { DownloadIcon, DeleteIcon } from '../icons'
 import { downloadImage } from '../../utils/handleImage'
 import { Loader } from '../../components/icons'
-import { ToastType } from '../../components/toast/Toast'
 import './PostCard.scss'
 
 type CardProps = {
   _id: string
   name: string
   prompt: string
-  photo: string
-  showToast: (message: string, type: ToastType) => void
+  post_photo: string
+  post_cloudinary_id: string
 }
 
 const Avatar: React.FC<{ name: string }> = ({ name }) => (
@@ -23,15 +23,17 @@ const Avatar: React.FC<{ name: string }> = ({ name }) => (
   </div>
 )
 
-const Card: React.FC<CardProps> = ({ _id, name, prompt, photo, showToast }) => {
+const Card: React.FC<CardProps> = ({ _id, name, prompt, post_photo }) => {
+  const dispatch = useDispatch()
+
   const { userInfo } = useSelector((state: RootState) => state.auth)
-  
+
   const [deleteImagePost, { isLoading: isDeletingPost }] = useDeleteImagePostMutation()
 
   const handleDownloadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    downloadImage(photo, `download-${_id}`)
+    downloadImage(post_photo, `download-${_id}`)
   }
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,17 +41,26 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, photo, showToast }) => {
     
     try {
       await deleteImagePost(_id).unwrap()
-      showToast('Post deleted successfully', 'success')
+
+      dispatch(showToast({
+        message: 'Post deleted successfully',
+        type: 'success'
+      }))
+
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Delete gig failed'
-      showToast(errorMessage, 'error')
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
 
   return (
     <div className='post-card'>
-      <img src={photo} alt={prompt} />
+      <img src={post_photo} alt={prompt} />
       <div className='post-card__info'>
         <p className='post-card__promp'>{prompt}</p>
         <div className='post-card__detail'>
@@ -68,7 +79,7 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, photo, showToast }) => {
                   >
                     <DownloadIcon />
                   </button>
-                  {userInfo.isSeller &&<button
+                  {userInfo.isAdmin &&<button
                     className='button button--filled'
                     onClick={handleDelete}
                   >

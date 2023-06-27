@@ -1,18 +1,24 @@
 import { apiSlice } from '.'
 
+export interface ICreatePost {
+  name: string
+  prompt: string
+  photo: string
+}
+
 export interface IImagePost {
   _id: string
   name: string
   prompt: string
-  photo: string
-  cloudinary_id: string
+  post_photo: string
+  post_cloudinary_id: string
 }
 
 const POSTS_URL = '/imageposts'
 
 export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createImagePost: builder.mutation<IImagePost, Partial<IImagePost>>({
+    createImagePost: builder.mutation<IImagePost, ICreatePost>({
       query: (data) => ({
         url: `${POSTS_URL}`,
         method: 'POST',
