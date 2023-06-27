@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react'
 // import { ChangeEvent, useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { useRegisterMutation, IUserRegister } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
+import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
 import { uploadImage }  from '../../utils/handleImage'
-import { useToast } from '../../hooks/useToast'
-import { FormInput, Toast } from '../../components'
+import { FormInput } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
 
 const Register: React.FC = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUserRegister>({
@@ -20,19 +23,16 @@ const Register: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    img: '',
     address: '',
     phone: '',
-    isSeller: false
+    isAdmin: false,
+    user_photo: '',
+    user_cloudinary_id: '',
   })
 
-  const { showToast, hideToast, toastConfig } = useToast()
-
-  const navigate = useNavigate()
-  
-  const [register, { isLoading }] = useRegisterMutation()
-
   const { userInfo } = useSelector((state: RootState) => state.auth)
+
+  const [register, { isLoading }] = useRegisterMutation()
 
   useEffect(() => {
     if (userInfo) {
@@ -118,10 +118,10 @@ const Register: React.FC = () => {
     }
   }
 
-  // const handleSeller = (e: ChangeEvent<HTMLInputElement>) => {
+  // const handlePremium = (e: ChangeEvent<HTMLInputElement>) => {
   //   const { checked } = e.target
   //   setUser((prev) => {
-  //     return { ...prev, isSeller: checked }
+  //     return { ...prev, isPremium: checked }
   //   })
   // }
 
@@ -129,93 +129,92 @@ const Register: React.FC = () => {
     e.preventDefault()
     
     try {
-      if (file !== null) {
-        const url = await uploadImage(file) || ''
-        await register({ ...user, img: url }).unwrap()
-        showToast('User has been created please login. To the home page in 5 seconds...', 'success')
-        
-        setTimeout(() => {
-          navigate('/')
-        }, 5000)
+      let photoData: { url: string, public_id: string } | undefined
+      if (file) {
+        photoData = await uploadImage(file)
+      }
 
-      } else {
-        throw new Error('Please upload an avatar image')
-      }
+      await register({
+        ...user,
+        user_photo: photoData?.url || '',
+        user_cloudinary_id: photoData?.public_id || ''
+      }).unwrap()
+      
+      dispatch(showToast({
+        message: 'User has been created please login. To the home page in 5 seconds...',
+        type: 'success'
+      }))
+      
+      setTimeout(() => {
+        navigate('/')
+      }, 5000)
+
     } catch (error) {
-      if (error instanceof Error && error.message === 'Please upload an avatar image') {
-        showToast('Please upload an avatar image', 'warning')
-      } else {
-        const apiError = error as ApiError
-        const errorMessage = apiError.data?.message || 'Register failed'
-        showToast(errorMessage, 'error')
-      }
+      const apiError = error as ApiError
+      const errorMessage = apiError.data?.message || 'Register failed'
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
 
   return (
-    <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <section className='register flex-center'>
-        <form onSubmit={handleSubmit}>
-          <div className='left flex-center'>
-            <h1>Create a new account</h1>
-            {formInputs.map((input) => (
-              <div key={input.id}>
-                <FormInput
-                  key={input.id}
-                  {...input}
-                  value={user[input.name as keyof IUserRegister]?.toString()}
-                  handleChange={handleChange}
-                />
-              </div>
-            ))}
-          </div>
-          <div className='right flex-center'>
-            <div className='picture flex-center'>
-              <label htmlFor=''>Profile Picture</label>
-              <input type='file' onChange={handleFileChange} />
-              {previewURL ? <img src={previewURL} alt='preview' /> : <PreviewIcon />}
+    <section className='register flex-center'>
+      <form onSubmit={handleSubmit}>
+        <div className='register__left flex-center'>
+          <h1>Create a new account</h1>
+          {formInputs.map((input) => (
+            <div key={input.id}>
+              <FormInput
+                key={input.id}
+                {...input}
+                value={user[input.name as keyof IUserRegister]?.toString()}
+                handleChange={handleChange}
+              />
             </div>
-            {/* <div className='toggle flex-center'>
-              <label htmlFor=''>Activate the seller account for FREE</label>
-              <label className='switch'>
-                <input type='checkbox' onChange={handleSeller} />
-                <span className='slider round'></span>
-              </label>
-            </div> */}
-            <button
-              disabled={
-                !user.username ||
-                !user.email ||
-                !user.password ||
-                !user.confirmPassword ||
-                !user.address ||
-                !user.phone ||
-                isLoading ||
-                toastConfig.type === 'success'
-              }
-              className='button button--filled'
-              type='submit'
-            >
-              {isLoading ? <Loader /> : 'Register'}
-            </button>
-            <div className='navigation flex-center'>
-              <p>Already have an account?</p>
-              <Link to='/login'>
-                <button className='cursor-pointer'>
-                  Login
-                </button>
-              </Link>
-            </div>
+          ))}
+        </div>
+        <div className='register__right flex-center'>
+          <div className='register__picture flex-center'>
+            <label htmlFor=''>Profile Picture</label>
+            <input type='file' onChange={handleFileChange} />
+            {previewURL ? <img src={previewURL} alt='preview' /> : <PreviewIcon />}
           </div>
-        </form>
-      </section>
-    </>
+          {/* <div className='toggle flex-center'>
+            <label htmlFor=''>Activate the premium account for FREE</label>
+            <label className='switch'>
+              <input type='checkbox' onChange={handlePremium} />
+              <span className='slider round'></span>
+            </label>
+          </div> */}
+          <button
+            disabled={
+              !user.username ||
+              !user.email ||
+              !user.password ||
+              !user.confirmPassword ||
+              !user.address ||
+              !user.phone ||
+              isLoading
+            }
+            className='button button--filled'
+            type='submit'
+          >
+            {isLoading ? <Loader /> : 'Register'}
+          </button>
+          <div className='register__navigation flex-center'>
+            <p>Already have an account?</p>
+            <Link to='/login'>
+              <button className='cursor-pointer'>
+                Login
+              </button>
+            </Link>
+          </div>
+        </div>
+      </form>
+    </section>
   )
 }
 

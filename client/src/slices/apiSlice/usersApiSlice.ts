@@ -2,13 +2,15 @@ import { apiSlice } from '.'
 
 export interface IUserInfo {
   username: string
-  img: string
+  user_photo: string
 }
 
 export interface IUserProfile {
   username: string
   password: string
   confirmPassword: string
+  user_photo: string
+  user_cloudinary_id: string
 }
 
 const USERS_URL = '/users'
@@ -22,7 +24,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
-    updateUserProfile: builder.mutation<void, IUserProfile>({
+    updateUserProfile: builder.mutation<IUserInfo, IUserProfile>({
       query: (userData) => ({
         url: `${USERS_URL}/profile`,
         method: 'PUT',
@@ -30,16 +32,16 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
+    isAdminUser: builder.query<{isAdmin: boolean}, void>({
+      query: () => ({
+        url: `${USERS_URL}/isAdmin`
+      })
+    }),
     getUserInfoById: builder.query<IUserInfo, string>({
       query: (userId) => ({
         url: `${USERS_URL}/${userId}`
       }),
       providesTags: ['User']
-    }),
-    isAdminUser: builder.query<{isAdmin: boolean}, void>({
-      query: () => ({
-        url: `${USERS_URL}/isAdmin`
-      })
     })
   })
 })

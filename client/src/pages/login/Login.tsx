@@ -1,26 +1,24 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { useLoginMutation, IUserLogin } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
 import { login } from '../../slices/authSlice'
+import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { useToast } from '../../hooks/useToast'
-import { FormInput, Toast } from '../../components'
+import { FormInput } from '../../components'
 import { Loader } from '../../components/icons'
 import './Login.scss'
 
 const Login: React.FC = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const [user, setUser] = useState<IUserLogin>({
     email: '',
     password: ''
   })
-
-  const { showToast, hideToast, toastConfig } = useToast()
-
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const [loginApiCall, { isLoading }] = useLoginMutation()
 
@@ -64,60 +62,60 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     try {
       const res = await loginApiCall(user).unwrap()
+
       dispatch(login({ ...res }))
+
       navigate('/')
+
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Login failed'
-      showToast(errorMessage, 'error')
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
   
   return (
-    <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <section className='login flex-center'>
-        <form className='flex-center' onSubmit={handleSubmit}>
-          <h1>Sign in</h1>
-          {formInputs.map((input) => (
-            <div key={input.id}>
-              <FormInput
-                key={input.id}
-                {...input}
-                value={user[input.name as keyof IUserLogin]}
-                handleChange={handleChange}
-              />
-            </div>
-          ))}
-          <button
-            disabled={
-              !user.email ||
-              !user.password ||
-              isLoading
-            }
-            className='button button--filled'
-            type='submit'
-          >
-            {isLoading ? <Loader /> : 'Login'}
-          </button>
-          <div className='navigation flex-center'>
-            <p>Do not have an account?</p>
-            <Link to='/register'>
-              <button className='cursor-pointer'>
-                Signup
-              </button>
-            </Link>
+    <section className='login flex-center'>
+      <form className='flex-center' onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        {formInputs.map((input) => (
+          <div key={input.id}>
+            <FormInput
+              key={input.id}
+              {...input}
+              value={user[input.name as keyof IUserLogin]}
+              handleChange={handleChange}
+            />
           </div>
-        </form>
-      </section>
-    </>
+        ))}
+        <button
+          disabled={
+            !user.email ||
+            !user.password ||
+            isLoading
+          }
+          className='button button--filled'
+          type='submit'
+        >
+          {isLoading ? <Loader /> : 'Login'}
+        </button>
+        <div className='login__navigation flex-center'>
+          <p>Do not have an account?</p>
+          <Link to='/register'>
+            <button className='cursor-pointer'>
+              Signup
+            </button>
+          </Link>
+        </div>
+      </form>
+    </section>
   )
 }
 

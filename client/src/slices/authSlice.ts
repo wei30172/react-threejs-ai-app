@@ -4,10 +4,11 @@ export interface AuthState {
   _id: string
   username: string
   email: string
-  img: string
   address: string
   phone: string
-  isSeller: boolean
+  isAdmin: boolean
+  user_photo: string
+  user_cloudinary_id: string
   createdAt?: string
   updatedAt?: string
 }

@@ -1,28 +1,29 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useUpdateUserProfileMutation, IUserProfile } from '../../slices/apiSlice/usersApiSlice'
 import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
 import { logout } from '../../slices/authSlice'
+import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { useToast } from '../../hooks/useToast'
-import { FormInput, Toast } from '../../components'
-import { Loader } from '../../components/icons'
+import { uploadImage }  from '../../utils/handleImage'
+import { FormInput } from '../../components'
+import { PreviewIcon, Loader } from '../../components/icons'
 import './Profile.scss'
 
 const Profile: React.FC = () => {
+  const dispatch = useDispatch()
+  
+  const [file, setFile] = useState<File | null>(null)
+  const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUserProfile>({
     username: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    user_photo: '',
+    user_cloudinary_id: ''
   })
-
-  const { showToast, hideToast, toastConfig } = useToast()
-
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation()
   const [logoutApiCall] = useLogoutMutation()
@@ -42,7 +43,7 @@ const Profile: React.FC = () => {
     },
     {
       id: 2,
-      label: 'Password',
+      label: 'Change Password',
       errorMessage:
         'Password should be 6-20 characters and include at least 1 letter, 1 number and 1 special character!',
       name: 'password',
@@ -69,60 +70,86 @@ const Profile: React.FC = () => {
     setUser({ ...user, [target.name]: target.value })
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0])
+      setPreviewURL(URL.createObjectURL(e.target.files[0]))
+
+    } else {
+      setFile(null)
+      setPreviewURL(null)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      await updateUserProfile(user).unwrap()
-      await logoutApiCall().unwrap()
-      dispatch(logout())
-      showToast('User has been updated. Redirecting to the login page in 5 seconds...', 'success')
-      
-      setTimeout(() => {
-        navigate('/login')
-      }, 5000)
+      if (file !== null) {
+        const photoData = await uploadImage(file)
+        await updateUserProfile({
+          ...user,
+          user_photo: photoData?.url || '',
+          user_cloudinary_id: photoData?.public_id || ''
+        }).unwrap()
 
+      } else {
+        await updateUserProfile(user).unwrap()
+      }
+      
+      await logoutApiCall().unwrap()
+      
+      dispatch(showToast({
+        message: 'User has been updated. Please login again',
+        type: 'success'
+      }))
+      
+      dispatch(logout())
     } catch (error) {
       const apiError = error as ApiError
-      const errorMessage = apiError.data?.message || 'Update failed'
-      showToast(errorMessage, 'error')
+      const errorMessage = apiError.data?.message || 'Register failed'
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
 
   return (
-    <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <section className='profile flex-center'>
-        <form className='flex-center' onSubmit={handleSubmit}>
-          <h1>Update profile</h1>
-          {formInputs.map((input) => (
-            <div key={input.id}>
-              <FormInput
-                key={input.id}
-                {...input}
-                value={user[input.name as keyof IUserProfile]?.toString()}
-                handleChange={handleChange}
-              />
-            </div>
-          ))}
-          <button
-            disabled={
-              isLoading ||
-              toastConfig.type === 'success'
-            }
-            className='button button--filled'
-            type='submit'
-          >
-            {isLoading ? <Loader /> : 'Update'}
-          </button>
-        </form>
-      </section>
-    </>
+    <section className='profile flex-center'>
+      <form className='flex-center' onSubmit={handleSubmit}>
+        <h1>Update profile</h1>
+        {formInputs.map((input) => (
+          <div key={input.id}>
+            <FormInput
+              key={input.id}
+              {...input}
+              value={user[input.name as keyof IUserProfile]?.toString()}
+              handleChange={handleChange}
+            />
+          </div>
+        ))}
+        <div className='profile__picture flex-center'>
+          <label htmlFor=''>Profile Picture</label>
+          <input type='file' onChange={handleFileChange} />
+          {previewURL
+            ? <img src={previewURL} alt='preview' />
+            : userInfo?.user_photo
+              ? <img src={userInfo?.user_photo} alt='preview' />
+              :<PreviewIcon />}
+        </div>
+        <button
+          disabled={
+            isLoading
+          }
+          className='button button--filled'
+          type='submit'
+        >
+          {isLoading ? <Loader /> : 'Update'}
+        </button>
+      </form>
+    </section>
   )
 }
 

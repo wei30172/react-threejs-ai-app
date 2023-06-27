@@ -6,10 +6,11 @@ export interface IUserRegister {
   email: string
   password: string
   confirmPassword: string
-  img: string
   address: string
   phone: string
-  isSeller: boolean
+  isAdmin: boolean
+  user_photo: string
+  user_cloudinary_id: string
 }
 
 export interface IUserLogin {

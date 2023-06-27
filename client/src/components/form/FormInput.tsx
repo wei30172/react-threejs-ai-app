@@ -9,8 +9,8 @@ export type InputType = {
   name: string
   type: string
   placeholder: string
-  pattern?: string
   required: boolean
+  pattern?: string
 }
 
 export interface Props extends InputType {
