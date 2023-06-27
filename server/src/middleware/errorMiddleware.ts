@@ -1,19 +1,20 @@
 import { Request, Response, NextFunction } from 'express'
+import HttpStatusCode from '../constants/httpStatusCodes'
 
 const notFound = (req: Request, res: Response, next: NextFunction) => {
   const error = new Error(`Not Found - ${req.originalUrl}`)
-  res.status(404)
+  res.status(HttpStatusCode.NOT_FOUND)
   next(error)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-  let statusCode = res.statusCode === 200 ? 500 : res.statusCode
+  let statusCode = res.statusCode === HttpStatusCode.OK ? HttpStatusCode.INTERNAL_SERVER_ERROR : res.statusCode
   let message = err.message
 
   // If Mongoose not found error, set to 404 and change message
   if (err.name === 'CastError' && 'kind' in err && err.kind === 'ObjectId') {
-    statusCode = 404;
+    statusCode = HttpStatusCode.NOT_FOUND
     message = 'Resource not found'
   }
 
