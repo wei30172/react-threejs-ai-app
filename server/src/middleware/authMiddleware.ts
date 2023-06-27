@@ -22,7 +22,7 @@ export const verifyToken = (req: IRequest, res: Response, next: NextFunction): v
   const jwtKey = process.env.JWT_KEY
 
   if (!jwtKey) {
-    return next(createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'jwt key not set' )) 
+    return next(createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'INTERNAL SERVER ERROR' )) 
   }
 
   jwt.verify(token, jwtKey, (err: JsonWebTokenError | null, payload: unknown) => {

@@ -3,8 +3,8 @@ import mongoose, { Schema, Document } from 'mongoose'
 interface IPost extends Document {
   name: string
   prompt: string
-  photo: string
-  cloudinary_id: string
+  post_photo: string
+  post_cloudinary_id: string
 }
 
 const PostSchema: Schema = new Schema(
@@ -17,11 +17,11 @@ const PostSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    photo: {
+    post_photo: {
       type: String,
       required: true
     },
-    cloudinary_id: {
+    post_cloudinary_id: {
       type: String,
       required: true
     }
