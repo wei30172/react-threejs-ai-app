@@ -5,19 +5,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
 import { logout } from '../../slices/authSlice'
+import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { useToast } from '../../hooks/useToast'
-import Toast from '../toast/Toast'
 import { HomeIcon } from '../icons/index'
 import './Navbar.scss'
 
 const Navbar: React.FC = () => {
-  const [active, setActive] = useState(false)
-  const [open, setOpen] = useState(false)
-
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  
   const { pathname } = useLocation()
 
-  const { showToast, hideToast, toastConfig } = useToast()
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+
+  const [active, setActive] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false)
@@ -29,13 +31,8 @@ const Navbar: React.FC = () => {
       window.removeEventListener('scroll', isActive)
     }
   }, [])
-  
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const [logoutApiCall] = useLogoutMutation()
-
-  const { userInfo } = useSelector((state: RootState) => state.auth)
 
   const handleLogout = async () => {
     try {
@@ -46,73 +43,69 @@ const Navbar: React.FC = () => {
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Logout failed'
-      showToast(errorMessage, 'error')
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
 
   return (
-    <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <div className={active || pathname !== '/' ? 'navbar active' : 'navbar'}>
-        <div className='container flex-between'>
-          <div className='logo cursor-pointer' onClick={() => navigate('/')}>
-            <HomeIcon />
-          </div>
-          <div className='links'>
-            {userInfo ? (
-              <div className='user flex-center cursor-pointer' onClick={() => setOpen(!open)}>
-                <img src={userInfo.img || '/img/noavatar.jpg'} alt='avatar' />
-                <span>{userInfo?.username}</span>
-                {open && (
-                  <div className='options'>
-                    <Link className='link' to='/profile'>
-                      Profile
-                    </Link>
-                    <Link className='link' to='/orders'>
-                    Orders
-                    </Link>
-                    <Link className='link' to='/messages'>
-                      Messages
-                    </Link>
-                    <Link className='link' to='/posts'>
-                      Images Posts
-                    </Link>
-                    {userInfo.isSeller && (
-                      <>
-                        <Link className='link' to='/my-gigs'>
-                          My Gigs
-                        </Link>
-                        {<Link className='link' to='/posts/add-post'>
-                          Add New Post
-                        </Link>}
-                        <Link className='link' to='/my-gigs/add-gig'>
-                          Add New Gig
-                        </Link>
-                      </>
-                    )}
-                    <button onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link to='/login' className='link'>Sign in</Link>
-                <Link className='link' to='/register'>
-                  <button className='button'>Join</button>
-                </Link>
-              </>
-            )}
-          </div>
+    <div className={active || pathname !== '/' ? 'navbar active' : 'navbar'}>
+      <div className='container flex-between'>
+        <div className='navbar__logo cursor-pointer' onClick={() => navigate('/')}>
+          <HomeIcon />
+        </div>
+        <div className='navbar__links'>
+          {userInfo ? (
+            <div className='navbar__user flex-center cursor-pointer' onClick={() => setOpen(!open)}>
+              <img src={userInfo.user_photo || '/img/noavatar.jpg'} alt='avatar' />
+              <span>{userInfo?.username}</span>
+              {open && (
+                <div className='navbar__options'>
+                  <Link className='link' to='/profile'>
+                    Profile
+                  </Link>
+                  <Link className='link' to='/orders'>
+                  Orders
+                  </Link>
+                  <Link className='link' to='/messages'>
+                    Messages
+                  </Link>
+                  <Link className='link' to='/posts'>
+                    Images Posts
+                  </Link>
+                  {userInfo.isAdmin && (
+                    <>
+                      <Link className='link' to='/my-gigs'>
+                        My Gigs
+                      </Link>
+                      {<Link className='link' to='/posts/add-post'>
+                        Add New Post
+                      </Link>}
+                      <Link className='link' to='/my-gigs/add-gig'>
+                        Add New Gig
+                      </Link>
+                    </>
+                  )}
+                  <button onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link to='/login' className='link'>Sign in</Link>
+              <Link className='link' to='/register'>
+                <button className='button'>Join</button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -17,18 +17,18 @@
     padding: 0 20px;
     height: 60px;
 
-    .logo {
+    .navbar__logo {
       width: 36px;
       height: 36px;
     }
 
-    .links {
+    .navbar__links {
       display: flex;
       align-items: center;
       gap: 12px;
       font-weight: 500;
 
-      .user {
+      .navbar__user {
         position: relative;
         gap: 10px;
 
@@ -39,7 +39,7 @@
           object-fit: cover;
         }
 
-        .options {
+        .navbar__options {
           position: absolute;
           top: 50px;
           right: 0;
