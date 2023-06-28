@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IOrder extends Document {
   gigId: string
-  img: string
+  gig_photo: string
   title: string
   price: number
   sellerId: string
@@ -16,9 +16,12 @@ export interface IOrder extends Document {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
-  logoDecal: string
-  fullDecal: string
-  url: string
+  logoDecal_photo: string
+  fullDecal_photo: string
+  logoDecal_cloudinary_id: string
+  fullDecal_cloudinary_id: string
+  design_photo: string
+  design_cloudinary_id: string
 }
 
 const OrderSchema: Schema = new Schema(
@@ -27,7 +30,7 @@ const OrderSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    img: {
+    gig_photo: {
       type: String,
       required: false
     },
@@ -83,13 +86,27 @@ const OrderSchema: Schema = new Schema(
       type: Boolean,
       required: true
     },
-    logoDecal: {
-      type: String
+    logoDecal_photo: {
+      type: String,
+      required: false
     },
-    fullDecal: {
-      type: String
+    fullDecal_photo: {
+      type: String,
+      required: false
     },
-    url: {
+    logoDecal_cloudinary_id: {
+      type: String,
+      required: false
+    },
+    fullDecal_cloudinary_id: {
+      type: String,
+      required: false
+    },
+    design_photo: {
+      type: String,
+      required: true
+    },
+    design_cloudinary_id: {
       type: String,
       required: true
     }

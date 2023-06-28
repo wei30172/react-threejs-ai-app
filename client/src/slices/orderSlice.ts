@@ -7,7 +7,8 @@ export interface IOrderState {
   email: string
   address: string
   phone: string
-  url: string
+  design_photo: string
+  design_cloudinary_id: string
 }
 
 interface ChangeInputPayload {
@@ -46,7 +47,8 @@ const initialState: IOrderState = {
   email: userInfoFromStorage.email,
   address: userInfoFromStorage.address,
   phone: userInfoFromStorage.phone,
-  url: ''
+  design_photo: '',
+  design_cloudinary_id: ''
 }
 
 const orderSlice = createSlice({

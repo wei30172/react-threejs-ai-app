@@ -1,31 +1,39 @@
 import { NextFunction, Response } from 'express'
 import Stripe from 'stripe'
+import { deleteFromFolder } from '../utils/cloudinaryUploader'
 import createError from '../utils/createError'
+import HttpStatusCode from '../constants/httpStatusCodes'
 import Order from '../models/order.model'
 import Gig from '../models/gig.model'
 import { IRequest } from '../middleware/authMiddleware'
 
-const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'url']
+const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'design_photo', 'design_cloudinary_id']
 
 // @desc    Create Order
 // @route   POST /api/orders
 // @access  Private
 export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const {
+    logoDecal_cloudinary_id,
+    fullDecal_cloudinary_id,
+    design_cloudinary_id
+  } = req.body
+
   try {
     const gig = await Gig.findById(req.body.gigId)
 
     if (!gig) {
-      return next(createError(404, 'Gig not found'))
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Gig not found'))
     }
 
     for (const param of requiredParams) {
       if (!req.body[param]) {
-        return next(createError(400, `Missing parameter: ${param}`))
+        return next(createError(HttpStatusCode.BAD_REQUEST, `Missing parameter: ${param}`))
       }
     }
 
     const newOrder = new Order({
-      img: gig.cover,
+      gig_photo: gig.gig_photo,
       title: gig.title,
       price: gig.price,
       sellerId: gig.userId,
@@ -40,8 +48,18 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
       $inc: { sales: 1 }
     }, { new: true })
 
-    res.status(200).json(newOrder)
+    res.status(HttpStatusCode.OK).json(newOrder)
   } catch (err) {
+    // Delete the image from Cloudinary
+    if (logoDecal_cloudinary_id) {
+      await deleteFromFolder(logoDecal_cloudinary_id)
+    }
+    if (fullDecal_cloudinary_id) {
+      await deleteFromFolder(fullDecal_cloudinary_id)
+    }
+    if (design_cloudinary_id) {
+      await deleteFromFolder(design_cloudinary_id)
+    }
     next(err)
   }
 }
@@ -49,7 +67,7 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
 const getStripe = () => {
   const stripeKey = process.env.STRIPE_KEY
   if (!stripeKey) {
-    throw createError(500, 'Stripe key not set')
+    throw createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'Stripe key not set')
   }
 
   return new Stripe(stripeKey, { apiVersion: '2022-11-15' })
@@ -65,7 +83,7 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
     const order = await Order.findById(req.params.id)
 
     if (!order) {
-      return next(createError(404, 'Order not found'))
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Order not found'))
     }
 
     const stripe = getStripe()
@@ -77,14 +95,14 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
     })
 
     if (!paymentIntent) {
-      return next(createError(500, 'Failed to create payment intent'))
+      return next(createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'Failed to create payment intent'))
     }
 
     order.payment_intent = paymentIntent.id
 
     await order.save()
 
-    res.status(200).send({
+    res.status(HttpStatusCode.OK).send({
       clientSecret: paymentIntent.client_secret
     })
   } catch (err) {
@@ -98,10 +116,10 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
 export const getOrders = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const orders = await Order.find({
-      ...(req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId })
+      ...(req.isAdmin ? { sellerId: req.userId } : { buyerId: req.userId })
     })
 
-    res.status(200).send(orders)
+    res.status(HttpStatusCode.OK).send(orders)
   } catch (err) {
     next(err)
   }
@@ -114,9 +132,9 @@ export const getSingleOrder = async (req: IRequest, res: Response, next: NextFun
   try {
     const order = await Order.findById(req.params.id)
     if (!order) {
-      return next(createError(404, 'Order not found!'))
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Order not found!'))
     }
-    res.status(200).send(order)
+    res.status(HttpStatusCode.OK).send(order)
   } catch (err) {
     next(err)
   }
@@ -135,13 +153,13 @@ export const confirm = async (req: IRequest, res: Response, next: NextFunction):
     const order = await Order.findById(orderId)
 
     if (!order) {
-      return next(createError(400, 'Order not found.'))
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Order not found.'))
     }
 
     order.isPaid = true
     await order.save()
 
-    res.status(200).send({ message: 'Order has been confirmed.'})
+    res.status(HttpStatusCode.OK).send({ message: 'Order has been confirmed.'})
   } catch (err) {
     next(err)
   }

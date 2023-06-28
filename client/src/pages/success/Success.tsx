@@ -6,6 +6,7 @@ import './Success.scss'
 
 const Success: React.FC = () => {
   const navigate = useNavigate()
+
   const { search } = useLocation()
   const params = new URLSearchParams(search)
   const paymentIntent = params.get('payment_intent')

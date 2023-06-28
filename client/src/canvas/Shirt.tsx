@@ -21,8 +21,8 @@ const Shirt: React.FC = () => {
 
   const { nodes, materials } = useGLTF('/shirt_baked.glb') as GLTFResult
 
-  const logoTexture = useTexture(designInfo.logoDecal)
-  const fullTexture = useTexture(designInfo.fullDecal)
+  const logoTexture = useTexture(designInfo.logoDecal_photo)
+  const fullTexture = useTexture(designInfo.fullDecal_photo)
 
   //Smoothly transition the shirt's color to the color from state
   useFrame((_state, delta) => easing.dampC(materials.lambert1.color, designInfo.color, 0.25, delta))

@@ -22,28 +22,34 @@ const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const isFormValid = orderInfo.name && orderInfo.email && orderInfo.address && orderInfo.phone
+
   const handleUpload = useCallback(async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
     try {
-      const url = await uploadCanvasImage() || ''
-      let logoDecal = ''
-      let fullDecal = ''
+      const designDataPromise = uploadCanvasImage()
+      const logoDecalDataPromise = designInfo.isLogoTexture ? uploadImageWithUrl(designInfo.logoDecal_photo, 'logoDecal') : null
+      const fullDecalDataPromise = designInfo.isFullTexture ? uploadImageWithUrl(designInfo.fullDecal_photo, 'fullDecal') : null
 
-      if (designInfo.isLogoTexture) {
-        logoDecal = await uploadImageWithUrl(designInfo.logoDecal, 'logoDecal') || designInfo.logoDecal
-        dispatch(setDesign({ field: 'logoDecal', value: logoDecal }))
+      const [designData, logoDecalData, fullDecalData] = await Promise.all([designDataPromise, logoDecalDataPromise, fullDecalDataPromise])
+
+      if (designData) {
+        dispatch(changeOrderInput({field: 'design_photo', value: designData.url}))
+        dispatch(changeOrderInput({field: 'design_cloudinary_id', value: designData.public_id}))
       }
 
-      if (designInfo.isFullTexture) {
-        fullDecal = await uploadImageWithUrl(designInfo.fullDecal, 'fullDecal') || designInfo.fullDecal
-        dispatch(setDesign({ field: 'fullDecal', value: fullDecal }))
+      if (logoDecalData) {
+        dispatch(setDesign({ field: 'logoDecal_photo', value: logoDecalData.url }))
+        dispatch(setDesign({ field: 'logoDecal_cloudinary_id', value: logoDecalData.public_id }))
       }
 
-      dispatch(changeOrderInput({field: 'url', value: url}))
-
+      if (fullDecalData) {
+        dispatch(setDesign({ field: 'fullDecal_photo', value: fullDecalData.url }))
+        dispatch(setDesign({ field: 'fullDecal_cloudinary_id', value: fullDecalData.public_id }))
+      }
     } catch (err) {
       setError('Failed to upload image. Please try again.')
     } finally {
@@ -56,7 +62,7 @@ const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
       {isLoading 
         ? <Loader />
         : <button
-          disabled={!orderInfo.name || !orderInfo.email || !orderInfo.address || !orderInfo.phone}
+          disabled={!isFormValid}
           className='button button--outline'
           onClick={handleUpload}
         >
@@ -64,12 +70,14 @@ const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
         </button>
       }
       {error && <span className='error-message'>{error}</span>}
-      <div  className='my-design'>
-        {orderInfo.url ? <img src={orderInfo.url} alt='preview' /> : <PreviewIcon />}
+      <div  className='upload-preview__design'>
+        {orderInfo.design_photo ? <img src={orderInfo.design_photo} alt='preview' /> : <PreviewIcon />}
       </div>
       <button
         disabled={
-          !orderInfo.name || !orderInfo.email || !orderInfo.address || !orderInfo.phone || !orderInfo.url
+          !isFormValid
+          || !orderInfo.design_photo
+          || !orderInfo.design_cloudinary_id
         }
         className='button button--filled'
         onClick={handleCheckout}

@@ -4,8 +4,10 @@ export interface IDesignState {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
-  logoDecal: string
-  fullDecal: string
+  logoDecal_photo: string
+  fullDecal_photo: string
+  logoDecal_cloudinary_id: string
+  fullDecal_cloudinary_id: string
 }
 
 interface SetDesignPayload<T extends keyof IDesignState> {
@@ -17,8 +19,10 @@ const initialState: IDesignState = {
   color: '#DB8091',
   isLogoTexture: true,
   isFullTexture: false,
-  logoDecal: '/img/design.jpg',
-  fullDecal: '/img/design.jpg'
+  logoDecal_photo: '/img/design.jpg',
+  fullDecal_photo: '/img/design.jpg',
+  logoDecal_cloudinary_id: '',
+  fullDecal_cloudinary_id: ''
 }
 
 const designSlice = createSlice({

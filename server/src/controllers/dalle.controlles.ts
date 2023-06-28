@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { Configuration, OpenAIApi } from 'openai'
 import createError from '../utils/createError'
+import HttpStatusCode from '../constants/httpStatusCodes'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -18,8 +19,9 @@ const openai = new OpenAIApi(config)
 export const generateDalleImage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { prompt } = req.body
+
     if (!prompt) {
-      return next(createError(400, 'Invalid prompt'))
+      return next(createError(HttpStatusCode.BAD_REQUEST, 'Invalid prompt'))
     }
 
     // Use OpenAI API to create an image based on the 'prompt'
@@ -33,7 +35,7 @@ export const generateDalleImage = async (req: Request, res: Response, next: Next
     // Get the base64-encoded image from the response
     const image = response.data.data[0].b64_json
 
-    res.status(200).json(image)
+    res.status(HttpStatusCode.OK).json(image)
   } catch (err) {
     console.error(`Error: ${err}`)
     next(err)

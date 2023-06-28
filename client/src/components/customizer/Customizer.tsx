@@ -5,10 +5,10 @@ import { setDesign } from '../../slices/designSlice'
 import { TabType } from './tab/Tab'
 import { useGenerateDalleImageMutation } from '../../slices/apiSlice/dalleApiSlice'
 import { ApiError } from '../../slices/apiSlice'
+import { showToast } from '../../slices/toastSlice'
 import { downloadCanvasImage } from '../../utils/handleCanvasImage'
 import { fileReader } from '../../utils/handleImage'
-import { useToast } from '../../hooks/useToast'
-import { AIPicker, ColorPicker, FilePicker, Tab, Toast } from '../index'
+import { AIPicker, ColorPicker, FilePicker, Tab } from '../index'
 import { DownloadIcon, SwatchIcon, FileIcon, LogoShirtIcon, StylishShirtIcon } from '../icons'
 // import { DownloadIcon, SwatchIcon, FileIcon, AiIcon, LogoShirtIcon, StylishShirtIcon } from '../icons'
 import './Customizer.scss'
@@ -52,7 +52,7 @@ const FilterTabs: FilterTabType[] = [
 // Decal types configuration
 type DecalType = {
   [key in DecalTypeKey]: {
-    stateProperty: ActiveFilterTabValue
+    stateProperty: `${ActiveFilterTabValue}`
     filterTab: ActiveFilterTabKey
   }
 }
@@ -69,6 +69,8 @@ const DecalTypes: DecalType = {
 }
 
 const Customizer: React.FC = () => {
+  const dispatch = useDispatch()
+
   const [file, setFile] = useState<File | null>(null)
   const [prompt, setPrompt] = useState<string>('')
   const [activeEditorTab, setActiveEditorTab] = useState('')
@@ -76,26 +78,31 @@ const Customizer: React.FC = () => {
     logoShirt: true,
     stylishShirt: false
   })
-  
-  const { showToast, hideToast, toastConfig } = useToast()
-
-  const dispatch = useDispatch()
 
   const [generateDalleImage, { isLoading: isGeneratingImage }] = useGenerateDalleImageMutation()
 
   const handleSubmit = async (type: DecalTypeKey) => {
     if (!prompt) {
-      showToast('Please enter a prompt', 'warning')
+      dispatch(showToast({
+        message: 'Please enter a prompt',
+        type: 'warning'
+      }))
       return
     }
 
     try {
       const imageData = await generateDalleImage({prompt}).unwrap()
       handleDecals(type, `data:image/jpeg;base64,${imageData}`)
+
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Generate failed'
-      showToast(errorMessage, 'error')
+
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
+      
     } finally {
       setActiveEditorTab('')
     }
@@ -104,7 +111,7 @@ const Customizer: React.FC = () => {
   const handleDecals = (type: DecalTypeKey, result: string) => {
     const decalType = DecalTypes[type]
 
-    dispatch(setDesign({ field: decalType.stateProperty, value: result }))
+    dispatch(setDesign({ field: `${decalType.stateProperty}_photo`, value: result }))
 
     if (!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab)
@@ -167,53 +174,45 @@ const Customizer: React.FC = () => {
 
   return (
     <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <>
-        {/* Side Editor Tabs */}
-        <div
-          key="custom"
-          className="tabs-container"
-        >
-          <div className="editor-tabs flex-center glassmorphism">
-            {EditorTabs.map(tab => (
-              <Tab 
-                key={tab.name}
-                tab={tab}
-                handleClick={() => handleTabContent(tab.name)}
-              />
-            ))}
-
-            {generateTabContent()}
-          </div>
-        </div>
-
-        {/* Bottom Filter Tabs */}
-        <div
-          className='filter-tabs flex-center'
-        >
-          {FilterTabs.map(tab => (
-            <Tab
+      {/* Side Editor Tabs */}
+      <div
+        key="custom"
+        className="tabs-container"
+      >
+        <div className="editor-tabs flex-center glassmorphism">
+          {EditorTabs.map(tab => (
+            <Tab 
               key={tab.name}
               tab={tab}
-              isFilterTab
-              isActiveTab={activeFilterTab[tab.name]}
-              handleClick={() => handleActiveFilterTab(tab.name)}
+              handleClick={() => handleTabContent(tab.name)}
             />
           ))}
 
-          <button
-            className='download-button flex-center cursor-pointer glassmorphism'
-            onClick={downloadCanvasImage}
-          >
-            <DownloadIcon />
-          </button>
+          {generateTabContent()}
         </div>
-      </>
+      </div>
+
+      {/* Bottom Filter Tabs */}
+      <div
+        className='filter-tabs flex-center'
+      >
+        {FilterTabs.map(tab => (
+          <Tab
+            key={tab.name}
+            tab={tab}
+            isFilterTab
+            isActiveTab={activeFilterTab[tab.name]}
+            handleClick={() => handleActiveFilterTab(tab.name)}
+          />
+        ))}
+
+        <button
+          className='download-button flex-center cursor-pointer glassmorphism'
+          onClick={downloadCanvasImage}
+        >
+          <DownloadIcon />
+        </button>
+      </div>
     </>
   )
 }

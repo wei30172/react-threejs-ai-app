@@ -7,12 +7,11 @@ interface ICombinedState extends IOrderState, IDesignState {}
 export interface IOrder {
   _id: string
   gigId: string
-  img: string
+  gig_photo: string
   title: string
   price: number
   sellerId: string
   buyerId: string
-  createdAt: string
   isPaid: boolean
   payment_intent: string
   name: string
@@ -22,14 +21,19 @@ export interface IOrder {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
-  logoDecal: string
-  fullDecal: string
-  url: string
+  logoDecal_photo: string
+  fullDecal_photo: string
+  logoDecal_cloudinary_id: string
+  fullDecal_cloudinary_id: string
+  design_photo: string
+  design_cloudinary_id: string
+  createdAt: string
 }
 
 interface IOrderIntent {
   clientSecret: string
 }
+
 const ORDERS_URL = '/orders'
 
 export const ordersApiSlice = apiSlice.injectEndpoints({
