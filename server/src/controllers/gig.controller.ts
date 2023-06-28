@@ -9,11 +9,11 @@ import { IRequest } from '../middleware/authMiddleware'
 // @route   POST /api/gigs
 // @access  Private
 export const createGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
+  const { gig_cloudinary_id, gig_cloudinary_ids } = req.body
+  
   if (!req.isAdmin) {
     return next(createError(HttpStatusCode.FORBIDDEN, 'Only admin can create a gig!'))
   }
-
-  const { gig_cloudinary_id, gig_cloudinary_ids } = req.body
 
   const newGig = new Gig({
     userId: req.userId,
