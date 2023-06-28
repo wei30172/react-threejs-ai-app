@@ -3,16 +3,18 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useGetSingleGigQuery, useUpdateGigMutation } from '../../slices/apiSlice/gigsApiSlice'
-import { initializeState, changeGigInput, addImages, addFeature, removeFeature, IGigState } from '../../slices/gigSlice'
-import { RootState } from '../../store'
+import { changeGigInput, addImage, addImages, addFeature, removeFeature, resetGig, IGigState } from '../../slices/gigSlice'
 import { ApiError, AxiosError } from '../../slices/apiSlice'
+import { showToast } from '../../slices/toastSlice'
+import { RootState } from '../../store'
 import { uploadImage }  from '../../utils/handleImage'
-import { useToast } from '../../hooks/useToast'
-import Toast from '../../components/toast/Toast'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './EditGig.scss'
 
 const EditGig: React.FC = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const { gigId } = useParams()
 
   const { isLoading, error, data } = useGetSingleGigQuery(gigId)
@@ -23,14 +25,11 @@ const EditGig: React.FC = () => {
 
   const gigInfo = useSelector((state: RootState) => state.gig)
 
-  const { showToast, hideToast, toastConfig } = useToast()
-
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
   useEffect(() => {
-    if (data) dispatch(initializeState(data))
-  }, [dispatch, data])
+    return () => {
+      dispatch(resetGig())
+    }
+  }, [dispatch])
 
   const [updateGig, { isLoading: isCreatingGig }] = useUpdateGigMutation()
   
@@ -44,7 +43,7 @@ const EditGig: React.FC = () => {
     )
   }
 
-  const handleFileChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
     if (fileLimit === 0) {
       return
 
@@ -60,7 +59,10 @@ const EditGig: React.FC = () => {
       setFiles(dataTransfer.files)
 
       if (files.length > fileLimit) {
-        showToast(`You can upload up to ${fileLimit} images.`, 'error')
+        dispatch(showToast({
+          message: `You can upload up to ${fileLimit} images.`,
+          type: 'warning'
+        }))
       }
     }
   }
@@ -84,35 +86,58 @@ const EditGig: React.FC = () => {
     setUploading(true)
 
     try {
-      let cover = gigInfo.cover, images = gigInfo.images
+      let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
   
       if (singleFile) {
-        const uploadResult = await uploadImage(singleFile)
-        cover = uploadResult ? uploadResult : cover
+        const photoData = await uploadImage(singleFile)
+        if (photoData) {
+          gig_photo = photoData.url
+          gig_cloudinary_id = photoData.public_id
+        }
       }
   
+      if (gig_photo && gig_cloudinary_id) {
+        dispatch(addImage({
+          gig_photo,
+          gig_cloudinary_id
+        }))
+      }
+
       if (files) {
-        const uploadImages = await Promise.all(
+        const uploadResults = await Promise.all(
           Array.from(files).map(async (file) => {
-            const url = await uploadImage(file)
-            if (url === undefined) {
+            const photoData = await uploadImage(file)
+            if (photoData === undefined) {
               throw new Error(`Failed to upload file: ${file.name}`)
             }
-            return url
+            return photoData
           })
         )
 
-        images = uploadImages.length > 0 ? uploadImages : images
+        const photoUrls = uploadResults.map(result => result.url)
+        const photoIds = uploadResults.map(result => result.public_id)
+
+        if (photoUrls.length > 0 && photoIds.length > 0) {
+          gig_photos = photoUrls
+          gig_cloudinary_ids = photoIds
+        }
       }
 
-      if (cover || (images && images.length > 0)) {
-        dispatch(addImages({ cover, images }))
+      if ((gig_photos && gig_photos.length > 0) && (gig_cloudinary_ids && gig_cloudinary_ids.length > 0)) {
+        dispatch(addImages({
+          gig_photos,
+          gig_cloudinary_ids
+        }))
       }
 
     } catch (error) {
       const axiosError = error as AxiosError
       const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
-      showToast(errorMessage, 'error')
+
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
       
     } finally {
       setUploading(false)
@@ -122,9 +147,23 @@ const EditGig: React.FC = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
 
+    if ((singleFile || files) && (!gigInfo.gig_photo || !gigInfo.gig_photos)) {
+      dispatch(showToast({
+        message: 'Please upload selected files before updating gig',
+        type: 'warning'
+      }))
+      return
+    }
+
     try {
       await updateGig({gigId, data: gigInfo}).unwrap()
-      showToast('Update gig successfully, To the My Gigs page in 5 seconds...', 'success')
+
+      dispatch(resetGig())
+      
+      dispatch(showToast({
+        message: 'Update gig successfully, To the My Gigs page in 5 seconds...',
+        type: 'success'
+      }))
       
       setTimeout(() => {
         navigate('/my-gigs')
@@ -133,141 +172,137 @@ const EditGig: React.FC = () => {
     } catch (error) {
       const apiError = error as ApiError
       const errorMessage = apiError.data?.message || 'Update gig failed'
-      showToast(errorMessage, 'error')
+      
+      dispatch(showToast({
+        message: errorMessage,
+        type: 'error'
+      }))
     }
   }
 
   return (
-    <>
-      <Toast
-        isVisible={toastConfig.isVisible}
-        message={toastConfig.message}
-        type={toastConfig.type}
-        onHide={hideToast}
-      />
-      <section className='edit-gig'>
-        {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-          <div className='container'>
-            <h1>Edit Gig</h1>
-            <div className='sections'>
-              <div className='info'>
-                {/* Title */}
-                <label htmlFor=''>Service Title</label>
-                <input
-                  type='text'
-                  name='title'
-                  placeholder={data?.title}
-                  onChange={handleChange}
-                />
-                
-                {/* Price */}
-                <label htmlFor=''>Price ($)</label>
-                <input
-                  type='number'
-                  placeholder={data?.price.toString()}
-                  onChange={handleChange} name='price'
-                />
-                {/* Delivery Time */}
-                <label htmlFor=''>Delivery day(s)</label>
-                <input type='number'
-                  name='deliveryTime'
-                  placeholder={data?.deliveryTime.toString()}
-                  onChange={handleChange}
-                />
-                
-                {/* Images */}
-                <div className='images'>
-                  <div className='images_inputs'>
-                    <label htmlFor=''>Cover Image</label>
-                    <input
-                      type='file'
-                      onChange={(e) => handleFileChange(1, e)}
-                    />
-                    {!singleFile && <div className='images_img' >
-                      <img src={data?.cover} alt='' />
-                    </div>}
-                    <label htmlFor=''>Introductory Images (Max: 5)</label>
-                    <input
-                      type='file'
-                      multiple
-                      onChange={(e) => handleFileChange(5, e)}
-                    />
-                    {!files && <div className='images_img' >
-                      {data?.images?.map((image: string) => (
-                        <img key={image} src={image} alt='' />
-                      ))}
-                    </div>}
-                  </div>
-                  <button
-                    onClick={handleUpload}
-                    disabled={
-                      !singleFile &&
-                      !files
-                    }
-                    className="button button--filled" >
-                    {uploading ? 'Uploading' : 'Upload'}
-                  </button>
+    <section className='edit-gig'>
+      {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
+        <div className='container'>
+          <h1>Edit Gig</h1>
+          <div className='edit-gig__sections'>
+            <div className='edit-gig__info'>
+              {/* Title */}
+              <label htmlFor=''>Service Title</label>
+              <input
+                type='text'
+                name='title'
+                value={data?.title}
+                onChange={handleChange}
+              />
+              
+              {/* Price */}
+              <label htmlFor=''>Price ($)</label>
+              <input
+                type='number'
+                value={data?.price.toString()}
+                onChange={handleChange} name='price'
+              />
+              {/* Delivery Time */}
+              <label htmlFor=''>Delivery day(s)</label>
+              <input type='number'
+                name='deliveryTime'
+                value={data?.deliveryTime.toString()}
+                onChange={handleChange}
+              />
+              
+              {/* Images */}
+              <div className='edit-gig__images'>
+                <div className='images_inputs'>
+                  <label htmlFor=''>Cover Image</label>
+                  <input
+                    type='file'
+                    onChange={(e) => handleImageChange(1, e)}
+                  />
+                  {!singleFile && <div className='images_img' >
+                    <img src={data?.gig_photo} alt='' />
+                  </div>}
+                  <label htmlFor=''>Introductory Images (Max: 5)</label>
+                  <input
+                    type='file'
+                    multiple
+                    onChange={(e) => handleImageChange(5, e)}
+                  />
+                  {!files && <div className='images_img' >
+                    {data?.gig_photos?.map((image: string) => (
+                      <img key={image} src={image} alt='' />
+                    ))}
+                  </div>}
                 </div>
-              </div>
-              <div className='details'>
-                {/* Description */}
-                <label htmlFor=''>Short Description</label>
-                <textarea
-                  name='shortDesc'
-                  rows={5}
-                  id=''
-                  placeholder={data?.shortDesc}
-                  onChange={handleChange}
-                ></textarea>
-                <label htmlFor=''>Description</label>
-                <textarea
-                  name='desc'
-                  rows={8}
-                  id=''
-                  placeholder={data?.desc}
-                  onChange={handleChange}
-                ></textarea>
-                
-                {/* Features */}
-                <label htmlFor=''>Add Features</label>
-                <form action='' className='add' onSubmit={handleFeatureChange}>
-                  <input type='text' placeholder='e.g. page design' />
-                  <button type='submit' className="button button--filled" >
-                    add
-                  </button>
-                </form>
-                <div className='addedFeatures'>
-                  {gigInfo?.features?.map((f, i) => (
-                    <div className='item' key={`${f}-${i}`}>
-                      <button
-                        onClick={() => handleRemoveFeature(f)}
-                        className='cursor-pointer'
-                      >
-                        {f}<span>X</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <button
+                  onClick={handleUpload}
+                  disabled={
+                    !singleFile &&
+                    !files
+                  }
+                  className="button button--filled" >
+                  {uploading ? 'Uploading' : 'Upload'}
+                </button>
               </div>
             </div>
-            <button
-              disabled={
-                uploading ||
-                isCreatingGig
-              }
-              onClick={handleSubmit} 
-              className='button button--filled'
-            >
-              {isCreatingGig ? <Loader /> : 'Update'}
+            <div className='edit-gig__details'>
+              {/* Description */}
+              <label htmlFor=''>Short Description</label>
+              <textarea
+                name='shortDesc'
+                rows={5}
+                id=''
+                value={data?.shortDesc}
+                onChange={handleChange}
+              ></textarea>
+              <label htmlFor=''>Description</label>
+              <textarea
+                name='desc'
+                rows={8}
+                id=''
+                value={data?.desc}
+                onChange={handleChange}
+              ></textarea>
+              
+              {/* Features */}
+              <label htmlFor=''>Add Features</label>
+              <form action='' className='edit-gig__add-btn' onSubmit={handleFeatureChange}>
+                <input type='text' placeholder='e.g. page design' />
+                <button type='submit' className="button button--filled" >
+                  add
+                </button>
+              </form>
+              <div className='edit-gig__features'>
+                {data?.features?.map((f, i) => (
+                  <div className='item' key={`${f}-${i}`}>
+                    <button
+                      onClick={() => handleRemoveFeature(f)}
+                      className='cursor-pointer'
+                    >
+                      {f}<span>X</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <button
+            disabled={
+              uploading ||
+              isCreatingGig
+            }
+            onClick={handleSubmit} 
+            className='button button--filled'
+          >
+            {isCreatingGig ? <Loader /> : 'Update'}
+          </button>
+          <Link to='/my-gigs'>
+            <button className='button button--outline'>
+              Cancel
             </button>
-            <Link to='/my-gigs'>
-              <button className='button button--outline'>
-                Cancel
-              </button>
-            </Link>
-          </div>)}
-      </section>
-    </>
+          </Link>
+        </div>)}
+    </section>
   )
 }
 

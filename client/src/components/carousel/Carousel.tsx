@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-
 import Card from './Card'
 import { DoubleLeftIcon, DoubleRightIcon } from '../icons'
 import './Carousel.scss'
@@ -54,24 +53,24 @@ const Carousel: React.FC<CarouselProps> = ({ carouselImages }) => {
 
   return (
     <div className='carousel'>
-      <div className='carousel_container'>
-        <div className='carousel_buttons'>
+      <div className='carousel__container'>
+        <div className='carousel__buttons'>
           <button
             onClick={movePrev}
-            className={`carousel_buttons_arrow cursor-pointer ${isDisabled('prev') ? 'hidden' : ''}`}
+            className='carousel__arrow cursor-pointer'
             disabled={isDisabled('prev')}
           >
             <DoubleLeftIcon />
           </button>
           <button
             onClick={moveNext}
-            className={`carousel_buttons_arrow cursor-pointer ${isDisabled('prev') ? 'hidden' : ''}`}
+            className='carousel__arrow cursor-pointer'
             disabled={isDisabled('next')}
           >
             <DoubleRightIcon />
           </button>
         </div>
-        <div ref={carousel} className='carousel_cards'>
+        <div ref={carousel} className='carousel__cards'>
           {carouselImages?.map((item) => {
             return (
               <Card

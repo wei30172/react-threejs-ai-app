@@ -9,8 +9,10 @@ export interface IGig {
   totalStars: number
   starNumber: number
   price: number
-  cover: string
-  images: string[]
+  gig_photo: string
+  gig_photos: string[]
+  gig_cloudinary_id: string
+  gig_cloudinary_ids: string[]
   shortDesc: string
   deliveryTime: number
   features: string[]

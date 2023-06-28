@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: 20px;
 
-  .user {
+  .seller__user {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -18,10 +18,22 @@
       object-fit: cover;
     }
 
-    .info {
+    .seller__info {
       display: flex;
       flex-direction: column;
       gap: 6px;
+
+      .seller__stars {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+
+        span {
+          font-size: 14px;
+          font-weight: bold;
+          color: colors.$yellow-400;
+        }
+      }
 
       button {
         background-color: colors.$dark-100;

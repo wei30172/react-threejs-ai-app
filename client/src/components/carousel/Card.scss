@@ -1,3 +1,4 @@
+@use "../../styles/mixin/colors" as colors;
 @use "../../styles/mixin/screens" as screens;
 
 .carousel_card {
@@ -5,17 +6,19 @@
   width: 8rem;
   height: 8rem;
   text-align: center;
+  border: 1px solid colors.$dark-100;
 
   @include screens.tablet {
     width: 16rem;
     height: 16rem;
   }
   
-  .image-container {
+  .carousel_card__image {
     width: 100%;
     height: 100%;
     aspect-ratio: 1 / 1;
     display: block;
+    z-index: 0;
     background-position: left top;
     background-repeat: no-repeat;
     background-size: cover;

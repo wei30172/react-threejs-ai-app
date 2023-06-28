@@ -25,12 +25,12 @@ const Seller: React.FC<SellerProps> = ({ gigData }) => {
     <div className='seller'>
       <h2>Seller</h2>
       {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-        <div className='user'>
-          <img src={data?.img || '/img/noavatar.jpg'} alt={`${data?.username}'s avatar`} />
-          <div className='info'>
+        <div className='seller__user'>
+          <img src={data?.user_photo || '/img/noavatar.jpg'} alt={`${data?.username}'s avatar`} />
+          <div className='seller__info'>
             <span>{data?.username}</span>
             {averageStars > 0 && (
-              <div className='stars'>
+              <div className='seller__stars'>
                 {starsIcons}
                 <span>{averageStars}</span>
               </div>

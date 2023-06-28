@@ -7,7 +7,7 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ item }) => {
   return (
     <div className='carousel_card'>
-      <div className='image-container'>
+      <div className='carousel_card__image'>
         <img
           src={item}
           alt='carousel display'

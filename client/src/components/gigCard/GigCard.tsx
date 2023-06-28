@@ -12,15 +12,15 @@ const limitDescription = (description: string, limit = DESCRIPTION_LIMIT) => {
 }
 
 const UserInfo: React.FC<{userId: string}> = ({ userId }) => {
-  const { isLoading: isLoadingUserInfo, error: loadUserInfoError, data: userInfodata } = useGetUserInfoByIdQuery(userId)
+  const { isLoading: isLoadingUserInfo, error: loadUserInfoError, data: userInfoData } = useGetUserInfoByIdQuery(userId)
 
   if (isLoadingUserInfo) return <Loader />
   if (loadUserInfoError) return <ErrorIcon />
 
   return (
-    <div className='user'>
-      <img src={userInfodata?.img || '/img/noavatar.jpg'} alt='User' />
-      <span>{userInfodata?.username}</span>
+    <div className='gig-card__user'>
+      <img src={userInfoData?.user_photo || '/img/noavatar.jpg'} alt='User' />
+      <span>{userInfoData?.username}</span>
     </div>
   )
 }
@@ -37,19 +37,19 @@ const GigCard: React.FC<GigCardProps> = ({ gigItem }) => {
   return (
     <Link to={`/gig/${gigItem._id}`} className='link'>
       <div className='gig-card'>
-        <img src={gigItem.cover} alt='Gig Cover' />
-        <div className='info'>
+        <img src={gigItem.gig_photo} alt='Gig Cover' />
+        <div className='gig-card__info'>
           <UserInfo userId={gigItem.userId} />
           <p>{limitDescription(gigItem.desc)}</p>
-          <div className='star'>
+          <div className='gig-card__star'>
             <StarIconFilled />
             <span>{averageStars}</span>
           </div>
         </div>
         <hr />
-        <div className='detail'>
+        <div className='gig-card__detail'>
           <HeartIconFilled />
-          <div className='price'>
+          <div className='gig-card__price'>
             <span>STARTING AT</span>
             <h2>$ {gigItem.price}</h2>
           </div>

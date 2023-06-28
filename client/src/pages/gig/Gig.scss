@@ -12,16 +12,6 @@
     display: flex;
     flex-direction: column;
     gap: 90px;
-
-    @include screens.tablet {
-      flex-direction: row;
-      .left {
-        flex: 2;
-        }
-      .right {
-        flex: 1;
-      }
-    }
     
     .star-icon,
     .check-icon {
@@ -29,23 +19,12 @@
       width: 25px;
     }
     
-    .left {
+    .gig__left {
       flex: 1;
       display: flex;
       flex-direction: column;
       gap: 20px;
-
-      .stars {
-        display: flex;
-        align-items: center;
-        gap: 2px;
-
-        span {
-          font-size: 14px;
-          font-weight: bold;
-          color: colors.$yellow-400;
-        }
-      }
+      max-width: 100%;
 
       h2 {
         font-weight: 400;
@@ -58,7 +37,7 @@
       }
     }
 
-    .right {
+    .gig__right {
       flex: 1;
       margin: 0 auto;
       border: 1px solid colors.$dark-400;
@@ -71,7 +50,7 @@
       position: sticky;
       top: 150px;
 
-      .price {
+      .gig__price {
         h2{
           font-weight: 300;
         }
@@ -82,7 +61,7 @@
         margin: 10px 0px;
       }
 
-      .features{
+      .gig__features {
         .item{
           display: flex;
           align-items: center;
@@ -99,6 +78,18 @@
 
       .loader {
         margin: 0 auto;
+      }
+    }
+
+    @include screens.tablet {
+      flex-direction: row;
+      .gig__left {
+        flex: 2;
+        max-width: 66%;
+      }
+      .gig__right {
+        flex: 1;
+        min-width: 33%;
       }
     }
   }

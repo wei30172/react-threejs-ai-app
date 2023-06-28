@@ -5,8 +5,10 @@ export interface IGigState {
   title: string
   desc: string
   price: number
-  cover: string
-  images: string[]
+  gig_photo: string
+  gig_photos: string[]
+  gig_cloudinary_id: string
+  gig_cloudinary_ids: string[]
   shortDesc: string
   deliveryTime: number
   features: string[]
@@ -22,8 +24,10 @@ const initialState: IGigState = {
   title: '',
   desc: '',
   price: 0,
-  cover: '',
-  images: [],
+  gig_photo: '',
+  gig_photos: [],
+  gig_cloudinary_id: '',
+  gig_cloudinary_ids: [],
   shortDesc: '',
   deliveryTime: 0,
   features: []
@@ -33,15 +37,22 @@ const gigSlice = createSlice({
   name: 'gig',
   initialState,
   reducers: {
-    initializeState: (state, action: PayloadAction<Partial<IGigState>>) => {
-      Object.assign(state, action.payload)
-    },
     changeGigInput: <T extends keyof IGigState>(state: IGigState, action: PayloadAction<ChangeInputPayload<T>>) => {
       state[action.payload.field] = action.payload.value
     },
-    addImages: (state, action: PayloadAction<{ cover: string; images: string[] }>) => {
-      state.cover = action.payload.cover
-      state.images = action.payload.images
+    addImage: (state, action: PayloadAction<{
+      gig_photo: string,
+      gig_cloudinary_id: string,
+    }>) => {
+      state.gig_photo = action.payload.gig_photo
+      state.gig_cloudinary_id = action.payload.gig_cloudinary_id
+    },
+    addImages: (state, action: PayloadAction<{
+      gig_photos: string[],
+      gig_cloudinary_ids: string[]
+    }>) => {
+      state.gig_photos = action.payload.gig_photos
+      state.gig_cloudinary_ids = action.payload.gig_cloudinary_ids
     },
     addFeature: (state, action: PayloadAction<string>) => {
       state.features.push(action.payload)
@@ -50,10 +61,11 @@ const gigSlice = createSlice({
       state.features = state.features.filter(
         (feature) => feature !== action.payload
       )
-    }
+    },
+    resetGig: () => initialState
   }
 })
 
-export const { initializeState, changeGigInput, addImages, addFeature, removeFeature } = gigSlice.actions
+export const { changeGigInput, addImage, addImages, addFeature, removeFeature, resetGig } = gigSlice.actions
 
 export default gigSlice.reducer

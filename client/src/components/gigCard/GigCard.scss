@@ -24,13 +24,13 @@
     object-fit: cover;
   }
 
-  .info {
+  .gig-card__info {
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 20px;
 
-    .user {
+    .gig-card__user {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -43,7 +43,7 @@
       }
     }
 
-    .star {
+    .gig-card__star {
       display: flex;
       align-items: center;
       gap: 5px;
@@ -61,14 +61,14 @@
     border: 1px solid colors.$dark-200;
   }
 
-  .detail {
+  .gig-card__detail {
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: colors.$white;
     
-    .price {
+    .gig-card__price {
       span {
         color: colors.$dark-400;
         font-size: 12px;
