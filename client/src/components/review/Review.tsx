@@ -13,12 +13,12 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
   return (
     <div className='review'>
       {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
-        <div className='user'>
-          <img src={data?.img || '/img/noavatar.jpg'} alt='User' />
+        <div className='review__user'>
+          <img src={data?.user_photo || '/img/noavatar.jpg'} alt='User' />
           <span>{data?.username}</span>
         </div>
       )}
-      <div className='stars'>
+      <div className='review__stars'>
         {Array(review.star)
           .fill(null)
           .map((_, i) => (

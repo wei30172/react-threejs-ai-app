@@ -26,7 +26,6 @@ const Posts: React.FC = () => {
   const search = useRef<HTMLInputElement>(null)
 
   const { isLoading, error, data = [], refetch } = useGetImagePostsQuery({ search: search.current?.value || '' })
-  console.log(data)
   
   const apply = useCallback(() => {
     if (search.current?.value) {

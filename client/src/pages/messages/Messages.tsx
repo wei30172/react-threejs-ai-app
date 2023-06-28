@@ -30,7 +30,7 @@ const Messages: React.FC = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>{userInfo?.isSeller ? 'Buyer' : 'Seller'}</th>
+                    <th>{userInfo?.isAdmin ? 'Buyer' : 'Seller'}</th>
                     <th>Last Message</th>
                     <th>Date</th>
                     <th>Mark as Read</th>
@@ -40,12 +40,12 @@ const Messages: React.FC = () => {
                   {data && data.map((c) => (
                     <tr
                       className={
-                        ((userInfo?.isSeller && !c.readBySeller) ||
-                          (!userInfo?.isSeller && !c.readByBuyer)) ? 'active' : ''
+                        ((userInfo?.isAdmin && !c.readBySeller) ||
+                          (!userInfo?.isAdmin && !c.readByBuyer)) ? 'active' : ''
                       }
                       key={c.id}
                     >
-                      <td>{userInfo?.isSeller ? c.buyerId : c.sellerId}</td>
+                      <td>{userInfo?.isAdmin ? c.buyerId : c.sellerId}</td>
                       <td>
                         <Link to={`/messages/${c.id}`} className='link'>
                           {c?.lastMessage?.substring(0, 100)}...
@@ -54,8 +54,8 @@ const Messages: React.FC = () => {
                       <td>{moment(c.updatedAt).fromNow()}</td>
                       <td>
                         <button className="cursor-pointer" onClick={() => handleToggleRead(c.id)}>
-                          {((userInfo?.isSeller && !c.readBySeller) ||
-                          (!userInfo?.isSeller && !c.readByBuyer)) ? (
+                          {((userInfo?.isAdmin && !c.readBySeller) ||
+                          (!userInfo?.isAdmin && !c.readByBuyer)) ? (
                               <EllipsisIconFilled />
                             ) : (
                               <EllipsisIconOutline />

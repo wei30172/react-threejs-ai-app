@@ -6,7 +6,7 @@
   gap: 15px;
   margin: 20px 0px;
   
-  .user {
+  .review__user {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -15,6 +15,18 @@
       height: 50px;
       width: 50px;
       border-radius: 50%;
+    }
+  }
+
+  .review__stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    span {
+      font-size: 14px;
+      font-weight: bold;
+      color: colors.$yellow-400;
     }
   }
 }
