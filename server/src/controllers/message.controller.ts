@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import Message from '../models/message.model'
 import Conversation from '../models/conversation.model'
+import HttpStatusCode from '../constants/httpStatusCodes'
 import { IRequest } from '../middleware/authMiddleware'
 
 // @desc    Create Message
@@ -18,15 +19,15 @@ export const createMessage = async (req: IRequest, res: Response, next: NextFunc
       { id: req.body.conversationId },
       {
         $set: {
-          readBySeller: req.isSeller,
-          readByBuyer: !req.isSeller,
+          readBySeller: req.isAdmin,
+          readByBuyer: !req.isAdmin,
           lastMessage: req.body.desc
         }
       },
       { new: true }
     )
 
-    res.status(201).send(savedMessage)
+    res.status(HttpStatusCode.CREATED).send(savedMessage)
   } catch (err) {
     next(err)
   }
@@ -38,7 +39,7 @@ export const createMessage = async (req: IRequest, res: Response, next: NextFunc
 export const getMessages = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const messages = await Message.find({ conversationId: req.params.id })
-    res.status(200).send(messages)
+    res.status(HttpStatusCode.OK).send(messages)
   } catch (err) {
     next(err)
   }

@@ -4,14 +4,15 @@ import createError from '../utils/createError'
 import Review, { IReview } from '../models/review.model'
 import Gig, { IGig } from '../models/gig.model'
 import Order from '../models/order.model'
+import HttpStatusCode from '../constants/httpStatusCodes'
 import { IRequest } from '../middleware/authMiddleware'
 
 // @desc    Create Review
 // @route   POST /api/reviews
 // @access  Private
 export const createReview = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
-  if (req.isSeller) {
-    return next(createError(403, 'Sellers can not create a review!'))
+  if (req.isAdmin) {
+    return next(createError(HttpStatusCode.FORBIDDEN, 'Sellers can not create a review!'))
   }
 
   const reviewData: IReview = new Review({
@@ -29,7 +30,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
     })
 
     if (!purchase) {
-      return next(createError(403, 'You can not review a gig that you did not purchase'))
+      return next(createError(HttpStatusCode.FORBIDDEN, 'You can not review a gig that you did not purchase'))
     }
 
     // Check if the user created the review
@@ -39,7 +40,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
     })
 
     if (review) {
-      return next(createError(403, 'You have already created a review for this gig!'))
+      return next(createError(HttpStatusCode.FORBIDDEN, 'You have already created a review for this gig!'))
     }
 
     const savedReview = await reviewData.save()
@@ -48,7 +49,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
       $inc: { totalStars: req.body.star, starNumber: 1 }
     })
 
-    res.status(201).send(savedReview)
+    res.status(HttpStatusCode.CREATED).send(savedReview)
   } catch (err) {
     next(err)
   }
@@ -60,7 +61,7 @@ export const createReview = async (req: IRequest, res: Response, next: NextFunct
 export const getReviewsByGig = async (req: Request<{ gigId: IGig['_id'] }>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const reviews = await Review.find({ gigId: req.params.gigId })
-    res.status(200).send(reviews)
+    res.status(HttpStatusCode.OK).send(reviews)
   } catch (err) {
     next(err)
   }
@@ -74,11 +75,11 @@ export const deleteReview = async (req: IRequest, res: Response, next: NextFunct
     const review = await Review.findById(req.params.id)
 
     if (!review) {
-      return next(createError(404, 'Review not found'))
+      return next(createError(HttpStatusCode.NOT_FOUND, 'Review not found'))
     }
 
     if (review.userId !== req.userId) {
-      return next(createError(403, 'You can only delete your own reviews'))
+      return next(createError(HttpStatusCode.FORBIDDEN, 'You can only delete your own reviews'))
     }
 
     await Review.findByIdAndDelete(req.params.id)
@@ -87,7 +88,7 @@ export const deleteReview = async (req: IRequest, res: Response, next: NextFunct
       $inc: { totalStars: -review.star, starNumber: -1 }
     })
 
-    res.status(200).send({message: 'Review has been deleted!'})
+    res.status(HttpStatusCode.OK).send({message: 'Review has been deleted!'})
   } catch (err) {
     next(err)
   }
