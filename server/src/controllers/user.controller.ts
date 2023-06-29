@@ -12,7 +12,7 @@ const SALT_ROUNDS = 10
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateUserProfile = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
-  const { username, password, user_photo, user_cloudinary_id } = req.body
+  const { username, password: userInputPassword, user_photo, user_cloudinary_id } = req.body
   
   try {
     const user = await User.findById(req.userId) as IUser
@@ -35,16 +35,19 @@ export const updateUserProfile = async (req: IRequest, res: Response, next: Next
       user.username = username
     }
       
-    if (password) {
+    if (userInputPassword) {
       const salt = await bcrypt.genSalt(SALT_ROUNDS)
-      user.password = await bcrypt.hash(password, salt)
+      user.password = await bcrypt.hash(userInputPassword, salt)
     }
 
     const updatedUser = await user.save()
-    res.status(HttpStatusCode.OK).json({
-      _id: updatedUser._id,
-      name: updatedUser.username
-    })
+
+    const userObject = updatedUser.toObject()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...info } = userObject
+
+    res.status(HttpStatusCode.OK).json(info)
+
   } catch (err) {
     // Delete the image from Cloudinary
     if (user_cloudinary_id) {
