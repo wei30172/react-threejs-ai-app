@@ -46,7 +46,10 @@ startServer()
 
 const app = express()
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true })) // todo
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://capture-magical-moment.netlify.app'],
+  credentials: true
+})) // todo
 
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
