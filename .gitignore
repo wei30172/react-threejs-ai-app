@@ -3,3 +3,5 @@ node_modules
 build
 .vscode
 dist
+.gitignore
+_redirects
