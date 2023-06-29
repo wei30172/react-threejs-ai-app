@@ -4,10 +4,10 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { useCreateGigMutation } from '../../slices/apiSlice/gigsApiSlice'
 import { changeGigInput, addImage, addImages, addFeature, removeFeature, resetGig, IGigState } from '../../slices/gigSlice'
-import { ApiError, AxiosError } from '../../slices/apiSlice'
+import { ApiError } from '../../slices/apiSlice'
 import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { uploadImage } from '../../utils/handleImage'
+import useUpload from '../../hooks/useUpload'
 import { Loader } from '../../components/icons'
 import './AddGig.scss'
 
@@ -20,7 +20,8 @@ const AddGig: React.FC = () => {
 
   const [singleFile, setSingleFile] = useState<File | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
-  const [uploading, setUploading] = useState(false)
+  
+  const { uploading, handleUpload } = useUpload()
 
   useEffect(() => {
     if (userInfo) dispatch(changeGigInput({field: 'userId', value: userInfo._id}))
@@ -39,7 +40,7 @@ const AddGig: React.FC = () => {
   }
 
   const handleImageChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!fileLimit) {
+    if (fileLimit === 0) {
       return
     }
 
@@ -51,9 +52,9 @@ const AddGig: React.FC = () => {
     const dataTransfer = new DataTransfer()
     const files = Array.from(event.target.files || [])
     
-    files.slice(0, fileLimit)
-    files.forEach(file => dataTransfer.items.add(file))
-    setFiles(dataTransfer.files)
+    if (files.length === 0) {
+      setFiles(null)
+    }
 
     if (files.length > fileLimit) {
       dispatch(showToast({
@@ -61,6 +62,10 @@ const AddGig: React.FC = () => {
         type: 'warning'
       }))
     }
+
+    files.slice(0, fileLimit)
+    files.forEach(file => dataTransfer.items.add(file))
+    setFiles(dataTransfer.files)
   }
   
   const handleFeatureChange = (e: FormEvent<HTMLFormElement>) => {
@@ -78,67 +83,41 @@ const AddGig: React.FC = () => {
     dispatch(removeFeature(feature))
   }
 
-  const handleUpload = async () => {
+  const handleUploadFiles = async () => {
     if (!singleFile || !files) {
       return dispatch(showToast({
         message: 'Please add files first',
         type: 'warning'
       }))
     }
-
-    setUploading(true)
-    try {
-      let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
   
-      const photoData = await uploadImage(singleFile)
-      if (photoData) {
-        gig_photo = photoData.url
-        gig_cloudinary_id = photoData.public_id
-      }
-  
-      const uploadResults = await Promise.all(
-        Array.from(files).map(async (file) => {
-          const photoData = await uploadImage(file)
-          if (photoData === undefined) {
-            throw new Error(`Failed to upload file: ${file.name}`)
-          }
-          return photoData
-        })
-      )
+    let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
+    
+    const photoData = await handleUpload([singleFile])
+    
+    if (photoData && photoData[0]) {
+      gig_photo = photoData[0].url,
+      gig_cloudinary_id = photoData[0].public_id
 
-      const photoUrls = uploadResults.map(result => result.url)
-      const photoIds = uploadResults.map(result => result.public_id)
-
-      if (photoUrls.length > 0 && photoIds.length > 0) {
-        gig_photos = photoUrls
-        gig_cloudinary_ids = photoIds
-      }
-
-      if (gig_photo && gig_cloudinary_id) {
-        dispatch(addImage({
-          gig_photo,
-          gig_cloudinary_id
-        }))
-      }
-
-      if ((gig_photos && gig_photos.length > 0) && (gig_cloudinary_ids && gig_cloudinary_ids.length > 0)) {
-        dispatch(addImages({
-          gig_photos,
-          gig_cloudinary_ids
-        }))
-      }
-
-    } catch (error) {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
-
-      dispatch(showToast({
-        message: errorMessage,
-        type: 'error'
+      dispatch(addImage({
+        gig_photo,
+        gig_cloudinary_id
       }))
 
-    } finally {
-      setUploading(false)
+      setSingleFile(null)
+    }
+  
+    const uploadResults = await handleUpload(Array.from(files))
+    if (uploadResults) {
+      gig_photos = uploadResults.map(res => res.url),
+      gig_cloudinary_ids = uploadResults.map(res => res.public_id)
+
+      dispatch(addImages({
+        gig_photos,
+        gig_cloudinary_ids
+      }))
+
+      setFiles(null)
     }
   }
 
@@ -210,14 +189,29 @@ const AddGig: React.FC = () => {
                   type='file'
                   onChange={(e) => handleImageChange(1, e)}
                 />
+                {gigInfo.gig_photo && <div className='add-gig__image' >
+                  <img src={gigInfo.gig_photo} alt='gig photo' />
+                </div>}
                 <label htmlFor=''>Introductory Images (Max: 5)</label>
                 <input
                   type='file'
                   multiple
                   onChange={(e) => handleImageChange(5, e)}
                 />
+                {gigInfo.gig_photos.length > 0 && <div className='add-gig__image' >
+                  {gigInfo.gig_photos.map((image: string) => (
+                    <img key={image} src={image} alt='gig photo' />
+                  ))}
+                </div>}
               </div>
-              <button onClick={handleUpload} className="button button--filled" >
+              <button
+                onClick={handleUploadFiles}
+                className='button button--filled'
+                disabled={
+                  !singleFile ||
+                  !files
+                }
+              >
                 {uploading ? 'Uploading' : 'Upload'}
               </button>
             </div>
@@ -245,7 +239,7 @@ const AddGig: React.FC = () => {
             <label htmlFor=''>Add Features</label>
             <form action='' className='add-gig__add-btn' onSubmit={handleFeatureChange}>
               <input type='text' placeholder='e.g. page design' />
-              <button type='submit' className="button button--filled" >
+              <button type='submit' className='button button--filled' >
                 add
               </button>
             </form>

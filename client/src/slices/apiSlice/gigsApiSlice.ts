@@ -46,7 +46,8 @@ export const gigsApiSlice = apiSlice.injectEndpoints({
     getSingleGig: builder.query<IGig, string | undefined>({
       query: (gigId) => ({
         url: `${GIGS_URL}/single/${gigId}`
-      })
+      }),
+      providesTags: ['Gigs']
     }),
     deleteGig: builder.mutation<void, string>({
       query: (id) => ({

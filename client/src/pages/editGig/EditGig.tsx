@@ -4,10 +4,10 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { useGetSingleGigQuery, useUpdateGigMutation } from '../../slices/apiSlice/gigsApiSlice'
 import { changeGigInput, addImage, addImages, addFeature, removeFeature, resetGig, IGigState } from '../../slices/gigSlice'
-import { ApiError, AxiosError } from '../../slices/apiSlice'
+import { ApiError } from '../../slices/apiSlice'
 import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { uploadImage }  from '../../utils/handleImage'
+import useUpload from '../../hooks/useUpload'
 import { Loader, ErrorIcon } from '../../components/icons'
 import './EditGig.scss'
 
@@ -21,7 +21,8 @@ const EditGig: React.FC = () => {
 
   const [singleFile, setSingleFile] = useState<File | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
-  const [uploading, setUploading] = useState(false)
+  
+  const { uploading, handleUpload } = useUpload()
 
   const gigInfo = useSelector((state: RootState) => state.gig)
 
@@ -46,25 +47,30 @@ const EditGig: React.FC = () => {
   const handleImageChange = (fileLimit: number, event: React.ChangeEvent<HTMLInputElement>) => {
     if (fileLimit === 0) {
       return
-
-    } else if (fileLimit === 1) {
-      setSingleFile(event.target.files ? event.target.files[0] : null)
-
-    } else {
-      const dataTransfer = new DataTransfer()
-      const files = Array.from(event.target.files || [])
-      
-      files.slice(0, fileLimit)
-      files.forEach(file => dataTransfer.items.add(file))
-      setFiles(dataTransfer.files)
-
-      if (files.length > fileLimit) {
-        dispatch(showToast({
-          message: `You can upload up to ${fileLimit} images.`,
-          type: 'warning'
-        }))
-      }
     }
+    
+    if (fileLimit === 1) {
+      setSingleFile(event.target.files ? event.target.files[0] : null)
+      return
+    } 
+    
+    const dataTransfer = new DataTransfer()
+    const files = Array.from(event.target.files || [])
+    
+    if (files.length === 0) {
+      setFiles(null)
+    }
+
+    if (files.length > fileLimit) {
+      dispatch(showToast({
+        message: `You can upload up to ${fileLimit} images.`,
+        type: 'warning'
+      }))
+    }
+
+    files.slice(0, fileLimit)
+    files.forEach(file => dataTransfer.items.add(file))
+    setFiles(dataTransfer.files)
   }
   
   const handleFeatureChange = (e: FormEvent<HTMLFormElement>) => {
@@ -82,65 +88,44 @@ const EditGig: React.FC = () => {
     dispatch(removeFeature(feature))
   }
 
-  const handleUpload = async () => {
-    setUploading(true)
+  const handleUploadFiles = async () => {
+    if (!singleFile && !files) {
+      dispatch(showToast({
+        message: 'Please add files first',
+        type: 'warning'
+      }))
+    }
 
-    try {
-      let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
+    let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
+
+    if (singleFile) {
+      const photoData = await handleUpload([singleFile])
+      if (photoData && photoData[0]) {
+        gig_photo = photoData[0].url,
+        gig_cloudinary_id = photoData[0].public_id
   
-      if (singleFile) {
-        const photoData = await uploadImage(singleFile)
-        if (photoData) {
-          gig_photo = photoData.url
-          gig_cloudinary_id = photoData.public_id
-        }
-      }
-  
-      if (gig_photo && gig_cloudinary_id) {
         dispatch(addImage({
           gig_photo,
           gig_cloudinary_id
         }))
+  
+        setSingleFile(null)
       }
+    }
 
-      if (files) {
-        const uploadResults = await Promise.all(
-          Array.from(files).map(async (file) => {
-            const photoData = await uploadImage(file)
-            if (photoData === undefined) {
-              throw new Error(`Failed to upload file: ${file.name}`)
-            }
-            return photoData
-          })
-        )
+    if (files) {
+      const uploadResults = await handleUpload(Array.from(files))
+      if (uploadResults) {
+        gig_photos = uploadResults.map(res => res.url),
+        gig_cloudinary_ids = uploadResults.map(res => res.public_id)
 
-        const photoUrls = uploadResults.map(result => result.url)
-        const photoIds = uploadResults.map(result => result.public_id)
-
-        if (photoUrls.length > 0 && photoIds.length > 0) {
-          gig_photos = photoUrls
-          gig_cloudinary_ids = photoIds
-        }
-      }
-
-      if ((gig_photos && gig_photos.length > 0) && (gig_cloudinary_ids && gig_cloudinary_ids.length > 0)) {
         dispatch(addImages({
           gig_photos,
           gig_cloudinary_ids
         }))
+
+        setFiles(null)
       }
-
-    } catch (error) {
-      const axiosError = error as AxiosError
-      const errorMessage = axiosError.response?.data?.message || 'Upload file(s) failed'
-
-      dispatch(showToast({
-        message: errorMessage,
-        type: 'error'
-      }))
-      
-    } finally {
-      setUploading(false)
     }
   }
 
@@ -219,23 +204,27 @@ const EditGig: React.FC = () => {
                     type='file'
                     onChange={(e) => handleImageChange(1, e)}
                   />
-                  {!singleFile && <div className='images_img' >
-                    <img src={data?.gig_photo} alt='' />
-                  </div>}
+                  <div className='edit-gig__image' >
+                    <img
+                      src={gigInfo.gig_photo ? gigInfo.gig_photo : data?.gig_photo}
+                      alt='gig photo' />
+                  </div>
                   <label htmlFor=''>Introductory Images (Max: 5)</label>
                   <input
                     type='file'
                     multiple
                     onChange={(e) => handleImageChange(5, e)}
                   />
-                  {!files && <div className='images_img' >
-                    {data?.gig_photos?.map((image: string) => (
-                      <img key={image} src={image} alt='' />
+                  <div className='edit-gig__image'>
+                    {(gigInfo.gig_photos.length > 0 ?
+                      gigInfo.gig_photos : 
+                      data?.gig_photos)?.map((image: string) => (
+                      <img key={image} src={image} alt='gig photo' />
                     ))}
-                  </div>}
+                  </div>
                 </div>
                 <button
-                  onClick={handleUpload}
+                  onClick={handleUploadFiles}
                   disabled={
                     !singleFile &&
                     !files
@@ -273,7 +262,9 @@ const EditGig: React.FC = () => {
                 </button>
               </form>
               <div className='edit-gig__features'>
-                {data?.features?.map((f, i) => (
+                {(gigInfo.features.length > 0 ?
+                  gigInfo.features : 
+                  data?.features)?.map((f, i) => (
                   <div className='item' key={`${f}-${i}`}>
                     <button
                       onClick={() => handleRemoveFeature(f)}

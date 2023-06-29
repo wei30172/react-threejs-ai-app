@@ -62,6 +62,17 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+
+            .add-gig__image {
+              display: flex;
+              gap: 10px;
+              flex-wrap: wrap;
+              img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+              }
+            }
           }
         }
 
