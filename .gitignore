@@ -4,4 +4,3 @@ build
 .vscode
 dist
 .gitignore
-_redirects
