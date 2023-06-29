@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import { v2 as cloudinary } from 'cloudinary'
 import dotenv from 'dotenv'
 import connectDB from './config/db'
 import cookieParser from 'cookie-parser'
@@ -17,6 +18,13 @@ import postRoutes from './routes/post.routes'
 import dalleRoutes from './routes/dalle.routes'
 
 dotenv.config()
+
+// Create a new instance of Cloudinary API
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 const port = process.env.PORT || '5000'
 
