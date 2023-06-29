@@ -7,7 +7,7 @@ import { useRegisterMutation, IUserRegister } from '../../slices/apiSlice/authAp
 import { ApiError } from '../../slices/apiSlice'
 import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { uploadImage }  from '../../utils/handleImage'
+import useUpload from '../../hooks/useUpload'
 import { FormInput } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Register.scss'
@@ -16,6 +16,7 @@ const Register: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   
+  const { userInfo } = useSelector((state: RootState) => state.auth)
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUserRegister>({
@@ -30,7 +31,7 @@ const Register: React.FC = () => {
     user_cloudinary_id: '',
   })
 
-  const { userInfo } = useSelector((state: RootState) => state.auth)
+  const { uploading, handleUpload } = useUpload()
 
   const [register, { isLoading }] = useRegisterMutation()
 
@@ -88,7 +89,7 @@ const Register: React.FC = () => {
       errorMessage: 'Address is required',
       name: 'address',
       type: 'text',
-      placeholder: 'Address',
+      placeholder: 'Address', // todo
       required: true
     },
     {
@@ -97,8 +98,7 @@ const Register: React.FC = () => {
       errorMessage: 'Phone number should be 10 digits and start with 09',
       name: 'phone',
       type: 'text',
-      placeholder: '09xxxxxxxx',
-      pattern: '^09[0-9]{8}$',
+      placeholder: 'Phone', // todo
       required: true
     }
   ]
@@ -128,17 +128,21 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
+    let updatedUser = user
+
     try {
-      let photoData: { url: string, public_id: string } | undefined
       if (file) {
-        photoData = await uploadImage(file)
+        const photoData = await handleUpload([file])
+        if (photoData && photoData[0]) {
+          updatedUser = {
+            ...user,
+            user_photo: photoData[0].url,
+            user_cloudinary_id: photoData[0].public_id
+          }
+        }
       }
 
-      await register({
-        ...user,
-        user_photo: photoData?.url || '',
-        user_cloudinary_id: photoData?.public_id || ''
-      }).unwrap()
+      await register(updatedUser).unwrap()
       
       dispatch(showToast({
         message: 'User has been created please login. To the home page in 5 seconds...',
@@ -197,12 +201,13 @@ const Register: React.FC = () => {
               !user.confirmPassword ||
               !user.address ||
               !user.phone ||
-              isLoading
+              isLoading ||
+              uploading
             }
             className='button button--filled'
             type='submit'
           >
-            {isLoading ? <Loader /> : 'Register'}
+            {isLoading || uploading ? <Loader /> : 'Register'}
           </button>
           <div className='register__navigation flex-center'>
             <p>Already have an account?</p>

@@ -90,7 +90,7 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: order.price * 100,
-      currency: 'twd',
+      currency: 'USD', // todo
       metadata: { orderId: order._id.toString() }
     })
 

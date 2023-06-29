@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useUpdateUserProfileMutation, IUserProfile } from '../../slices/apiSlice/usersApiSlice'
-import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
 import { ApiError } from '../../slices/apiSlice'
-import { logout } from '../../slices/authSlice'
+import { login } from '../../slices/authSlice'
 import { showToast } from '../../slices/toastSlice'
 import { RootState } from '../../store'
-import { uploadImage }  from '../../utils/handleImage'
+import useUpload from '../../hooks/useUpload'
 import { FormInput } from '../../components'
 import { PreviewIcon, Loader } from '../../components/icons'
 import './Profile.scss'
@@ -15,6 +14,8 @@ import './Profile.scss'
 const Profile: React.FC = () => {
   const dispatch = useDispatch()
   
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
   const [user, setUser] = useState<IUserProfile>({
@@ -25,10 +26,9 @@ const Profile: React.FC = () => {
     user_cloudinary_id: ''
   })
 
-  const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation()
-  const [logoutApiCall] = useLogoutMutation()
+  const { uploading, handleUpload } = useUpload()
 
-  const { userInfo } = useSelector((state: RootState) => state.auth)
+  const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation()
 
   const formInputs = [
     {
@@ -84,30 +84,31 @@ const Profile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    let updatedUser = user
+
     try {
       if (file !== null) {
-        const photoData = await uploadImage(file)
-        await updateUserProfile({
-          ...user,
-          user_photo: photoData?.url || '',
-          user_cloudinary_id: photoData?.public_id || ''
-        }).unwrap()
-
-      } else {
-        await updateUserProfile(user).unwrap()
+        const photoData = await handleUpload([file])
+        if (photoData && photoData[0]) {
+          updatedUser = {
+            ...user,
+            user_photo: photoData[0].url,
+            user_cloudinary_id: photoData[0].public_id
+          }
+        }
       }
+
+      const res = await updateUserProfile(updatedUser).unwrap()
       
-      await logoutApiCall().unwrap()
+      dispatch(login({ ...res }))
       
       dispatch(showToast({
-        message: 'User has been updated. Please login again',
+        message: 'User has been updated',
         type: 'success'
       }))
-      
-      dispatch(logout())
     } catch (error) {
       const apiError = error as ApiError
-      const errorMessage = apiError.data?.message || 'Register failed'
+      const errorMessage = apiError.data?.message || 'Update failed'
       
       dispatch(showToast({
         message: errorMessage,
@@ -140,13 +141,11 @@ const Profile: React.FC = () => {
               :<PreviewIcon />}
         </div>
         <button
-          disabled={
-            isLoading
-          }
+          disabled={isLoading || uploading}
           className='button button--filled'
           type='submit'
         >
-          {isLoading ? <Loader /> : 'Update'}
+          {isLoading || uploading ? <Loader /> : 'Update'}
         </button>
       </form>
     </section>

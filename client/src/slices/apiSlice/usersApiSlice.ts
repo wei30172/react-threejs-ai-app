@@ -1,4 +1,5 @@
 import { apiSlice } from '.'
+import { AuthState } from '../authSlice'
 
 export interface IUserInfo {
   username: string
@@ -24,7 +25,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User']
     }),
-    updateUserProfile: builder.mutation<IUserInfo, IUserProfile>({
+    updateUserProfile: builder.mutation<AuthState, IUserProfile>({
       query: (userData) => ({
         url: `${USERS_URL}/profile`,
         method: 'PUT',
