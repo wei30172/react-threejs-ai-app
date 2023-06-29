@@ -72,12 +72,13 @@
         }
       }
 
-      button {
+      .btn {
         padding: 10px 20px;
         font-size: 0.875rem;
         color: colors.$white;
         border:  1px solid colors.$white;
         background-color: transparent;
+        border-radius: 2px;
         cursor: pointer;
 
         &:hover {
@@ -93,11 +94,15 @@
     color: colors.$text-primary;
 
     .container {
-      .links {
-        button {
-          background-color: colors.$white;
-          color: colors.$primary;
-          border: 1px solid colors.$primary;
+      .navbar__links {
+        .btn {
+          color: colors.$text-primary;
+          border:  1px solid colors.$text-primary;
+          background-color: transparent;
+          &:hover {
+            color: colors.$white;
+            background-color: colors.$text-primary;
+          }
         }
       }
     }
