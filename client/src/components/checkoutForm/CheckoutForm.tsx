@@ -8,7 +8,7 @@ import {
 import { Loader } from '../../components/icons'
 import './CheckoutForm.scss'
 
-const RETURN_URL = import.meta.env.VITE_APP_CLIENT_URL as string || 'http://localhost:5173/success'
+const RETURN_URL = `${import.meta.env.VITE_APP_CLIENT_URL as string}/success` || 'http://localhost:5173/success'
 
 const CheckoutForm: React.FC = () => {
   const stripe = useStripe()
