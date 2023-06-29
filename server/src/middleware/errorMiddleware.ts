@@ -9,14 +9,8 @@ const notFound = (req: Request, res: Response, next: NextFunction) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-  let statusCode = res.statusCode === HttpStatusCode.OK ? HttpStatusCode.INTERNAL_SERVER_ERROR : res.statusCode
-  let message = err.message
-
-  // If Mongoose not found error, set to 404 and change message
-  if (err.name === 'CastError' && 'kind' in err && err.kind === 'ObjectId') {
-    statusCode = HttpStatusCode.NOT_FOUND
-    message = 'Resource not found'
-  }
+  const statusCode = res.statusCode === HttpStatusCode.OK ? HttpStatusCode.INTERNAL_SERVER_ERROR : res.statusCode
+  const message = err.message
 
   res.status(statusCode).json({
     message: message,
