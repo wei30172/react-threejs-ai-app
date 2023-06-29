@@ -28,7 +28,7 @@ const store = configureStore<RootState>({
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware) as any,
-  devTools: (import.meta.env.VITE_NODE_ENV as string) === 'development' // todo
+  devTools: (import.meta.env.VITE_ENV as string) === 'development' // todo
 })
 
 export type AppDispatch = typeof store.dispatch
