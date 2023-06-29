@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { ToastProps } from '../components/toast/Toast'
+
+type ToastProps = {
+  message: string;
+  isVisible: boolean;
+  type?: 'success' | 'error' | 'warning';
+};
 
 export const useToast = (initialState: ToastProps = { message: '', isVisible: false }) => {
   const [toastConfig, setToastConfig] = useState(initialState)
