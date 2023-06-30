@@ -103,7 +103,7 @@ const Profile: React.FC = () => {
       dispatch(login({ ...res }))
       
       dispatch(showToast({
-        message: 'User has been updated',
+        message: 'Profile has been updated',
         type: 'success'
       }))
     } catch (error) {
