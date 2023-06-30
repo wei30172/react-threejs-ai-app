@@ -42,19 +42,25 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-gigs',
-        element: <PrivateRoute />,
+        element: <AdminRoute />,
         children: [
           {
             path: '',
-            element: <MyGigs />
-          },
-          {
-            path: 'add-gig',
-            element: <AddGig />
-          },
-          {
-            path: 'edit-gig/:gigId',
-            element: <EditGig />
+            element: <PrivateRoute />,
+            children: [
+              {
+                path: '',
+                element: <MyGigs />
+              },
+              {
+                path: 'add-gig',
+                element: <AddGig />
+              },
+              {
+                path: 'edit-gig/:gigId',
+                element: <EditGig />
+              }
+            ]
           }
         ]
       },
