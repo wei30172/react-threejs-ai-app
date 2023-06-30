@@ -26,7 +26,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-const port = process.env.PORT || '5000'
+const port = process.env.PORT || '8080'
 
 const startServer = async () => {
   const mongoDbUrl = process.env.MONGODB_URL
