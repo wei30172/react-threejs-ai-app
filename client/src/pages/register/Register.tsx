@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 // import { ChangeEvent, useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useRegisterMutation, IUserRegister } from '../../slices/apiSlice/authApiSlice'
@@ -16,6 +16,8 @@ const Register: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   
+  const location = useLocation()
+
   const { userInfo } = useSelector((state: RootState) => state.auth)
   const [file, setFile] = useState<File | null>(null)
   const [previewURL, setPreviewURL] = useState<string | null>(null)
@@ -37,9 +39,9 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate('/')
+      navigate(location.state?.from || '/')
     }
-  }, [navigate, userInfo])
+  }, [navigate, userInfo, location.state?.from])
   
   const formInputs = [
     {
@@ -145,13 +147,13 @@ const Register: React.FC = () => {
       await register(updatedUser).unwrap()
       
       dispatch(showToast({
-        message: 'User has been created please login. To the home page in 5 seconds...',
+        message: 'User has been created please login. To the home page in 3 seconds...',
         type: 'success'
       }))
       
       setTimeout(() => {
         navigate('/')
-      }, 5000)
+      }, 3000)
 
     } catch (error) {
       const apiError = error as ApiError

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useLogoutMutation } from '../../slices/apiSlice/authApiSlice'
@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const { pathname } = useLocation()
 
   const { userInfo } = useSelector((state: RootState) => state.auth)
-
+  
   const [active, setActive] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
     try {
       await logoutApiCall().unwrap()
       dispatch(logout())
-      navigate('/login')
+      navigate('/')
       
     } catch (error) {
       const apiError = error as ApiError
@@ -97,8 +97,20 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <>
-              <Link to='/login' className='link'>Sign in</Link>
-              <Link to='/register' className='link btn' >Join</Link>
+              <Link
+                to='/login'
+                state={{from: pathname}}
+                className='link'
+              >
+                Log in
+              </Link>
+              <Link
+                to='/register'
+                state={{from: pathname}}
+                className='link btn'
+              >
+                Join
+              </Link>
             </>
           )}
         </div>

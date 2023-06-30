@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useLocation, useParams, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useGetSingleGigQuery } from '../../slices/apiSlice/gigsApiSlice'
@@ -17,6 +17,8 @@ const Gig: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const { pathname } = useLocation()
+
   const [showCheckOut, setShowCheckOut] = useState(false)
 
   const { gigId } = useParams()
@@ -25,7 +27,8 @@ const Gig: React.FC = () => {
 
   const orderInfo = useSelector((state: RootState) => state.order)
   const designInfo = useSelector((state: RootState) => state.design)
-
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+  
   useEffect(() => {
     if (gigId) dispatch(changeOrderInput({field: 'gigId', value: gigId}))
   }, [gigId, dispatch])
@@ -41,13 +44,13 @@ const Gig: React.FC = () => {
       setShowCheckOut(false)
 
       dispatch(showToast({
-        message: 'Created order successfully, To the Order page in 5 seconds...',
+        message: 'Created order successfully, To the Order page in 3 seconds...',
         type: 'success'
       }))
       
       setTimeout(() => {
         navigate('/orders')
-      }, 5000)
+      }, 3000)
 
     } catch (error) {
       const apiError = error as ApiError
@@ -97,8 +100,20 @@ const Gig: React.FC = () => {
             </span>
             {showCheckOut && gigId &&  !isCreatingOrder &&
               <>
-                <Recipient />
-                <UploadPreview handleCheckout={handleCheckout}/>
+                {userInfo 
+                  ? <>
+                    <Recipient />
+                    <UploadPreview handleCheckout={handleCheckout}/>
+                  </>
+                  : 
+                  <div className='gig__navigation'>
+                    <p>Please <Link to='/login' state={{from: pathname}}>
+                      <button className='cursor-pointer'>
+                        Login
+                      </button>
+                    </Link> to proceed with your order.</p>
+                  </div>
+                }
               </>
             }
             {isCreatingOrder && <Loader />}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { useLoginMutation, IUserLogin } from '../../slices/apiSlice/authApiSlice'
@@ -15,6 +15,10 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const location = useLocation()
+  
+  const { userInfo } = useSelector((state: RootState) => state.auth)
+
   const [user, setUser] = useState<IUserLogin>({
     email: '',
     password: ''
@@ -22,13 +26,11 @@ const Login: React.FC = () => {
 
   const [loginApiCall, { isLoading }] = useLoginMutation()
 
-  const { userInfo } = useSelector((state: RootState) => state.auth)
-
   useEffect(() => {
     if (userInfo) {
-      navigate('/')
+      navigate(location.state?.from || '/')
     }
-  }, [navigate, userInfo])
+  }, [navigate, userInfo, location.state?.from])
 
   const formInputs = [
     {
