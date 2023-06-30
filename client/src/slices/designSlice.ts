@@ -16,7 +16,7 @@ interface SetDesignPayload<T extends keyof IDesignState> {
 }
 
 const initialState: IDesignState = {
-  color: '#DB8091',
+  color: '#dbab80',
   isLogoTexture: true,
   isFullTexture: false,
   logoDecal_photo: '/img/design.jpg',
