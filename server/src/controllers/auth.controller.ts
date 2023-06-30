@@ -82,8 +82,9 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     res
       .cookie('accessToken', token, {
         httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         secure: process.env.NODE_ENV !== 'development', // todo: Use secure cookies in production
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        sameSite: 'none'
       })
       .status(HttpStatusCode.OK)
       .json(info)
