@@ -76,6 +76,21 @@
         padding: 10px;
       }
 
+      .gig__navigation {
+        gap: 10px;
+
+        p {
+          color: colors.$dark-600;
+          font-size: 18px;
+        }
+
+        button {
+          background-color: inherit;
+          text-decoration: underline;
+          padding: 0;
+        }
+      }
+      
       .loader {
         margin: 0 auto;
       }

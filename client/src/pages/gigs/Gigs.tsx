@@ -65,7 +65,7 @@ const Gigs: React.FC = () => {
             )}
           </div>
         </div>
-        <div className='cards'>
+        <div className='gigs__cards'>
           {isLoading 
             ? <Loader />
             : error 

@@ -92,7 +92,7 @@
       }
     }
 
-    .cards {
+    .gigs__cards {
       display: flex;
       justify-content: center;
       flex-direction: column;
@@ -114,7 +114,7 @@
           }
         }
       }
-      .cards {
+      .gigs__cards {
         flex-direction: row;
         flex-wrap: wrap;
       }

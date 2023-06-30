@@ -83,6 +83,12 @@ table {
     background-color: colors.$white;
     color: colors.$primary;
     border: 1px solid colors.$primary;
+
+    &:disabled {
+      opacity: 0.5;
+      color: colors.$primary;
+      cursor: not-allowed;
+    }
   }
 }
 
