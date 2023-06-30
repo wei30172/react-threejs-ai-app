@@ -46,8 +46,7 @@ const Recipient: React.FC = () => {
       errorMessage: 'Phone number should be 10 digits and start with 09',
       name: 'phone',
       type: 'text',
-      placeholder: '09xxxxxxxx',
-      pattern: '^09[0-9]{8}$',
+      placeholder: 'Phone',
       required: true
     }
   ]

@@ -146,13 +146,13 @@ const EditGig: React.FC = () => {
       dispatch(resetGig())
       
       dispatch(showToast({
-        message: 'Update gig successfully, To the My Gigs page in 5 seconds...',
+        message: 'Update gig successfully, To the My Gigs page in 3 seconds...',
         type: 'success'
       }))
       
       setTimeout(() => {
         navigate('/my-gigs')
-      }, 5000)
+      }, 3000)
 
     } catch (error) {
       const apiError = error as ApiError
