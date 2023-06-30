@@ -102,7 +102,7 @@ export const getUserProfile = async (req: IRequest, res: Response, next: NextFun
 }
 
 // @desc    Check if User is Admin
-// @route   GET /api/users/isadmin
+// @route   GET /api/users/isAdmin
 // @access  Private
 export const isAdminUser = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   try {

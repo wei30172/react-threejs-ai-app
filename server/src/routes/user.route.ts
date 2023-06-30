@@ -8,7 +8,7 @@ router.route('/profile')
   .get(verifyToken, getUserProfile)
   .delete(verifyToken, deleteUser)
   .put(verifyToken, updateUserProfile)
-router.get('/isadmin', verifyToken, isAdminUser)
+router.get('/isAdmin', verifyToken, isAdminUser)
 router.get('/:id', getUserInfoById)
 
 export default router
