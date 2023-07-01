@@ -1,6 +1,6 @@
 ## ## Creative Custom T-Shirt Storefront
 
-A Company developed using React, Redux Toolkit, React Three Fiber, Stripe, TypeScript, and Sass.
+A Website developed using React, Redux Toolkit, React Three Fiber, Stripe, TypeScript, and Sass.
 1. User interaction with OpenAI: Users can provide prompts that OpenAI processes to generate and return images (Currently available to administrators only), which are then stored in a gallery.
 2. T-shirt visualization through Three.js: Leveraging Three.js technology, users can simulate T-shirt styles on a 3D model, with patterns and base colors of their own design.
 3. Checkout and payment via Stripe: Upon completing their T-shirt design, users can checkout and make payments through Stripe.
