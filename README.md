@@ -1,4 +1,4 @@
-## ## Creative Custom T-Shirt Storefront
+## Creative Custom T-Shirt Storefront
 
 A Website developed using React, Redux Toolkit, React Three Fiber, Stripe, TypeScript, and Sass.
 1. User interaction with OpenAI: Users can provide prompts that OpenAI processes to generate and return images (Currently available to administrators only), which are then stored in a gallery.
