@@ -83,8 +83,8 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       .cookie('accessToken', token, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: process.env.NODE_ENV !== 'development', // todo: Use secure cookies in production
-        sameSite: 'none' // todo
+        secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+        sameSite: process.env.NODE_ENV !== 'development' ? 'none' : 'lax' // Use 'none' in production, 'lax' in development
       })
       .status(HttpStatusCode.OK)
       .json(info)
@@ -99,8 +99,8 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 export const logout = async (req: Request, res: Response): Promise<void> => {
   res
     .clearCookie('accessToken', {
-      secure: process.env.NODE_ENV !== 'development', // todo: Use secure cookies in production
-      sameSite: 'none' // todo
+      secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+      sameSite: process.env.NODE_ENV !== 'development' ? 'none' : 'lax' // Use 'none' in production, 'lax' in development
     })
     .status(HttpStatusCode.OK)
     .json({ message: 'User has been logged out'})
