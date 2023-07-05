@@ -23,7 +23,6 @@ const Tab: React.FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick })
     ? { borderColor: designInfo.color, borderWidth: 2 }
     : { borderColor: 'transparent'}
 
-
   return (
     <div
       key={tab.name}
@@ -34,7 +33,7 @@ const Tab: React.FC<TabProps> = ({ tab, isFilterTab, isActiveTab, handleClick })
       onClick={handleClick}
       style={activeStyles}
     >
-      <tab.icon/>
+      <tab.icon />
     </div>
   )
 }

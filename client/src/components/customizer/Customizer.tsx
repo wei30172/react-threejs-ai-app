@@ -138,7 +138,6 @@ const Customizer: React.FC = () => {
       fileReader(file)
         .then(result => {
           handleDecals(type, result as string)
-          setActiveEditorTab('')
         })
     }
   }

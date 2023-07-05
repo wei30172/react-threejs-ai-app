@@ -11,7 +11,7 @@ const CanvasModel: React.FC = () => {
     <Canvas
       shadows // Enable shadow mapping
       camera={{ position: [0, 0, 0], fov: 25 }} // Set the camera's position and field of view
-      className="canvas"
+      className='canvas'
       gl={{ preserveDrawingBuffer: true }}
       onCreated={({ gl }) => {
         gl.domElement.addEventListener('webglcontextlost', (event) => {

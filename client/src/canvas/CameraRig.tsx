@@ -20,7 +20,7 @@ const CameraRig: React.FC<CameraRigProps>  = ({ children } ) => {
     if (group.current) {
       easing.dampE(
         group.current.rotation,
-        [state.pointer.y / 5, -state.pointer.x / 2, 0],
+        [state.pointer.y / 5, -state.pointer.x * 2, 0],
         0.1,
         delta
       )
