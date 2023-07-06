@@ -175,11 +175,19 @@ const AddGig: React.FC = () => {
             
             {/* Price */}
             <label htmlFor=''>Price ($)</label>
-            <input type='number' onChange={handleChange} name='price' />
-            
+            <input
+              type='number'
+              name='price'
+              onChange={handleChange}
+            />
+
             {/* Delivery Time */}
             <label htmlFor=''>Delivery day(s)</label>
-            <input type='number' name='deliveryTime' onChange={handleChange} />
+            <input
+              type='number'
+              name='deliveryTime'
+              onChange={handleChange}
+            />
             
             {/* Images */}
             <div className='add-gig__images'>

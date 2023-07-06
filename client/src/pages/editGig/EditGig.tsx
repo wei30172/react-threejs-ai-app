@@ -177,7 +177,7 @@ const EditGig: React.FC = () => {
               <input
                 type='text'
                 name='title'
-                value={data?.title}
+                placeholder={data?.title}
                 onChange={handleChange}
               />
               
@@ -185,14 +185,17 @@ const EditGig: React.FC = () => {
               <label htmlFor=''>Price ($)</label>
               <input
                 type='number'
-                value={data?.price.toString()}
-                onChange={handleChange} name='price'
+                name='price'
+                placeholder={data?.price.toString()}
+                onChange={handleChange}
               />
+              
               {/* Delivery Time */}
               <label htmlFor=''>Delivery day(s)</label>
-              <input type='number'
+              <input
+                type='number'
                 name='deliveryTime'
-                value={data?.deliveryTime.toString()}
+                placeholder={data?.deliveryTime.toString()}
                 onChange={handleChange}
               />
               
@@ -241,7 +244,7 @@ const EditGig: React.FC = () => {
                 name='shortDesc'
                 rows={5}
                 id=''
-                value={data?.shortDesc}
+                placeholder={data?.shortDesc}
                 onChange={handleChange}
               ></textarea>
               <label htmlFor=''>Description</label>
@@ -249,7 +252,7 @@ const EditGig: React.FC = () => {
                 name='desc'
                 rows={8}
                 id=''
-                value={data?.desc}
+                placeholder={data?.desc}
                 onChange={handleChange}
               ></textarea>
               
