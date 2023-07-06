@@ -111,7 +111,7 @@ const Customizer: React.FC = () => {
   const handleDecals = (type: DecalTypeKey, result: string) => {
     const decalType = DecalTypes[type]
 
-    dispatch(setDesign({ field: `${decalType.stateProperty}_photo`, value: result }))
+    dispatch(setDesign({ field: `${decalType.stateProperty}Photo`, value: result }))
 
     if (!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab)
