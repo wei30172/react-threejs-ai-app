@@ -30,9 +30,7 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, postPhoto }) => {
 
   const [deleteImagePost, { isLoading: isDeletingPost }] = useDeleteImagePostMutation()
 
-  const handleDownloadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-
+  const handleDownloadImage = (): void => {
     downloadImage(postPhoto, `download-${_id}`)
   }
 
