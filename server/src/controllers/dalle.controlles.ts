@@ -37,7 +37,7 @@ export const generateDalleImage = async (req: Request, res: Response, next: Next
 
     res.status(HttpStatusCode.OK).json(image)
   } catch (err) {
-    console.error(`Error: ${err}`)
+    console.error(err)
     next(err)
   }
 }

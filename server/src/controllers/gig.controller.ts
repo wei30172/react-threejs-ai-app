@@ -131,7 +131,7 @@ export const updateGig = async (req: IRequest, res: Response, next: NextFunction
       }
     }
 
-    if (gigPhotos.length > 0 && gigCloudinaryIds > 0) {
+    if (gigPhotos.length > 0 && gigCloudinaryIds.length > 0) {
       if (gig.gigCloudinaryIds) {
         await Promise.all(gig.gigCloudinaryIds.map(async (id) => await deleteFromFolder(id)))
       }
@@ -142,7 +142,7 @@ export const updateGig = async (req: IRequest, res: Response, next: NextFunction
       'gigPhoto', 'gigPhotos', 'gigCloudinaryId', 'gigCloudinaryIds'
     ].reduce(
       (acc: Record<string, unknown>, key) => {
-        if ((key === 'features' || 'gigPhotos' || 'gigCloudinaryIds')
+        if ((key === 'features' || key === 'gigPhotos' || key === 'gigCloudinaryIds')
         && (!Array.isArray(req.body[key]) || req.body[key].length === 0)) {
           return acc
         }
