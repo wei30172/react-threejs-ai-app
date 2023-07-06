@@ -14,7 +14,7 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
     <div className='review'>
       {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='review__user'>
-          <img src={data?.user_photo || '/img/noavatar.jpg'} alt='User' />
+          <img src={data?.userPhoto || '/img/noavatar.jpg'} alt='User' />
           <span>{data?.username}</span>
         </div>
       )}

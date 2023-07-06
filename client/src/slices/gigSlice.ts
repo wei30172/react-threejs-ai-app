@@ -5,10 +5,10 @@ export interface IGigState {
   title: string
   desc: string
   price: number
-  gig_photo: string
-  gig_photos: string[]
-  gig_cloudinary_id: string
-  gig_cloudinary_ids: string[]
+  gigPhoto: string
+  gigPhotos: string[]
+  gigCloudinaryId: string
+  gigCloudinaryIds: string[]
   shortDesc: string
   deliveryTime: number
   features: string[]
@@ -24,10 +24,10 @@ const initialState: IGigState = {
   title: '',
   desc: '',
   price: 0,
-  gig_photo: '',
-  gig_photos: [],
-  gig_cloudinary_id: '',
-  gig_cloudinary_ids: [],
+  gigPhoto: '',
+  gigPhotos: [],
+  gigCloudinaryId: '',
+  gigCloudinaryIds: [],
   shortDesc: '',
   deliveryTime: 0,
   features: []
@@ -41,18 +41,18 @@ const gigSlice = createSlice({
       state[action.payload.field] = action.payload.value
     },
     addImage: (state, action: PayloadAction<{
-      gig_photo: string,
-      gig_cloudinary_id: string,
+      gigPhoto: string,
+      gigCloudinaryId: string,
     }>) => {
-      state.gig_photo = action.payload.gig_photo
-      state.gig_cloudinary_id = action.payload.gig_cloudinary_id
+      state.gigPhoto = action.payload.gigPhoto
+      state.gigCloudinaryId = action.payload.gigCloudinaryId
     },
     addImages: (state, action: PayloadAction<{
-      gig_photos: string[],
-      gig_cloudinary_ids: string[]
+      gigPhotos: string[],
+      gigCloudinaryIds: string[]
     }>) => {
-      state.gig_photos = action.payload.gig_photos
-      state.gig_cloudinary_ids = action.payload.gig_cloudinary_ids
+      state.gigPhotos = action.payload.gigPhotos
+      state.gigCloudinaryIds = action.payload.gigCloudinaryIds
     },
     addFeature: (state, action: PayloadAction<string>) => {
       state.features.push(action.payload)

@@ -7,8 +7,8 @@ export interface AuthState {
   address: string
   phone: string
   isAdmin: boolean
-  user_photo: string
-  user_cloudinary_id: string
+  userPhoto: string
+  userCloudinaryId: string
   createdAt?: string
   updatedAt?: string
 }

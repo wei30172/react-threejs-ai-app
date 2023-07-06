@@ -9,7 +9,7 @@ const Success: React.FC = () => {
 
   const { search } = useLocation()
   const params = new URLSearchParams(search)
-  const paymentIntent = params.get('payment_intent')
+  const paymentIntent = params.get('paymentIntent')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -24,7 +24,7 @@ const Success: React.FC = () => {
       }
 
       try {
-        await confirm({ payment_intent: paymentIntent }).unwrap()
+        await confirm({ paymentIntent: paymentIntent }).unwrap()
 
       } catch (error) {
         setErrorMessage('Failed to confirm payment. Please try again later.')

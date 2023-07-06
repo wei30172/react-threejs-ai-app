@@ -26,7 +26,7 @@ const Seller: React.FC<SellerProps> = ({ gigData }) => {
       <h2>Seller</h2>
       {isLoading ? <Loader /> : error ? <ErrorIcon /> : (
         <div className='seller__user'>
-          <img src={data?.user_photo || '/img/noavatar.jpg'} alt={`${data?.username}'s avatar`} />
+          <img src={data?.userPhoto || '/img/noavatar.jpg'} alt={`${data?.username}'s avatar`} />
           <div className='seller__info'>
             <span>{data?.username}</span>
             {averageStars > 0 && (

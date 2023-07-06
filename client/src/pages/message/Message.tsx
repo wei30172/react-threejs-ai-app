@@ -46,7 +46,7 @@ const Message: React.FC = () => {
             {data && data.map((m) => (
               <div className={m.userId === userInfo?._id ? 'item' : 'owner item'} key={m._id}>
                 <img
-                  src={userInfo?.user_photo}
+                  src={userInfo?.userPhoto}
                   alt=''
                 />
                 <p>{m.desc}</p>

@@ -19,7 +19,7 @@ const UserInfo: React.FC<{userId: string}> = ({ userId }) => {
 
   return (
     <div className='gig-card__user'>
-      <img src={userInfoData?.user_photo || '/img/noavatar.jpg'} alt='User' />
+      <img src={userInfoData?.userPhoto || '/img/noavatar.jpg'} alt='User' />
       <span>{userInfoData?.username}</span>
     </div>
   )
@@ -37,7 +37,7 @@ const GigCard: React.FC<GigCardProps> = ({ gigItem }) => {
   return (
     <Link to={`/gig/${gigItem._id}`} className='link'>
       <div className='gig-card'>
-        <img src={gigItem.gig_photo} alt='Gig Cover' />
+        <img src={gigItem.gigPhoto} alt='Gig Cover' />
         <div className='gig-card__info'>
           <UserInfo userId={gigItem.userId} />
           <p>{limitDescription(gigItem.desc)}</p>

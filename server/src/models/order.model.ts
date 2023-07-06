@@ -2,13 +2,13 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IOrder extends Document {
   gigId: string
-  gig_photo: string
+  gigPhoto: string
   title: string
   price: number
   sellerId: string
   buyerId: string
   isPaid: boolean
-  payment_intent: string
+  paymentIntent: string
   name: string
   email: string
   address: string
@@ -16,12 +16,12 @@ export interface IOrder extends Document {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
-  logoDecal_photo: string
-  fullDecal_photo: string
-  logoDecal_cloudinary_id: string
-  fullDecal_cloudinary_id: string
-  design_photo: string
-  design_cloudinary_id: string
+  logoDecalPhoto: string
+  fullDecalPhoto: string
+  logoDecalCloudinaryId: string
+  fullDecalCloudinaryId: string
+  designPhoto: string
+  designCloudinaryId: string
 }
 
 const OrderSchema: Schema = new Schema(
@@ -30,7 +30,7 @@ const OrderSchema: Schema = new Schema(
       type: String,
       required: true
     },
-    gig_photo: {
+    gigPhoto: {
       type: String,
       required: false
     },
@@ -54,7 +54,7 @@ const OrderSchema: Schema = new Schema(
       type: Boolean,
       default: false
     },
-    payment_intent: {
+    paymentIntent: {
       type: String,
       required: false
     },
@@ -86,27 +86,27 @@ const OrderSchema: Schema = new Schema(
       type: Boolean,
       required: true
     },
-    logoDecal_photo: {
+    logoDecalPhoto: {
       type: String,
       required: false
     },
-    fullDecal_photo: {
+    fullDecalPhoto: {
       type: String,
       required: false
     },
-    logoDecal_cloudinary_id: {
+    logoDecalCloudinaryId: {
       type: String,
       required: false
     },
-    fullDecal_cloudinary_id: {
+    fullDecalCloudinaryId: {
       type: String,
       required: false
     },
-    design_photo: {
+    designPhoto: {
       type: String,
       required: true
     },
-    design_cloudinary_id: {
+    designCloudinaryId: {
       type: String,
       required: true
     }

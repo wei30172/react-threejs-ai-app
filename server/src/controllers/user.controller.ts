@@ -12,7 +12,7 @@ const SALT_ROUNDS = 10
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateUserProfile = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
-  const { username, password: userInputPassword, user_photo, user_cloudinary_id } = req.body
+  const { username, password: userInputPassword, userPhoto, userCloudinaryId } = req.body
   
   try {
     const user = await User.findById(req.userId) as IUser
@@ -21,14 +21,14 @@ export const updateUserProfile = async (req: IRequest, res: Response, next: Next
       return next(createError(HttpStatusCode.NOT_FOUND, 'User not found'))
     }
 
-    if (user_photo && user_cloudinary_id) {
+    if (userPhoto && userCloudinaryId) {
       // Delete the image from Cloudinary
-      if (user.user_cloudinary_id) {
-        await deleteFromFolder(user.user_cloudinary_id)
+      if (user.userCloudinaryId) {
+        await deleteFromFolder(user.userCloudinaryId)
       }
 
-      user.user_photo = user_photo
-      user.user_cloudinary_id = user_cloudinary_id
+      user.userPhoto = userPhoto
+      user.userCloudinaryId = userCloudinaryId
     }
 
     if (username) {
@@ -50,8 +50,8 @@ export const updateUserProfile = async (req: IRequest, res: Response, next: Next
 
   } catch (err) {
     // Delete the image from Cloudinary
-    if (user_cloudinary_id) {
-      await deleteFromFolder(user_cloudinary_id)
+    if (userCloudinaryId) {
+      await deleteFromFolder(userCloudinaryId)
     }
     next(err)
   }
@@ -69,8 +69,8 @@ export const deleteUser = async (req: IRequest, res: Response, next: NextFunctio
     }
 
     // Delete the image from Cloudinary
-    if (user.user_cloudinary_id) {
-      await deleteFromFolder(user.user_cloudinary_id)
+    if (user.userCloudinaryId) {
+      await deleteFromFolder(user.userCloudinaryId)
     }
 
     await User.findByIdAndDelete(req.userId)
@@ -93,7 +93,7 @@ export const getUserProfile = async (req: IRequest, res: Response, next: NextFun
     }
 
     res.status(HttpStatusCode.OK).json({
-      user_photo: user.user_photo,
+      userPhoto: user.userPhoto,
       username: user.username
     })
   } catch (err) {
@@ -136,7 +136,7 @@ export const getUserInfoById = async (req: Request, res: Response, next: NextFun
     }
     
     res.status(HttpStatusCode.OK).json({
-      user_photo: user.user_photo,
+      userPhoto: user.userPhoto,
       username: user.username
     })
   } catch (err) {

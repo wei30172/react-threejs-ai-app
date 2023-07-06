@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
         <div className='navbar__links'>
           {userInfo ? (
             <div className='navbar__user flex-center cursor-pointer' onClick={() => setOpen(!open)}>
-              <img src={userInfo.user_photo || '/img/noavatar.jpg'} alt='avatar' />
+              <img src={userInfo.userPhoto || '/img/noavatar.jpg'} alt='avatar' />
               <span>{userInfo?.username}</span>
               {open && (
                 <div className='navbar__options'>

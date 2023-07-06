@@ -29,8 +29,8 @@ const Register: React.FC = () => {
     address: '',
     phone: '',
     isAdmin: false,
-    user_photo: '',
-    user_cloudinary_id: '',
+    userPhoto: '',
+    userCloudinaryId: '',
   })
 
   const { uploading, handleUpload } = useUpload()
@@ -138,8 +138,8 @@ const Register: React.FC = () => {
         if (photoData && photoData[0]) {
           updatedUser = {
             ...user,
-            user_photo: photoData[0].url,
-            user_cloudinary_id: photoData[0].public_id
+            userPhoto: photoData[0].url,
+            userCloudinaryId: photoData[0].public_id
           }
         }
       }

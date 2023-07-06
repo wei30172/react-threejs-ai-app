@@ -71,7 +71,7 @@ const Gig: React.FC = () => {
             <h1>{data?.title}</h1>
             <h2>About</h2>
             <p>{data?.desc}</p>
-            {data?.gig_photos && <Carousel carouselImages={data?.gig_photos} />}
+            {data?.gigPhotos && <Carousel carouselImages={data?.gigPhotos} />}
             <Demo />
             {/* {data && <Seller gigData={data} />} */}
             {/* {gigId && <Reviews gigId={gigId} />} */}

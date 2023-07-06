@@ -13,8 +13,8 @@ type CardProps = {
   _id: string
   name: string
   prompt: string
-  post_photo: string
-  post_cloudinary_id: string
+  postPhoto: string
+  postCloudinaryId: string
 }
 
 const Avatar: React.FC<{ name: string }> = ({ name }) => (
@@ -23,7 +23,7 @@ const Avatar: React.FC<{ name: string }> = ({ name }) => (
   </div>
 )
 
-const Card: React.FC<CardProps> = ({ _id, name, prompt, post_photo }) => {
+const Card: React.FC<CardProps> = ({ _id, name, prompt, postPhoto }) => {
   const dispatch = useDispatch()
 
   const { userInfo } = useSelector((state: RootState) => state.auth)
@@ -33,7 +33,7 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, post_photo }) => {
   const handleDownloadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    downloadImage(post_photo, `download-${_id}`)
+    downloadImage(postPhoto, `download-${_id}`)
   }
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +60,7 @@ const Card: React.FC<CardProps> = ({ _id, name, prompt, post_photo }) => {
 
   return (
     <div className='post-card'>
-      <img src={post_photo} alt={prompt} />
+      <img src={postPhoto} alt={prompt} />
       <div className='post-card__info'>
         <p className='post-card__promp'>{prompt}</p>
         <div className='post-card__detail'>

@@ -31,24 +31,24 @@ const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
 
     try {
       const designDataPromise = uploadCanvasImage()
-      const logoDecalDataPromise = designInfo.isLogoTexture ? uploadImageWithUrl(designInfo.logoDecal_photo, 'logoDecal') : null
-      const fullDecalDataPromise = designInfo.isFullTexture ? uploadImageWithUrl(designInfo.fullDecal_photo, 'fullDecal') : null
+      const logoDecalDataPromise = designInfo.isLogoTexture ? uploadImageWithUrl(designInfo.logoDecalPhoto, 'logoDecal') : null
+      const fullDecalDataPromise = designInfo.isFullTexture ? uploadImageWithUrl(designInfo.fullDecalPhoto, 'fullDecal') : null
 
       const [designData, logoDecalData, fullDecalData] = await Promise.all([designDataPromise, logoDecalDataPromise, fullDecalDataPromise])
 
       if (designData) {
-        dispatch(changeOrderInput({field: 'design_photo', value: designData.url}))
-        dispatch(changeOrderInput({field: 'design_cloudinary_id', value: designData.public_id}))
+        dispatch(changeOrderInput({field: 'designPhoto', value: designData.url}))
+        dispatch(changeOrderInput({field: 'designCloudinaryId', value: designData.public_id}))
       }
 
       if (logoDecalData) {
-        dispatch(setDesign({ field: 'logoDecal_photo', value: logoDecalData.url }))
-        dispatch(setDesign({ field: 'logoDecal_cloudinary_id', value: logoDecalData.public_id }))
+        dispatch(setDesign({ field: 'logoDecalPhoto', value: logoDecalData.url }))
+        dispatch(setDesign({ field: 'logoDecalCloudinaryId', value: logoDecalData.public_id }))
       }
 
       if (fullDecalData) {
-        dispatch(setDesign({ field: 'fullDecal_photo', value: fullDecalData.url }))
-        dispatch(setDesign({ field: 'fullDecal_cloudinary_id', value: fullDecalData.public_id }))
+        dispatch(setDesign({ field: 'fullDecalPhoto', value: fullDecalData.url }))
+        dispatch(setDesign({ field: 'fullDecalCloudinaryId', value: fullDecalData.public_id }))
       }
     } catch (err) {
       setError('Failed to upload image. Please try again.')
@@ -71,13 +71,13 @@ const UploadPreview: React.FC<UploadPreviewProps> = ({ handleCheckout }) => {
       }
       {error && <span className='error-message'>{error}</span>}
       <div  className='upload-preview__design'>
-        {orderInfo.design_photo ? <img src={orderInfo.design_photo} alt='preview' /> : <PreviewIcon />}
+        {orderInfo.designPhoto ? <img src={orderInfo.designPhoto} alt='preview' /> : <PreviewIcon />}
       </div>
       <button
         disabled={
           !isFormValid
-          || !orderInfo.design_photo
-          || !orderInfo.design_cloudinary_id
+          || !orderInfo.designPhoto
+          || !orderInfo.designCloudinaryId
         }
         className='button button--filled'
         onClick={handleCheckout}

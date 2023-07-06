@@ -12,7 +12,7 @@ const SALT_ROUNDS = 10
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { email, password, user_cloudinary_id } = req.body
+  const { email, password, userCloudinaryId } = req.body
 
   try {
     if (!email || !password) {
@@ -35,8 +35,8 @@ export const register = async (req: Request, res: Response, next: NextFunction):
     res.status(HttpStatusCode.CREATED).json({ message: 'User has been created please login.' })
   } catch (err) {
     // Delete the image from Cloudinary
-    if (user_cloudinary_id) {
-      await deleteFromFolder(user_cloudinary_id)
+    if (userCloudinaryId) {
+      await deleteFromFolder(userCloudinaryId)
     }
     next(err)
   }

@@ -7,8 +7,8 @@ export interface IUser extends Document {
   address: string
   phone: string
   isAdmin: boolean
-  user_photo?: string
-  user_cloudinary_id?: string
+  userPhoto?: string
+  userCloudinaryId?: string
 }
 
 const userSchema: Schema = new Schema({
@@ -37,14 +37,14 @@ const userSchema: Schema = new Schema({
     type: Boolean,
     default: false
   },
-  user_photo: {
+  userPhoto: {
     type: String,
     required: false
   },
-  user_cloudinary_id: {
+  userCloudinaryId: {
     type: String,
     required: false
-  },
+  }
 },{
   timestamps: true
 })

@@ -61,7 +61,7 @@ const MyGigs: React.FC = () => {
               {data && data.map((gig: IGig) => (
                 <tr key={gig._id}>
                   <td>
-                    <img className='image' src={gig.gig_photo} alt='' />
+                    <img className='image' src={gig.gigPhoto} alt='' />
                   </td>
                   <td>{gig.title}</td>
                   <td>{gig.price}</td>

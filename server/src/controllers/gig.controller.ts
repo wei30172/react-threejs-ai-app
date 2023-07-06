@@ -9,7 +9,7 @@ import { IRequest } from '../middleware/authMiddleware'
 // @route   POST /api/gigs
 // @access  Private
 export const createGig = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
-  const { gig_cloudinary_id, gig_cloudinary_ids } = req.body
+  const { gigCloudinaryId, gigCloudinaryIds } = req.body
   
   if (!req.isAdmin) {
     return next(createError(HttpStatusCode.FORBIDDEN, 'Only admin can create a gig!'))
@@ -25,11 +25,11 @@ export const createGig = async (req: IRequest, res: Response, next: NextFunction
     res.status(HttpStatusCode.CREATED).json(savedGig)
   } catch (err) {
     // Delete the image from Cloudinary
-    if (gig_cloudinary_id) {
-      await deleteFromFolder(gig_cloudinary_id)
+    if (gigCloudinaryId) {
+      await deleteFromFolder(gigCloudinaryId)
     }
-    if (gig_cloudinary_ids) {
-      await Promise.all(gig_cloudinary_ids.map(async (id: string) => await deleteFromFolder(id)))
+    if (gigCloudinaryIds) {
+      await Promise.all(gigCloudinaryIds.map(async (id: string) => await deleteFromFolder(id)))
     }
     next(err)
   }
@@ -95,11 +95,11 @@ export const deleteGig = async (req: IRequest, res: Response, next: NextFunction
     }
 
     // Delete the image from Cloudinary
-    if (gig.gig_cloudinary_id) {
-      await deleteFromFolder(gig.gig_cloudinary_id)
+    if (gig.gigCloudinaryId) {
+      await deleteFromFolder(gig.gigCloudinaryId)
     }
-    if (gig.gig_cloudinary_ids) {
-      await Promise.all(gig.gig_cloudinary_ids.map(async (id) => await deleteFromFolder(id)))
+    if (gig.gigCloudinaryIds) {
+      await Promise.all(gig.gigCloudinaryIds.map(async (id) => await deleteFromFolder(id)))
     }
 
     await Gig.findByIdAndDelete(req.params.id)
@@ -124,25 +124,25 @@ export const updateGig = async (req: IRequest, res: Response, next: NextFunction
       return next(createError(HttpStatusCode.FORBIDDEN, 'You can only update your gig'))
     }
 
-    const { gig_photo, gig_cloudinary_id, gig_photos, gig_cloudinary_ids} = req.body
-    if (gig_photo !== '' && gig_cloudinary_id !== '') {
-      if (gig.gig_cloudinary_id) {
-        await deleteFromFolder(gig.gig_cloudinary_id)
+    const { gigPhoto, gigCloudinaryId, gigPhotos, gigCloudinaryIds} = req.body
+    if (gigPhoto !== '' && gigCloudinaryId !== '') {
+      if (gig.gigCloudinaryId) {
+        await deleteFromFolder(gig.gigCloudinaryId)
       }
     }
 
-    if (gig_photos.length > 0 && gig_cloudinary_ids > 0) {
-      if (gig.gig_cloudinary_ids) {
-        await Promise.all(gig.gig_cloudinary_ids.map(async (id) => await deleteFromFolder(id)))
+    if (gigPhotos.length > 0 && gigCloudinaryIds > 0) {
+      if (gig.gigCloudinaryIds) {
+        await Promise.all(gig.gigCloudinaryIds.map(async (id) => await deleteFromFolder(id)))
       }
     }
 
     const updates = [
       'title', 'desc', 'price', 'shortDesc', 'deliveryTime', 'features',
-      'gig_photo', 'gig_photos', 'gig_cloudinary_id', 'gig_cloudinary_ids'
+      'gigPhoto', 'gigPhotos', 'gigCloudinaryId', 'gigCloudinaryIds'
     ].reduce(
       (acc: Record<string, unknown>, key) => {
-        if ((key === 'features' || 'gig_photos' || 'gig_cloudinary_ids')
+        if ((key === 'features' || 'gigPhotos' || 'gigCloudinaryIds')
         && (!Array.isArray(req.body[key]) || req.body[key].length === 0)) {
           return acc
         }

@@ -96,17 +96,17 @@ const EditGig: React.FC = () => {
       }))
     }
 
-    let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
+    let gigPhoto, gigPhotos, gigCloudinaryId, gigCloudinaryIds
 
     if (singleFile) {
       const photoData = await handleUpload([singleFile])
       if (photoData && photoData[0]) {
-        gig_photo = photoData[0].url,
-        gig_cloudinary_id = photoData[0].public_id
+        gigPhoto = photoData[0].url,
+        gigCloudinaryId = photoData[0].public_id
   
         dispatch(addImage({
-          gig_photo,
-          gig_cloudinary_id
+          gigPhoto,
+          gigCloudinaryId
         }))
   
         setSingleFile(null)
@@ -116,12 +116,12 @@ const EditGig: React.FC = () => {
     if (files) {
       const uploadResults = await handleUpload(Array.from(files))
       if (uploadResults) {
-        gig_photos = uploadResults.map(res => res.url),
-        gig_cloudinary_ids = uploadResults.map(res => res.public_id)
+        gigPhotos = uploadResults.map(res => res.url),
+        gigCloudinaryIds = uploadResults.map(res => res.public_id)
 
         dispatch(addImages({
-          gig_photos,
-          gig_cloudinary_ids
+          gigPhotos,
+          gigCloudinaryIds
         }))
 
         setFiles(null)
@@ -132,7 +132,7 @@ const EditGig: React.FC = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
 
-    if ((singleFile || files) && (!gigInfo.gig_photo || !gigInfo.gig_photos)) {
+    if ((singleFile || files) && (!gigInfo.gigPhoto || !gigInfo.gigPhotos)) {
       dispatch(showToast({
         message: 'Please upload selected files before updating gig',
         type: 'warning'
@@ -206,7 +206,7 @@ const EditGig: React.FC = () => {
                   />
                   <div className='edit-gig__image' >
                     <img
-                      src={gigInfo.gig_photo ? gigInfo.gig_photo : data?.gig_photo}
+                      src={gigInfo.gigPhoto ? gigInfo.gigPhoto : data?.gigPhoto}
                       alt='gig photo' />
                   </div>
                   <label htmlFor=''>Introductory Images (Max: 5)</label>
@@ -216,9 +216,9 @@ const EditGig: React.FC = () => {
                     onChange={(e) => handleImageChange(5, e)}
                   />
                   <div className='edit-gig__image'>
-                    {(gigInfo.gig_photos.length > 0 ?
-                      gigInfo.gig_photos : 
-                      data?.gig_photos)?.map((image: string) => (
+                    {(gigInfo.gigPhotos.length > 0 ?
+                      gigInfo.gigPhotos : 
+                      data?.gigPhotos)?.map((image: string) => (
                       <img key={image} src={image} alt='gig photo' />
                     ))}
                   </div>

@@ -7,16 +7,16 @@ import Order from '../models/order.model'
 import Gig from '../models/gig.model'
 import { IRequest } from '../middleware/authMiddleware'
 
-const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'design_photo', 'design_cloudinary_id']
+const requiredParams = ['name', 'email', 'address', 'phone', 'color', 'designPhoto', 'designCloudinaryId']
 
 // @desc    Create Order
 // @route   POST /api/orders
 // @access  Private
 export const createOrder =  async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   const {
-    logoDecal_cloudinary_id,
-    fullDecal_cloudinary_id,
-    design_cloudinary_id
+    logoDecalCloudinaryId,
+    fullDecalCloudinaryId,
+    designCloudinaryId
   } = req.body
 
   try {
@@ -33,12 +33,12 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
     }
 
     const newOrder = new Order({
-      gig_photo: gig.gig_photo,
+      gigPhoto: gig.gigPhoto,
       title: gig.title,
       price: gig.price,
       sellerId: gig.userId,
       isPaid: false,
-      payment_intent: '',
+      paymentIntent: '',
       ...req.body
     })
 
@@ -51,14 +51,14 @@ export const createOrder =  async (req: IRequest, res: Response, next: NextFunct
     res.status(HttpStatusCode.OK).json(newOrder)
   } catch (err) {
     // Delete the image from Cloudinary
-    if (logoDecal_cloudinary_id) {
-      await deleteFromFolder(logoDecal_cloudinary_id)
+    if (logoDecalCloudinaryId) {
+      await deleteFromFolder(logoDecalCloudinaryId)
     }
-    if (fullDecal_cloudinary_id) {
-      await deleteFromFolder(fullDecal_cloudinary_id)
+    if (fullDecalCloudinaryId) {
+      await deleteFromFolder(fullDecalCloudinaryId)
     }
-    if (design_cloudinary_id) {
-      await deleteFromFolder(design_cloudinary_id)
+    if (designCloudinaryId) {
+      await deleteFromFolder(designCloudinaryId)
     }
     next(err)
   }
@@ -98,7 +98,7 @@ export const intent = async (req: IRequest, res: Response, next: NextFunction): 
       return next(createError(HttpStatusCode.INTERNAL_SERVER_ERROR, 'Failed to create payment intent'))
     }
 
-    order.payment_intent = paymentIntent.id
+    order.paymentIntent = paymentIntent.id
 
     await order.save()
 
@@ -147,7 +147,7 @@ export const confirm = async (req: IRequest, res: Response, next: NextFunction):
   try {
     const stripe = getStripe()
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(req.body.payment_intent)
+    const paymentIntent = await stripe.paymentIntents.retrieve(req.body.paymentIntent)
     const orderId = paymentIntent.metadata.orderId // Get the order id from PaymentIntent metadata
 
     const order = await Order.findById(orderId)

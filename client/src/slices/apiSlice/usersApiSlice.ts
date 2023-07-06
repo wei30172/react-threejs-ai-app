@@ -3,15 +3,15 @@ import { AuthState } from '../authSlice'
 
 export interface IUserInfo {
   username: string
-  user_photo: string
+  userPhoto: string
 }
 
 export interface IUserProfile {
   username: string
   password: string
   confirmPassword: string
-  user_photo: string
-  user_cloudinary_id: string
+  userPhoto: string
+  userCloudinaryId: string
 }
 
 const USERS_URL = '/users'

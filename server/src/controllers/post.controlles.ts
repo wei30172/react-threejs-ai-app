@@ -39,8 +39,8 @@ export const createImagePost = async (req: Request, res: Response, next: NextFun
     const newImage = await Post.create({
       name,
       prompt,
-      post_photo: photoData.url,
-      post_cloudinary_id: photoData.public_id
+      postPhoto: photoData.url,
+      postCloudinaryId: photoData.public_id
     })
 
     res.status(HttpStatusCode.OK).json(newImage)
@@ -61,8 +61,8 @@ export const deleteImagePost = async (req: Request, res: Response, next: NextFun
     }
 
     // Delete the image from Cloudinary
-    if (post.post_cloudinary_id) {
-      await deleteFromFolder(post.post_cloudinary_id)
+    if (post.postCloudinaryId) {
+      await deleteFromFolder(post.postCloudinaryId)
     }
 
     await Post.findByIdAndDelete(req.params.id)

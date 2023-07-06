@@ -10,8 +10,8 @@ export interface IImagePost {
   _id: string
   name: string
   prompt: string
-  post_photo: string
-  post_cloudinary_id: string
+  postPhoto: string
+  postCloudinaryId: string
 }
 
 const POSTS_URL = '/imageposts'

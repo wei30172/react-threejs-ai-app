@@ -7,13 +7,13 @@ interface ICombinedState extends IOrderState, IDesignState {}
 export interface IOrder {
   _id: string
   gigId: string
-  gig_photo: string
+  gigPhoto: string
   title: string
   price: number
   sellerId: string
   buyerId: string
   isPaid: boolean
-  payment_intent: string
+  paymentIntent: string
   name: string
   email: string
   address: string
@@ -21,12 +21,12 @@ export interface IOrder {
   color: string
   isLogoTexture: boolean
   isFullTexture: boolean
-  logoDecal_photo: string
-  fullDecal_photo: string
-  logoDecal_cloudinary_id: string
-  fullDecal_cloudinary_id: string
-  design_photo: string
-  design_cloudinary_id: string
+  logoDecalPhoto: string
+  fullDecalPhoto: string
+  logoDecalCloudinaryId: string
+  fullDecalCloudinaryId: string
+  designPhoto: string
+  designCloudinaryId: string
   createdAt: string
 }
 
@@ -63,7 +63,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         url: `${ORDERS_URL}/single/${id}`
       })
     }),
-    confirm: builder.mutation<void, {payment_intent: string}>({
+    confirm: builder.mutation<void, {paymentIntent: string}>({
       query: (data) => ({
         url: `${ORDERS_URL}/confirm`,
         method: 'PUT',

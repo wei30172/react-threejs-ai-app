@@ -178,21 +178,21 @@ const Order: React.FC = () => {
                     <td>
                       <img
                         className='order__image'
-                        src={data?.design_photo}
+                        src={data?.designPhoto}
                         alt='customization'
                       />
                     </td>
                     <td>
-                      {data?.logoDecal_photo !== '' && <img
+                      {data?.logoDecalPhoto !== '' && <img
                         className='order__image'
-                        src={data?.logoDecal_photo}
+                        src={data?.logoDecalPhoto}
                         alt='logoDecal'
                       />}
                     </td>
                     <td>
-                      {data?.fullDecal_photo !== '' && <img
+                      {data?.fullDecalPhoto !== '' && <img
                         className='order__image'
-                        src={data?.fullDecal_photo}
+                        src={data?.fullDecalPhoto}
                         alt='logoDecal'
                       />}
                     </td>

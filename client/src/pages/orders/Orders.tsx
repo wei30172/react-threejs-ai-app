@@ -36,7 +36,7 @@ const Orders: React.FC = () => {
                       <td>
                         <img
                           className='image'
-                          src={order.design_photo}
+                          src={order.designPhoto}
                           alt={order.title} />
                       </td>
                       <td>

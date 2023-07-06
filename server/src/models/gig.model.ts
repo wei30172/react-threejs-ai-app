@@ -7,10 +7,10 @@ export interface IGig extends Document {
   totalStars: number
   starNumber: number
   price: number
-  gig_photo: string
-  gig_photos: string[]
-  gig_cloudinary_id: string
-  gig_cloudinary_ids: string[]
+  gigPhoto: string
+  gigPhotos: string[]
+  gigCloudinaryId: string
+  gigCloudinaryIds: string[]
   shortDesc: string
   deliveryTime: number
   features: string[]
@@ -43,19 +43,19 @@ const GigSchema: Schema = new Schema(
       type: Number,
       required: true
     },
-    gig_photo: {
+    gigPhoto: {
       type: String,
       required: true
     },
-    gig_photos: {
+    gigPhotos: {
       type: [String],
       required: true
     },
-    gig_cloudinary_id: {
+    gigCloudinaryId: {
       type: String,
       required: true
     },
-    gig_cloudinary_ids: {
+    gigCloudinaryIds: {
       type: [String],
       required: true
     },

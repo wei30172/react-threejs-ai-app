@@ -91,17 +91,17 @@ const AddGig: React.FC = () => {
       }))
     }
   
-    let gig_photo, gig_photos, gig_cloudinary_id, gig_cloudinary_ids
+    let gigPhoto, gigPhotos, gigCloudinaryId, gigCloudinaryIds
     
     const photoData = await handleUpload([singleFile])
     
     if (photoData && photoData[0]) {
-      gig_photo = photoData[0].url,
-      gig_cloudinary_id = photoData[0].public_id
+      gigPhoto = photoData[0].url,
+      gigCloudinaryId = photoData[0].public_id
 
       dispatch(addImage({
-        gig_photo,
-        gig_cloudinary_id
+        gigPhoto,
+        gigCloudinaryId
       }))
 
       setSingleFile(null)
@@ -109,12 +109,12 @@ const AddGig: React.FC = () => {
   
     const uploadResults = await handleUpload(Array.from(files))
     if (uploadResults) {
-      gig_photos = uploadResults.map(res => res.url),
-      gig_cloudinary_ids = uploadResults.map(res => res.public_id)
+      gigPhotos = uploadResults.map(res => res.url),
+      gigCloudinaryIds = uploadResults.map(res => res.public_id)
 
       dispatch(addImages({
-        gig_photos,
-        gig_cloudinary_ids
+        gigPhotos,
+        gigCloudinaryIds
       }))
 
       setFiles(null)
@@ -124,7 +124,7 @@ const AddGig: React.FC = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault()
 
-    if (gigInfo.gig_photo !== '' && gigInfo.gig_photos.length !== 0) {
+    if (gigInfo.gigPhoto !== '' && gigInfo.gigPhotos.length !== 0) {
       
       try {
         await createGig(gigInfo).unwrap()
@@ -189,8 +189,8 @@ const AddGig: React.FC = () => {
                   type='file'
                   onChange={(e) => handleImageChange(1, e)}
                 />
-                {gigInfo.gig_photo && <div className='add-gig__image' >
-                  <img src={gigInfo.gig_photo} alt='gig photo' />
+                {gigInfo.gigPhoto && <div className='add-gig__image' >
+                  <img src={gigInfo.gigPhoto} alt='gig photo' />
                 </div>}
                 <label htmlFor=''>Introductory Images (Max: 5)</label>
                 <input
@@ -198,8 +198,8 @@ const AddGig: React.FC = () => {
                   multiple
                   onChange={(e) => handleImageChange(5, e)}
                 />
-                {gigInfo.gig_photos.length > 0 && <div className='add-gig__image' >
-                  {gigInfo.gig_photos.map((image: string) => (
+                {gigInfo.gigPhotos.length > 0 && <div className='add-gig__image' >
+                  {gigInfo.gigPhotos.map((image: string) => (
                     <img key={image} src={image} alt='gig photo' />
                   ))}
                 </div>}

@@ -22,8 +22,8 @@ const Profile: React.FC = () => {
     username: '',
     password: '',
     confirmPassword: '',
-    user_photo: '',
-    user_cloudinary_id: ''
+    userPhoto: '',
+    userCloudinaryId: ''
   })
 
   const { uploading, handleUpload } = useUpload()
@@ -92,8 +92,8 @@ const Profile: React.FC = () => {
         if (photoData && photoData[0]) {
           updatedUser = {
             ...user,
-            user_photo: photoData[0].url,
-            user_cloudinary_id: photoData[0].public_id
+            userPhoto: photoData[0].url,
+            userCloudinaryId: photoData[0].public_id
           }
         }
       }
@@ -136,8 +136,8 @@ const Profile: React.FC = () => {
           <input type='file' onChange={handleFileChange} />
           {previewURL
             ? <img src={previewURL} alt='preview' />
-            : userInfo?.user_photo
-              ? <img src={userInfo?.user_photo} alt='preview' />
+            : userInfo?.userPhoto
+              ? <img src={userInfo?.userPhoto} alt='preview' />
               :<PreviewIcon />}
         </div>
         <button
