@@ -31,7 +31,7 @@ Install the required packages:
 In the respective project directories (client or server), you can run the following:
 
 ### Development Mode
-Run the app in development mode with:
+To run the app in development mode:
 
 #### Client
 `yarn dev` (or `npm run dev`)
@@ -42,9 +42,9 @@ Run the app in development mode with:
 In development mode, the page will reload if you make edits.
 
 ### Building for Production
-Build the app for production with:
+To build the app for production:
 
 #### Client
 `yarn build` (or `npm run build`)
 
-This will build the app for production to the dist folder.
+This will first transpile TypeScript files using tsc and then create a production-ready build using Vite in the dist folder.
