@@ -1,5 +1,4 @@
 ## Creative Custom T-Shirt Storefront
-
 A Website developed using React, Redux Toolkit, React Three Fiber, Stripe, TypeScript, and Sass.
 1. User interaction with OpenAI: Users can provide prompts that OpenAI processes to generate and return images (Currently available to administrators only), which are then stored in a gallery.
 2. T-shirt visualization through Three.js: Leveraging Three.js technology, users can simulate T-shirt styles on a 3D model, with patterns and base colors of their own design.
@@ -13,31 +12,39 @@ A Website developed using React, Redux Toolkit, React Three Fiber, Stripe, TypeS
 ![image](https://github-production-user-asset-6210df.s3.amazonaws.com/60259324/261473611-2047519e-0788-4cbd-a789-cd296d33c9d7.png)
 ![image](https://github-production-user-asset-6210df.s3.amazonaws.com/60259324/261473619-2017ab99-3f5d-4062-8f5e-323b5d74c5ef.png)
 
-## Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Installation
+### Client
+Navigate to the client directory:
+`cd client`
 
-### `yarn install` (or `npm install`)
+Install the required packages:
+`yarn install` (or `npm install`)
+
+### Server
+Navigate to the server directory:
+`cd server`
+
+Install the required packages:
+`yarn install` (or `npm install`)
 
 ## Available Scripts
+In the respective project directories (client or server), you can run the following:
 
-In the project directory, you can run the following:
+### Development Mode
+Run the app in development mode with:
 
-### `yarn dev` (or `npm run dev`)
+#### Client
+`yarn dev` (or `npm run dev`)
 
-It runs the app in development mode.\
+#### Server
+`yarn dev` (or `npm run dev`)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+In development mode, the page will reload if you make edits.
 
-### `yarn build` (or `npm run build`)
+### Building for Production
+Build the app for production with:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Client
+`yarn build` (or `npm run build`)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This will build the app for production to the dist folder.
